@@ -1,13 +1,22 @@
 import aiohttp
+from .http import HttpHandler
 
 class Client:
     """
-    desription here
+    Base pyvolt client.
+
+    Attributes:
+        client: aiohttp.ClientSession
+            The aiohttp client session.
+        http: pyvolt.HttpHandler  
+            The http handler.
+        ws: pyvolt.WebSocketHandler
+            The websocket handler.
+        listeners: dict
+            A dictionary of listeners.
     """
     def __init__(self):
-        """
-        desription here
-        """
+        self.client = aiohttp.ClientSession()
+        self.http = HttpHandler()
         self.ws = None
-        self.http = None
         self.listeners = {}
