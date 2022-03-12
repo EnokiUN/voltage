@@ -1,8 +1,10 @@
 from asyncio import get_event_loop
 from typing import Optional, Callable, Any
 import aiohttp
+
 from .http import HttpHandler
 from .ws import WebSocketHandler
+
 
 class Client:
     """
@@ -22,6 +24,7 @@ class Client:
         loop: asyncio.AbstractEventLoop
             The event loop.
     """
+
     def __init__(self):
         self.client = aiohttp.ClientSession()
         self.http = None
