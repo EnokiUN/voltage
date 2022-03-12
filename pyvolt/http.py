@@ -1,5 +1,4 @@
-from msilib.schema import File
-from typing import Optional, Dict, Literal, Union, List
+from typing import Optional, Dict, Literal, Union, List, Any
 from aiohttp import ClientSession
 
 class HttpHandler:
