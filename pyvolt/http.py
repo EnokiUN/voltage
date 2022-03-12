@@ -1,6 +1,7 @@
-from msilib.schema import File
 from typing import Optional, Dict, Literal, Union, List
+
 from aiohttp import ClientSession
+
 
 class HttpHandler:
     """
@@ -15,7 +16,8 @@ class HttpHandler:
     api_url: Optional[str]
         The url of the api. Defaults to "https://api.revolt.chat/".
     """
-    def __init__(self, client: ClientSession, token: str, api_url: Optional[str]="https://api.revolt.chat/"):
+
+    def __init__(self, client: ClientSession, token: str, api_url: Optional[str] = "https://api.revolt.chat/"):
         """
         description here
         """
@@ -23,7 +25,8 @@ class HttpHandler:
         self.token = token
         self.api_url = api_url
 
-    async def request(self, method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"], url: str, auth: Optional[bool]=True, **kwargs):
+    async def request(self, method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"], url: str,
+                      auth: Optional[bool] = True, **kwargs):
         header = {
             "User-Agent": "Pyvolt (beta)",
             "Content-Type": "application/json"
@@ -33,7 +36,7 @@ class HttpHandler:
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as req:
             if 200 >= req.status <= 300:
                 return await req.json()
-            raise(Exception(f"Error sending request: {req.status}"))
+            raise (Exception(f"Error sending request: {req.status}"))
 
     async def query_node(self):
         """
@@ -52,7 +55,10 @@ class HttpHandler:
         """
         return await self.request("GET", f"users/{user_id}/")
 
-    async def edit_user(self, status: Optional[Dict[str, Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]]=None, profile: Optional[Dict[str, str]]=None, avatar: Optional[str]=None, remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]]=None):
+    async def edit_user(self,
+                        status: Optional[Dict[str, Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]] = None,
+                        profile: Optional[Dict[str, str]] = None, avatar: Optional[str] = None, remove: Optional[
+                Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]] = None):
         """
         Edits the bot's profile.
 
@@ -133,7 +139,7 @@ class HttpHandler:
             The id of the user.
         """
         return await self.request("POST", f"users/{user_id}/dm/")
-        
+
     async def fetch_channel(self, channel_id: str):
         """
         Gets info about a channel.
@@ -144,8 +150,10 @@ class HttpHandler:
             The id of the channel.
         """
         return await self.request("GET", f"channels/{channel_id}/")
-    
-    async def edit_channel(self, channel_id: str, name: Optional[str]=None, description: Optional[str]=None, icon: Optional[str]=None, nsfw: Optional[bool]=None, remove: Optional[Literal["Description", "Icon"]]=None):
+
+    async def edit_channel(self, channel_id: str, name: Optional[str] = None, description: Optional[str] = None,
+                           icon: Optional[str] = None, nsfw: Optional[bool] = None,
+                           remove: Optional[Literal["Description", "Icon"]] = None):
         """
         Edits a channel.
 
@@ -176,7 +184,7 @@ class HttpHandler:
         if remove:
             data["remove"] = remove
         return await self.request("PATCH", f"channels/{channel_id}/", json=data)
-    
+
     async def close_channe(self, channel_id: str):
         """
         Depending on the type of channel, deleted it if it's a server channel, leaves it if it's a group channel and closes it if it's a dm.
@@ -212,7 +220,8 @@ class HttpHandler:
         permission: int
             The permission to set.
         """
-        return await self.request("PUT", f"channels/{channel_id}/permissions/{role_id}/", json={"permissions": permission})
+        return await self.request("PUT", f"channels/{channel_id}/permissions/{role_id}/",
+                                  json={"permissions": permission})
 
     async def set_default_perms(self, channel_id: str, permission: int):
         """
@@ -225,9 +234,13 @@ class HttpHandler:
         permission: int
             The permission to set.
         """
-        return await self.request("PUT", f"channels/{channel_id}/permissions/default/", json={"permissions": permission})
+        return await self.request("PUT", f"channels/{channel_id}/permissions/default/",
+                                  json={"permissions": permission})
 
-    async def send_message(self, channel_id: str, content: str, attachments: Optional[List[str]]=None, embeds: Optional[List[Dict[str, str]]]=None, replies: Optional[List[Dict[str, Union[str, bool]]]]=None, masquerade: Optional[Dict[str, str]]=None):
+    async def send_message(self, channel_id: str, content: str, attachments: Optional[List[str]] = None,
+                           embeds: Optional[List[Dict[str, str]]] = None,
+                           replies: Optional[List[Dict[str, Union[str, bool]]]] = None,
+                           masquerade: Optional[Dict[str, str]] = None):
         """
         Sends a message to a channel.
 
@@ -259,7 +272,9 @@ class HttpHandler:
             data["masquerade"] = masquerade
         return await self.request("POST", f"channels/{channel_id}/messages/", json=data)
 
-    async def fetch_messages(self, channel_id: str, sort: Literal["Latest", "Oldest"], limit: Optional[int]=None, before: Optional[str]=None, after: Optional[str]=None, nearby: Optional[str]=None, include_users: Optional[bool]=None):
+    async def fetch_messages(self, channel_id: str, sort: Literal["Latest", "Oldest"], limit: Optional[int] = None,
+                             before: Optional[str] = None, after: Optional[str] = None, nearby: Optional[str] = None,
+                             include_users: Optional[bool] = None):
         """
         Gets messages from a channel.
 
@@ -306,7 +321,8 @@ class HttpHandler:
         """
         return await self.request("GET", f"channels/{channel_id}/messages/{message_id}/")
 
-    async def edit_message(self, channel_id: str, message_id: str, content: str, embeds: Optional[List[Dict[str, str]]]=None):
+    async def edit_message(self, channel_id: str, message_id: str, content: str,
+                           embeds: Optional[List[Dict[str, str]]] = None):
         """
         Edits a message.
 
@@ -354,7 +370,10 @@ class HttpHandler:
         """
         return await self.request("GET", f"channels/{channel_id}/messages/changed/", params={"ids": ",".join(ids)})
 
-    async def search_for_message(self, channel_id: str, query: str, limit: Optional[int]=None, before: Optional[str]=None, after: Optional[str]=None, sort: Optional[Literal["Latest", "Oldest", "Relevance"]]=None, include_users: Optional[bool]=None):
+    async def search_for_message(self, channel_id: str, query: str, limit: Optional[int] = None,
+                                 before: Optional[str] = None, after: Optional[str] = None,
+                                 sort: Optional[Literal["Latest", "Oldest", "Relevance"]] = None,
+                                 include_users: Optional[bool] = None):
         """
         Searches for a message.
 
@@ -421,7 +440,11 @@ class HttpHandler:
         """
         return await self.request("GET", f"servers/{server_id}/")
 
-    async def edit_server(self, server_id: str, name: Optional[str]=None, description: Optional[str]=None, icon: Optional[str]=None, banner: Optional[str]=None, categories: Optional[List[Dict[str, str]]]=None, system_messages: Optional[Dict[str, str]]=None, nsfw: Optional[bool]=None, remove: Optional[Literal["Banner", "Description", "Icon"]]=None):
+    async def edit_server(self, server_id: str, name: Optional[str] = None, description: Optional[str] = None,
+                          icon: Optional[str] = None, banner: Optional[str] = None,
+                          categories: Optional[List[Dict[str, str]]] = None,
+                          system_messages: Optional[Dict[str, str]] = None, nsfw: Optional[bool] = None,
+                          remove: Optional[Literal["Banner", "Description", "Icon"]] = None):
         """
         Edits a server.
 
@@ -476,7 +499,8 @@ class HttpHandler:
         """
         return await self.request("DELETE", f"servers/{server_id}/")
 
-    async def create_channel(self, server_id: str, type: Literal["Text", "Voice"], name: str, description: Optional[str]=None, nsfw: Optional[bool]=None):
+    async def create_channel(self, server_id: str, type: Literal["Text", "Voice"], name: str,
+                             description: Optional[str] = None, nsfw: Optional[bool] = None):
         """
         Creates a channel.
 
@@ -500,7 +524,7 @@ class HttpHandler:
             data["nsfw"] = nsfw
         return await self.request("POST", f"servers/{server_id}/channels/", json=data)
 
-    async def  fetch_invites(self, server_id: str):
+    async def fetch_invites(self, server_id: str):
         """
         Gets the invites of a server.
 
@@ -524,7 +548,9 @@ class HttpHandler:
         """
         return await self.request("GET", f"servers/{server_id}/members/{member_id}/")
 
-    async def edit_member(self, server_id: str, member_id: str, nickname: Optional[str]=None, avatar: Optional[str]=None, roles: Optional[List[str]]=None, remove: Optional[Literal["Avatar", "Nickname"]]=None):
+    async def edit_member(self, server_id: str, member_id: str, nickname: Optional[str] = None,
+                          avatar: Optional[str] = None, roles: Optional[List[str]] = None,
+                          remove: Optional[Literal["Avatar", "Nickname"]] = None):
         """
         Edits a member.
 
@@ -567,7 +593,7 @@ class HttpHandler:
         """
         return await self.request("DELETE", f"servers/{server_id}/members/{member_id}/")
 
-    async def ban_member(self, server_id: str, member_id: str, reason: Optional[str]=None):
+    async def ban_member(self, server_id: str, member_id: str, reason: Optional[str] = None):
         """
         Bans a member.
 
@@ -650,7 +676,9 @@ class HttpHandler:
         """
         return await self.request("POST", f"servers/{server_id}/roles/", json={"name": name})
 
-    async def edit_role(self, server_id: str, role_id: str, name: str, colour: Optional[str]=None, hoist: Optional[bool]=None, rank: Optional[int]=None, remove: Optional[Literal["Colour"]]=None):
+    async def edit_role(self, server_id: str, role_id: str, name: str, colour: Optional[str] = None,
+                        hoist: Optional[bool] = None, rank: Optional[int] = None,
+                        remove: Optional[Literal["Colour"]] = None):
         """
         Edits a role.
 

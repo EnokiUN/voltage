@@ -1,5 +1,7 @@
 import aiohttp
+
 from .http import HttpHandler
+
 
 class Client:
     """
@@ -15,6 +17,7 @@ class Client:
         listeners: dict
             A dictionary of listeners.
     """
+
     def __init__(self):
         self.client = aiohttp.ClientSession()
         self.http = HttpHandler()
