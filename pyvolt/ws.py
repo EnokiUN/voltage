@@ -1,6 +1,6 @@
 from asyncio import get_event_loop, sleep
 from json import loads
-from typing import Callable, Any, Dict
+from typing import Any, Callable, Dict
 
 from aiohttp import ClientSession, ClientWebSocketResponse
 
@@ -8,8 +8,9 @@ from .http import HTTPClient
 
 
 class WebSocketHandler:
-    def __init__(self, client: ClientSession, http: HTTPClient, token: str,
-                 raw_dispatch: Callable[[Dict[Any, Any]], Any]):
+    def __init__(
+        self, client: ClientSession, http: HTTPClient, token: str, raw_dispatch: Callable[[Dict[Any, Any]], Any]
+    ):
         self.loop = get_event_loop()
         self.client = client
         self.http = http
@@ -19,7 +20,7 @@ class WebSocketHandler:
 
     async def authorize(self):
         await self.ws.send_json({"type": "Authenticate", "token": self.token})
-    
+
     async def heartbeat(self):
         while True:
             await self.ws.ping()
