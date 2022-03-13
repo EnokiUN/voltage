@@ -1,3 +1,7 @@
+import os
+
+from dotenv import load_dotenv
+
 import pyvolt
 
 client = pyvolt.Client()
@@ -10,4 +14,6 @@ async def my_message_listener_any_name_is_ok(payload):
     if payload["content"] == "-embed":
         await client.http.send_message(payload["channel"], "h", embeds=[{"title": "h"}])
 
-client.run("TOKEN")
+
+load_dotenv()
+client.run(os.getenv("token"))
