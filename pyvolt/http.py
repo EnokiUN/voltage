@@ -5,7 +5,7 @@ from aiohttp import ClientSession
 from .errors import HTTPError
 
 
-class HttpHandler:
+class HTTPClient:
     """
     A simple handler for http requests.
 

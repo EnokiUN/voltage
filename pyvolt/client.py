@@ -1,6 +1,6 @@
 import aiohttp
 
-from .http import HttpHandler
+from .http import HTTPClient
 
 
 class Client:
@@ -20,6 +20,6 @@ class Client:
 
     def __init__(self):
         self.client = aiohttp.ClientSession()
-        self.http = HttpHandler()
+        self.http = HTTPClient()
         self.ws = None
         self.listeners = {}
