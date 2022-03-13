@@ -1,10 +1,12 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, TypedDict
+from typing import TYPE_CHECKING, List, TypedDict, Dict, Any
 
 if TYPE_CHECKING:
     from .message import MessagePayload
     from .server import MemberPayload
     from .user import UserPayload
+
+BaseRequestReturnPayload = Dict[Any, Any]
 
 class ApiFeaturePayload(TypedDict):
     enabled: bool

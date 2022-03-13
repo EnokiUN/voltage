@@ -7,13 +7,17 @@ from voltage.types.channel import CategoryPayload
 if TYPE_CHECKING:
     from .file import FilePayload
 
-class MemberPayload(TypedDict):
-    _id: str
-    server: str
-    user: str
+class _MemberBase(TypedDict):
     nickname: NotRequired[str]
     avatar: NotRequired[FilePayload]
     roles: NotRequired[List[str]]
+
+class MemberIDPayload(_MemberBase):
+    server: str
+    user: str
+
+class MemberPayload(_MemberBase):
+    _id: MemberIDPayload
 
 PermissionPayload = Tuple[int, int]
 
