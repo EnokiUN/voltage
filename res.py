@@ -21,4 +21,4 @@ async def on_ready_function(payload):
 
 
 load_dotenv()
-client.run(os.getenv("token"))
+client.run(os.getenv("token")) # type: ignore
