@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
 
-import pyvolt
+import voltage
 
-client = pyvolt.Client()
+client = voltage.Client()
 
 
 @client.listen("message", raw=True)
