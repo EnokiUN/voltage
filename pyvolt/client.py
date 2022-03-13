@@ -40,7 +40,7 @@ class Client:
         self.raw_listeners = {}
         self.loop = get_event_loop()
 
-    def listen(self, func: Callable, event: str, *, raw: Optional[bool] = False):
+    def listen(self, event: str, *, raw: Optional[bool] = False):
         """
         Registers a function to listen for an event.
 
@@ -53,13 +53,16 @@ class Client:
         raw: bool
             Whether or not to listen for raw events.
         """
-        event = event.lower()
-        if raw:
-            self.raw_listeners[
-                event] = func  # Only 1 raw listener per event because the raw listener dispatches the processed payload
-        else:
-            self.listeners[event].append(func)  # Multiple listeners for the non-raw
-        return func  # Returns the function so the user can use it by itself
+
+        def inner(func: Callable[[dict[any, any]], any]):
+            if raw:
+                self.raw_listeners[
+                    event.lower()] = func  # Only 1 raw listener per event because the raw listener dispatches the processed payload
+            else:
+                self.listeners[event.lower()].append(func)  # Multiple listeners for the non-raw
+            return func
+
+        return inner  # Returns the function so the user can use it by itself
 
     def run(self, token: str):
         """

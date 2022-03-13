@@ -26,7 +26,7 @@ class WebSocketHandler:
             await sleep(15)
 
     async def connect(self):
-        info = await self.http.query_node()
+        info = await self.http.query_node().json()
         ws_url = info["ws"]
         self.ws = await self.client.ws_connect(ws_url)
         await self.authorize()

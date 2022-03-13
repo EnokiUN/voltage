@@ -2,8 +2,9 @@ import pyvolt
 
 client = pyvolt.Client()
 
+
 @client.listen("message", raw=True)
-async def on_message(payload):
+async def my_message_listener_any_name_is_ok(payload):
     if payload["content"] == "-ping":
         await client.http.send_message(payload["channel"], "pong")
     if payload["content"] == "-embed":
