@@ -5,6 +5,7 @@ class PyvoltException(Exception):
     """
     Base class for all Pyvolt exceptions. This could be used to catch all exceptions made from this library.
     """
+
     pass
 
 
