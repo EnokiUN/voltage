@@ -1,16 +1,19 @@
 from asyncio import get_event_loop, sleep
 from json import loads
-from typing import Callable, Any, Dict
+from typing import Any, Callable, Dict
+
 from aiohttp import ClientSession, ClientWebSocketResponse
+
+from .cache import CacheHandler
 
 # Internal imports
 from .http import HTTPHandler
-from .cache import CacheHandler
+
 
 class WebSocketHandler:
     """
     The base Voltage Websocket Handler.
-    
+
     Attributes
     ----------
     client: aiohttp.ClientSession
@@ -28,9 +31,15 @@ class WebSocketHandler:
     loop: asyncio.AbstractEventLoop
         The event loop.
     """
-    def __init__(self, client: ClientSession, http: HTTPHandler, token: str,
-                 dispatch: Callable[..., Any],
-                 raw_dispatch: Callable[[Dict[Any, Any]], Any]):
+
+    def __init__(
+        self,
+        client: ClientSession,
+        http: HTTPHandler,
+        token: str,
+        dispatch: Callable[..., Any],
+        raw_dispatch: Callable[[Dict[Any, Any]], Any],
+    ):
         self.loop = get_event_loop()
         self.client = client
         self.http = http
@@ -44,7 +53,7 @@ class WebSocketHandler:
         Sends an authorization request to the websocket api.
         """
         await self.ws.send_json({"type": "Authenticate", "token": self.token})
-    
+
     async def heartbeat(self):
         """
         Sends regular heartbeats to the websocket api.
@@ -79,4 +88,3 @@ class WebSocketHandler:
         """
         Handles the ready event.
         """
-        

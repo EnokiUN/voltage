@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, TypedDict, Literal, Union
+from typing import TYPE_CHECKING, Literal, TypedDict, Union
+
 from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
@@ -6,30 +7,39 @@ if TYPE_CHECKING:
 
 # Almost ripped out from https://discord.com/revoltchat/revolt.py/blob/master/revolt/types/embed.py
 
+
 class YoutubeEmbedPayload(TypedDict):
     type: Literal["Youtube"]
     id: str
     timestamp: NotRequired[str]
+
 
 class TwitchEmbedPayload(TypedDict):
     type: Literal["Twitch"]
     id: str
     content_type: Literal["Channel", "Video", "Clip"]
 
+
 class SpotifyEmbedPayload(TypedDict):
     type: Literal["Spotify"]
     id: str
     content_type: Literal["Track", "Album", "Playlist"]
 
+
 class SoundCloudEmbedPayload(TypedDict):
     type: Literal["SoundCloud"]
+
 
 class BandcampEmbedPayload(TypedDict):
     type: Literal["Bandcamp"]
     id: str
     content_type: str
 
-SpecialWebsiteEmbedPayload = Union[YoutubeEmbedPayload, TwitchEmbedPayload, SpotifyEmbedPayload, SoundCloudEmbedPayload, BandcampEmbedPayload]
+
+SpecialWebsiteEmbedPayload = Union[
+    YoutubeEmbedPayload, TwitchEmbedPayload, SpotifyEmbedPayload, SoundCloudEmbedPayload, BandcampEmbedPayload
+]
+
 
 class JanuaryImagePayload(TypedDict):
     url: str
@@ -37,10 +47,12 @@ class JanuaryImagePayload(TypedDict):
     height: int
     size: Literal["Large", "Preview"]
 
+
 class JanuaryVideoPayload(TypedDict):
     url: str
     width: int
     height: int
+
 
 class WebsiteEmbedPayload(TypedDict):
     type: Literal["Website"]
@@ -54,8 +66,10 @@ class WebsiteEmbedPayload(TypedDict):
     icon_url: NotRequired[str]
     colour: NotRequired[str]
 
+
 class ImageEmbedPayload(TypedDict):
     type: Literal["Image"]
+
 
 class TextEmbedPayload(TypedDict):
     type: Literal["Text"]
@@ -66,7 +80,9 @@ class TextEmbedPayload(TypedDict):
     icon_url: NotRequired[str]
     colour: NotRequired[str]
 
+
 class NoneEmbed(TypedDict):
     type: Literal["None"]
+
 
 EmbedPayload = [WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed]

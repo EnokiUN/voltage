@@ -51,10 +51,7 @@ class HTTPHandler:
         -------
         The response of the request.
         """
-        header = {
-            "User-Agent": "Voltage (beta)",
-            "Content-Type": "application/json"
-        }
+        header = {"User-Agent": "Voltage (beta)", "Content-Type": "application/json"}
         if auth:
             header["x-bot-token"] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:

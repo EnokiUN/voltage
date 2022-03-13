@@ -1,9 +1,11 @@
 from asyncio import get_event_loop
-from typing import Optional, Callable
+from typing import Callable, Optional
+
 import aiohttp
 
 # Internal imports
-from .internals import HTTPHandler, WebSocketHandler, CacheHandler
+from .internals import CacheHandler, HTTPHandler, WebSocketHandler
+
 
 class Client:
     """
@@ -30,6 +32,7 @@ class Client:
     -------
     TODO
     """
+
     def __init__(self):
         self.client = aiohttp.ClientSession()
         self.http: HTTPHandler

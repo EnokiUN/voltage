@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 from .enums import EmbedType
 
 if TYPE_CHECKING:
-    from .types import WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload
+    from .types import ImageEmbedPayload, TextEmbedPayload, WebsiteEmbedPayload
+
 
 class WebsiteEmbed:
     type = EmbedType.website
