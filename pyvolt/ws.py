@@ -1,17 +1,20 @@
 from asyncio import get_event_loop, sleep
-from aiohttp import ClientSession, ClientWebSocketResponse
-from typing import Callable, Any, Dict
 from json import loads
-from .http import HttpHandler
+from typing import Callable, Any, Dict
+
+from aiohttp import ClientSession, ClientWebSocketResponse
+
+from .http import HTTPClient
+
 
 class WebSocketHandler:
-    def __init__(self, client: ClientSession, http: HttpHandler, token: str, dispatch: Callable[..., Any], raw_dispatch: Callable[[Dict[Any, Any]], Any]):
+    def __init__(self, client: ClientSession, http: HTTPClient, token: str,
+                 raw_dispatch: Callable[[Dict[Any, Any]], Any]):
         self.loop = get_event_loop()
         self.client = client
         self.http = http
-        self.ws: ClientWebSocketResponse = None
+        self.ws: ClientWebSocketResponse
         self.token = token
-        self.dispatch = dispatch
         self.raw_dispatch = raw_dispatch
 
     async def authorize(self):
@@ -28,8 +31,8 @@ class WebSocketHandler:
         self.ws = await self.client.ws_connect(ws_url)
         await self.authorize()
         self.loop.create_task(self.heartbeat())
-        async for msg in self.ws:
-            payload = loads(msg.data)
+        async for message in self.ws:
+            payload = loads(message.data)
             # self.loop.create_task(self.handle_event(payload))
             self.loop.create_task(self.raw_dispatch(payload))
 

@@ -1,4 +1,5 @@
-from typing import Optional, Dict, Literal, Union, List, Any
+from typing import Optional, Dict, Literal, Union, List
+
 from aiohttp import ClientSession
 
 from .errors import HTTPError
@@ -17,11 +18,7 @@ class HTTPClient:
     api_url: Optional[str]
         The url of the api. Defaults to "https://api.revolt.chat/".
     """
-
     def __init__(self, client: ClientSession, token: str, api_url: Optional[str] = "https://api.revolt.chat/"):
-        """
-        description here
-        """
         self.client = client
         self.token = token
         self.api_url = api_url
