@@ -5,7 +5,8 @@ from typing_extensions import NotRequired
 if TYPE_CHECKING:
     from .file import FilePayload
 
-# Almost ripped out from https://discord.com/revoltchat/revolt.py/blob/master/revolt/types/embed.py
+
+# Almost ripped out from https://github.com/revoltchat/revolt.py/blob/master/revolt/types/embed.py
 
 
 class YoutubeEmbedPayload(TypedDict):
