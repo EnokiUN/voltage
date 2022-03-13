@@ -67,7 +67,7 @@ class WebSocketHandler:
             self.loop.create_task(self.handle_event(payload))
             self.loop.create_task(self.raw_dispatch(payload))
 
-    async def handle_event(self, payload: dict[any, any]):
+    async def handle_event(self, payload: dict[Any, Any]):
         """
         Handles an event.
         """
@@ -75,7 +75,7 @@ class WebSocketHandler:
         if func := getattr(self, f"handle_{event}", None):
             await func(payload)
 
-    async def handle_ready(self, payload: dict[any, any]):
+    async def handle_ready(self, payload: dict[Any, Any]):
         """
         Handles the ready event.
         """
