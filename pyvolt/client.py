@@ -4,7 +4,7 @@ from typing import Optional, Callable
 
 import aiohttp
 
-from .http import HTTPClient
+from .http import HTTPHandler
 from .ws import WebSocketHandler
 
 
@@ -16,7 +16,7 @@ class Client:
     ----------
     client: aiohttp.ClientSession
         The aiohttp client session.
-    http: pyvolt.HTTPClient
+    http: pyvolt.HTTPHandler
         The http handler.
     ws: pyvolt.WebSocketHandler
         The websocket handler.
@@ -34,13 +34,13 @@ class Client:
 
     def __init__(self):
         self.client = aiohttp.ClientSession()
-        self.http: HTTPClient
+        self.http: HTTPHandler
         self.ws: WebSocketHandler
         self.listeners = defaultdict(list)
         self.raw_listeners = {}
         self.loop = get_event_loop()
 
-    def listen(self, event: str, *, raw: Optional[bool] = False):
+    def listen(self, event: str, *, raw: Optional[bool]=False):
         """
         Registers a function to listen for an event.
 
@@ -73,8 +73,8 @@ class Client:
         token: str
             The bot token.
         """
-        self.http = HTTPClient(self.client, token)
-        self.ws = WebSocketHandler(self.client, self.http, token, self.raw_dispatch)
+        self.http = HTTPHandler(self.client, token)
+        self.ws = WebSocketHandler(self.client, self.http, token, self.dispatch, self.raw_dispatch)
         self.loop.run_until_complete(self.ws.connect())
 
     async def dispatch(self, event: str, *args, **kwargs):

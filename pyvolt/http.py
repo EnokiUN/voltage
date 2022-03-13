@@ -1,11 +1,11 @@
 from typing import Optional, Dict, Literal, Union, List
-
 from aiohttp import ClientSession
+from json import dumps, decoder
 
+# Internal imports
 from .errors import HTTPError
 
-
-class HTTPClient:
+class HTTPHandler:
     """
     A simple handler for http requests.
 
@@ -55,7 +55,10 @@ class HTTPClient:
             header["x-bot-token"] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
             if 200 >= request.status <= 300:
-                return request
+                try:
+                    return await request.json()
+                except decoder.JSONDecodeError:
+                    return dumps(await request.json())
             raise HTTPError(request)
 
     async def query_node(self):
@@ -76,10 +79,10 @@ class HTTPClient:
         return await self.request("GET", f"users/{user_id}")
 
     async def edit_user(self, *,
-                        status: Optional[Dict[str, Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]],
-                        profile: Optional[Dict[str, str]],
-                        avatar: Optional[str],
-                        remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]]
+                        status: Optional[Dict[str, Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]]=None,
+                        profile: Optional[Dict[str, str]]=None,
+                        avatar: Optional[str]=None,
+                        remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]]=None
                         ):
         """
         Edits the bot's profile.
@@ -174,11 +177,11 @@ class HTTPClient:
         return await self.request("GET", f"channels/{channel_id}")
 
     async def edit_channel(self, channel_id: str, *,
-                           name: Optional[str],
-                           description: Optional[str],
-                           icon: Optional[str],
-                           nsfw: Optional[bool],
-                           remove: Optional[Literal["Description", "Icon"]]
+                           name: Optional[str]=None,
+                           description: Optional[str]=None,
+                           icon: Optional[str]=None,
+                           nsfw: Optional[bool]=None,
+                           remove: Optional[Literal["Description", "Icon"]]=None
                            ):
         """
         Edits a channel.
@@ -263,12 +266,11 @@ class HTTPClient:
         return await self.request("PUT", f"channels/{channel_id}/permissions/default",
                                   json={"permissions": permission})
 
-    async def send_message(self, channel_id: str, *,
-                           content: str,
-                           attachments: Optional[List[str]],
-                           embeds: Optional[List[Dict[str, str]]],
-                           replies: Optional[List[Dict[str, Union[str, bool]]]],
-                           masquerade: Optional[Dict[str, str]]
+    async def send_message(self, channel_id: str, content: str, *,
+                           attachments: Optional[List[str]]=None,
+                           embeds: Optional[List[Dict[str, str]]]=None,
+                           replies: Optional[List[Dict[str, Union[str, bool]]]]=None,
+                           masquerade: Optional[Dict[str, str]]=None
                            ):
         """
         Sends a message to a channel.
@@ -302,11 +304,11 @@ class HTTPClient:
         return await self.request("POST", f"channels/{channel_id}/messages", json=data)
 
     async def fetch_messages(self, channel_id: str, sort: Literal["Latest", "Oldest"], *,
-                             limit: Optional[int],
-                             before: Optional[str],
-                             after: Optional[str],
-                             nearby: Optional[str],
-                             include_users: Optional[bool]
+                             limit: Optional[int]=None,
+                             before: Optional[str]=None,
+                             after: Optional[str]=None,
+                             nearby: Optional[str]=None,
+                             include_users: Optional[bool]=None
                              ):
         """
         Gets messages from a channel.
@@ -355,7 +357,7 @@ class HTTPClient:
         return await self.request("GET", f"channels/{channel_id}/messages/{message_id}")
 
     async def edit_message(self, channel_id: str, message_id: str, content: str, *,
-                           embeds: Optional[List[Dict[str, str]]]
+                           embeds: Optional[List[Dict[str, str]]]=None
                            ):
         """
         Edits a message.
@@ -405,11 +407,11 @@ class HTTPClient:
         return await self.request("GET", f"channels/{channel_id}/messages/changed", params={"ids": ",".join(ids)})
 
     async def search_for_message(self, channel_id: str, query: str, *,
-                                 limit: Optional[int],
-                                 before: Optional[str],
-                                 after: Optional[str],
-                                 sort: Optional[Literal["Latest", "Oldest", "Relevance"]],
-                                 include_users: Optional[bool]
+                                 limit: Optional[int]=None,
+                                 before: Optional[str]=None,
+                                 after: Optional[str]=None,
+                                 sort: Optional[Literal["Latest", "Oldest", "Relevance"]]=None,
+                                 include_users: Optional[bool]=None
                                  ):
         """
         Searches for a message.
@@ -478,14 +480,14 @@ class HTTPClient:
         return await self.request("GET", f"servers/{server_id}")
 
     async def edit_server(self, server_id: str,
-                          name: Optional[str],
-                          description: Optional[str],
-                          icon: Optional[str],
-                          banner: Optional[str],
-                          categories: Optional[List[Dict[str, str]]],
-                          system_messages: Optional[Dict[str, str]],
-                          nsfw: Optional[bool],
-                          remove: Optional[Literal["Banner", "Description", "Icon"]]
+                          name: Optional[str]=None,
+                          description: Optional[str]=None,
+                          icon: Optional[str]=None,
+                          banner: Optional[str]=None,
+                          categories: Optional[List[Dict[str, str]]]=None,
+                          system_messages: Optional[Dict[str, str]]=None,
+                          nsfw: Optional[bool]=None,
+                          remove: Optional[Literal["Banner", "Description", "Icon"]]=None
                           ):
         """
         Edits a server.
@@ -544,8 +546,8 @@ class HTTPClient:
     async def create_channel(self, server_id: str, *,
                              type: Literal["Text", "Voice"],
                              name: str,
-                             description: Optional[str],
-                             nsfw: Optional[bool]
+                             description: Optional[str]=None,
+                             nsfw: Optional[bool]=None
                              ):
         """
         Creates a channel.
@@ -595,10 +597,10 @@ class HTTPClient:
         return await self.request("GET", f"servers/{server_id}/members/{member_id}")
 
     async def edit_member(self, server_id: str, member_id: str, *,
-                          nickname: Optional[str],
-                          avatar: Optional[str],
-                          roles: Optional[List[str]],
-                          remove: Optional[Literal["Avatar", "Nickname"]]
+                          nickname: Optional[str]=None,
+                          avatar: Optional[str]=None,
+                          roles: Optional[List[str]]=None,
+                          remove: Optional[Literal["Avatar", "Nickname"]]=None
                           ):
         """
         Edits a member.
@@ -643,7 +645,7 @@ class HTTPClient:
         return await self.request("DELETE", f"servers/{server_id}/members/{member_id}")
 
     async def ban_member(self, server_id: str, member_id: str, *,
-                         reason: Optional[str]
+                         reason: Optional[str]=None
                          ):
         """
         Bans a member.
@@ -728,10 +730,10 @@ class HTTPClient:
         return await self.request("POST", f"servers/{server_id}/roles", json={"name": name})
 
     async def edit_role(self, server_id: str, role_id: str, name: str, *,
-                        colour: Optional[str],
-                        hoist: Optional[bool],
-                        rank: Optional[int],
-                        remove: Optional[Literal["Colour"]]
+                        colour: Optional[str]=None,
+                        hoist: Optional[bool]=None,
+                        rank: Optional[int]=None,
+                        remove: Optional[Literal["Colour"]]=None
                         ):
         """
         Edits a role.
