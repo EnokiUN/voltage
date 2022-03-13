@@ -1,4 +1,4 @@
-# Pyvolt
+# Voltage
 
 A simple asynchronous pythonic wrapper for the revolt api
 
