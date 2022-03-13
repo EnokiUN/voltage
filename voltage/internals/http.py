@@ -56,10 +56,7 @@ class HTTPHandler:
             header["x-bot-token"] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
             if 200 >= request.status <= 300:
-                try:
-                    return await request.json()
-                except decoder.JSONDecodeError:
-                    return dumps(await request.json())
+                return await request.json()
             raise HTTPError(request)
 
     async def query_node(self):
