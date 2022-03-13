@@ -3,7 +3,7 @@ from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
     from .embed import EmbedPayload
-    from .file import FileMetaDataPayload
+    from .file import FileMetadataPayload
 
 class ContentPayload(TypedDict):
     type: str

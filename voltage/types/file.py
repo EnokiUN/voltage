@@ -1,7 +1,7 @@
 from typing import TypedDict, Literal
 from typing_extensions import NotRequired
 
-class FileMetaDataPayload(TypedDict):
+class FileMetadataPayload(TypedDict):
     type: Literal["Video", "Image", "File", "Text", "Audio"]
     height: NotRequired[int]
     width: NotRequired[int]
@@ -11,5 +11,5 @@ class FilePayload(TypedDict):
     tag: str
     size: int
     filename: str
-    metadata: FileMetaDataPayload
+    metadata: FileMetadataPayload
     content_type: str
