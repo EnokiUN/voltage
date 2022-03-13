@@ -1,5 +1,5 @@
 from asyncio import get_event_loop
-from typing import Optional, Callable
+from typing import Optional, Callable, Any
 import aiohttp
 
 # Internal imports
@@ -53,7 +53,7 @@ class Client:
             Whether or not to listen for raw events.
         """
 
-        def inner(func: Callable[[dict[any, any]], any]):
+        def inner(func: Callable[[dict[Any, Any]], Any]):
             if raw:
                 self.raw_listeners[
                     event.lower()
@@ -81,7 +81,7 @@ class Client:
         for func in self.listeners[event.lower()]:
             await func(*args, **kwargs)
 
-    async def raw_dispatch(self, payload: dict[any, any]):
+    async def raw_dispatch(self, payload: dict[Any, Any]):
         event = payload["type"].lower()  # Subject to change
         if event.lower() in self.raw_listeners:
             await self.raw_listeners[event.lower()](payload)
