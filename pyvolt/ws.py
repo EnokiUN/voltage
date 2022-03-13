@@ -4,12 +4,12 @@ from typing import Any, Callable, Dict
 
 from aiohttp import ClientSession, ClientWebSocketResponse
 
-from .http import HTTPClient
+from .http import HTTPHandler
 
 
 class WebSocketHandler:
     def __init__(
-        self, client: ClientSession, http: HTTPClient, token: str, raw_dispatch: Callable[[Dict[Any, Any]], Any]
+        self, client: ClientSession, http: HTTPHandler, token: str, raw_dispatch: Callable[[Dict[Any, Any]], Any]
     ):
         self.loop = get_event_loop()
         self.client = client
