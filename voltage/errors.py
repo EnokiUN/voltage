@@ -5,6 +5,7 @@ class VoltageException(Exception):
     """
     Base class for all Voltage exceptions. This could be used to catch all exceptions made from this library.
     """
+
     pass
 
 
