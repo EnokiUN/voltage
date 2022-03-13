@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TypedDict, Literal
 from typing_extensions import NotRequired
 

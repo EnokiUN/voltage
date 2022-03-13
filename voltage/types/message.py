@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, TypedDict, List
+from __future__ import annotations
+from __future__ import annotations
+from typing import TYPE_CHECKING, TypedDict, List, Union
 from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
@@ -6,8 +8,9 @@ if TYPE_CHECKING:
     from .file import FileMetadataPayload
 
 class ContentPayload(TypedDict):
-    type: str
-    content: str
+    id: str
+    by: NotRequired[str]
+    name: NotRequired[str]
 
 EditedPayload = TypedDict("EditedPayload", {"$date": str})
 
@@ -19,7 +22,7 @@ class MessagePayload(TypedDict):
     _id: str
     channel: str
     author: str
-    content: ContentPayload
+    content: Union[str, ContentPayload]
     attachments: NotRequired[List[FileMetadataPayload]]
     edited: NotRequired[EditedPayload]
     embeds: NotRequired[List[EmbedPayload]]
