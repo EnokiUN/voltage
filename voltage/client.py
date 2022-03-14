@@ -3,7 +3,8 @@ from typing import Optional, Callable, Any
 import aiohttp
 
 # Internal imports
-from .internals import HTTPHandler, WebSocketHandler, CacheHandler
+from .internals import CacheHandler, HTTPHandler, WebSocketHandler
+
 
 class Client:
     """
@@ -23,13 +24,14 @@ class Client:
         A dictionary of raw listeners.
     loop: asyncio.AbstractEventLoop
         The event loop.
-    cache: voltage.CacheHandler
+    cache: voltage.CacheHandler TODO
         The cache handler.
 
     Methods
     -------
     TODO
     """
+
     def __init__(self):
         self.client = aiohttp.ClientSession()
         self.http: HTTPHandler

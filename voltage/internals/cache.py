@@ -1,8 +1,9 @@
 from asyncio import get_running_loop
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 # Internal imports
 from .http import HTTPHandler
+
 
 class CacheHandler:
     def __init__(self, http: HTTPHandler, message_limit: Optional[int] = 5000):

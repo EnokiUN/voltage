@@ -5,32 +5,42 @@ from typing_extensions import NotRequired
 if TYPE_CHECKING:
     from .file import FilePayload
 
+
 # Almost ripped out from https://github.com/revoltchat/revolt.py/blob/master/revolt/types/embed.py
+
 
 class YoutubeEmbedPayload(TypedDict):
     type: Literal["Youtube"]
     id: str
     timestamp: NotRequired[str]
 
+
 class TwitchEmbedPayload(TypedDict):
     type: Literal["Twitch"]
     id: str
     content_type: Literal["Channel", "Video", "Clip"]
+
 
 class SpotifyEmbedPayload(TypedDict):
     type: Literal["Spotify"]
     id: str
     content_type: Literal["Track", "Album", "Playlist"]
 
+
 class SoundCloudEmbedPayload(TypedDict):
     type: Literal["SoundCloud"]
+
 
 class BandcampEmbedPayload(TypedDict):
     type: Literal["Bandcamp"]
     id: str
     content_type: str
 
-SpecialWebsiteEmbedPayload = Union[YoutubeEmbedPayload, TwitchEmbedPayload, SpotifyEmbedPayload, SoundCloudEmbedPayload, BandcampEmbedPayload]
+
+SpecialWebsiteEmbedPayload = Union[
+    YoutubeEmbedPayload, TwitchEmbedPayload, SpotifyEmbedPayload, SoundCloudEmbedPayload, BandcampEmbedPayload
+]
+
 
 class JanuaryImagePayload(TypedDict):
     url: str
@@ -38,10 +48,12 @@ class JanuaryImagePayload(TypedDict):
     height: int
     size: Literal["Large", "Preview"]
 
+
 class JanuaryVideoPayload(TypedDict):
     url: str
     width: int
     height: int
+
 
 class WebsiteEmbedPayload(TypedDict):
     type: Literal["Website"]
@@ -55,8 +67,10 @@ class WebsiteEmbedPayload(TypedDict):
     icon_url: NotRequired[str]
     colour: NotRequired[str]
 
+
 class ImageEmbedPayload(TypedDict):
     type: Literal["Image"]
+
 
 class TextEmbedPayload(TypedDict):
     type: Literal["Text"]
@@ -66,6 +80,7 @@ class TextEmbedPayload(TypedDict):
     media: NotRequired[str]
     icon_url: NotRequired[str]
     colour: NotRequired[str]
+
 
 class NoneEmbed(TypedDict):
     type: Literal["None"]

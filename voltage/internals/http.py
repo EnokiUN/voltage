@@ -59,18 +59,12 @@ class HTTPHandler:
         -------
         The response of the request.
         """
-        header = {
-            "User-Agent": "Voltage (beta)",
-            "Content-Type": "application/json"
-        }
+        header = {"User-Agent": "Voltage (beta)", "Content-Type": "application/json"}
         if auth:
             header["x-bot-token"] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
             if 200 >= request.status <= 300:
-                try:
-                    return await request.json()
-                except decoder.JSONDecodeError:
-                    return dumps(await request.json())
+                return await request.json()
             raise HTTPError(request)
 
     async def upload_file(self, file: bytes, name: str, tag: str) -> AutumnPayload:
@@ -108,11 +102,13 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}")
 
-    async def edit_user(
+    async def edit_self(
         self,
         *,
-        status: Optional[Dict[str, Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]] = None,
-        profile: Optional[Dict[str, str]] = None,
+        status: Optional[
+            Dict[Literal["text", "presence"], Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]
+        ] = None,
+        profile: Optional[Dict[Literal["content", "background"], str]] = None,
         avatar: Optional[str] = None,
         remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]] = None,
     ) -> UserPayload:
@@ -121,9 +117,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        status: Optional[Dict[str, Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]]
+        status: Optional[Dict[Literal["text", "presence"], Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]]
             The new status of the bot.
-        profile: Optional[Dict[str, str]]
+        profile: Optional[Dict[Literal["content", "background"], str]]
             The new profile of the bot.
         avatar: Optional[str]
             The new avatar of the bot.
@@ -168,17 +164,6 @@ class HTTPHandler:
             The id of the user.
         """
         return await self.request("GET", f"users/{user_id}/default_avatar")
-
-    async def fetch_mutuals(self, user_id: str) -> Dict[str, List[str]]:
-        """
-        Gets the mutual friends and servers with a user.
-
-        Parameters
-        ----------
-        user_id: str
-            The id of the user.
-        """
-        return await self.request("GET", f"users/{user_id}/mutual")
 
     async def fetch_dms(self) -> List[DMChannelPayload]:
         """
@@ -281,11 +266,11 @@ class HTTPHandler:
             The id of the channel.
         role_id: str
             The id of the role.
-        permission: int
-            The permission to set.
+        permissions: int
+            The permissions to set.
         """
         return await self.request(
-            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permission}
+            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permissions}
         )
 
     async def set_default_perms(self, channel_id: str, permission: int) -> PermissionPayload:
@@ -296,10 +281,12 @@ class HTTPHandler:
         ----------
         channel_id: str
             The id of the channel.
-        permission: int
+        permissions: int
             The permission to set.
         """
-        return await self.request("PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permission})
+        return await self.request(
+            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
+        )
 
     async def send_message(
         self,
@@ -322,11 +309,11 @@ class HTTPHandler:
             The content of the message.
         attachments: Optional[List[str]]
             The attachments of the message.
-        embeds: Optional[List[Dict[str, str]]]
+        embeds: Optional[List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]]
             The embeds of the message.
-        replies: Optional[List[Dict[str, Union[str, bool]]]]
+        replies: Optional[List[Dict[Literal["id", "mention"], Union[str, bool]]]]
             The replies of the message.
-        masquerade: Optional[Dict[str, str]]
+        masquerade: Optional[Dict[Literal["name", "avatar"], str]]
             The masquerade of the message.
         """
         data: Dict[str, Any] = {"content": content}
@@ -359,7 +346,7 @@ class HTTPHandler:
         include_users: Optional[bool] = None,
     ) -> List[MessagePayload]:
         """
-        Gets messages from a channel.
+        Gets a list of messages from a channel.
 
         Parameters
         ----------
@@ -418,7 +405,7 @@ class HTTPHandler:
             The id of the message.
         content: str
             The content of the message.
-        embeds: Optional[List[Dict[str, str]]]
+        embeds: Optional[List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]]
             The embeds of the message.
         """
         data: Dict[str, Any] = {"content": content}
@@ -543,8 +530,8 @@ class HTTPHandler:
         description: Optional[str] = None,
         icon: Optional[str] = None,
         banner: Optional[str] = None,
-        categories: Optional[List[Dict[str, str]]] = None,
-        system_messages: Optional[Dict[str, str]] = None,
+        categories: Optional[List[Dict[Literal["id", "title", "channels"], str]]] = None,
+        system_messages: Optional[Dict[Literal["user_joined", "user_left", "user_kicked", "user_banned"], str]] = None,
         nsfw: Optional[bool] = None,
         remove: Optional[Literal["Banner", "Description", "Icon"]] = None,
     ) -> ServerPayload:
@@ -563,9 +550,9 @@ class HTTPHandler:
             The icon of the server.
         banner: Optional[str]
             The banner of the server.
-        categories: Optional[List[Dict[str, str]]]
+        categories: Optional[List[Dict[Literal["id", "title", "channels"], str]]]
             The categories of the server.
-        system_messages: Optional[Dict[str, str]]
+        system_messages: Optional[Dict[Literal["user_joined", "user_left", "user_kicked", "user_banned"], str]]
             The system messages of the server.
         nsfw: Optional[bool]
             Whether the server is nsfw.
@@ -752,7 +739,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"servers/{server_id}/bans")
 
-    async def set_role_permission(self, server_id: str, role_id: str, permissions: Dict[str, int]) -> RolePayload:
+    async def set_role_permission(self, server_id: str, role_id: str, permissions: int) -> RolePayload:
         """
         Sets the permissions of a role.
 
@@ -762,12 +749,12 @@ class HTTPHandler:
             The id of the server.
         role_id: str
             The id of the role.
-        permissions: Dict[str, int]
+        permissions: int
             The permissions of the role.
         """
         return await self.request("PUT", f"servers/{server_id}/roles/{role_id}", json={"permissions": permissions})
 
-    async def set_default_permissions(self, server_id: str, permissions: Dict[str, int]) -> ServerPayload:
+    async def set_default_permissions(self, server_id: str, permissions: int) -> ServerPayload:
         """
         Sets the default permissions of a server.
 
@@ -775,8 +762,8 @@ class HTTPHandler:
         ----------
         server_id: str
             The id of the server.
-        permissions: Dict[str, int]
-            The permissions of the server.
+        permissions: int
+            The permissions of the default role.
         """
         return await self.request("PUT", f"servers/{server_id}/default_role", json={"permissions": permissions})
 

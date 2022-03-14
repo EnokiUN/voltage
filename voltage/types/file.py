@@ -7,6 +7,7 @@ class FileMetadataPayload(TypedDict):
     height: NotRequired[int]
     width: NotRequired[int]
 
+
 class FilePayload(TypedDict):
     _id: str
     tag: str
