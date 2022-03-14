@@ -270,7 +270,7 @@ class HTTPHandler:
             The permissions to set.
         """
         return await self.request(
-            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permissions}
+            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permission}
         )
 
     async def set_default_perms(self, channel_id: str, permission: int) -> PermissionPayload:
@@ -285,7 +285,7 @@ class HTTPHandler:
             The permission to set.
         """
         return await self.request(
-            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
+            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permission}
         )
 
     async def send_message(
