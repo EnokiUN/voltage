@@ -9,5 +9,3 @@ class CacheHandler:
         self.http = http
         self.message_limit = message_limit
         self.loop = get_running_loop()
-
-        self.users = {}
