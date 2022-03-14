@@ -79,7 +79,9 @@ class HTTPHandler:
     async def edit_self(
         self,
         *,
-        status: Optional[Dict[Literal["text", "presence"], Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]] = None,
+        status: Optional[
+            Dict[Literal["text", "presence"], Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]
+        ] = None,
         profile: Optional[Dict[Literal["content", "background"], str]] = None,
         avatar: Optional[str] = None,
         remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]] = None,
@@ -137,7 +139,9 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}/default_avatar")
 
-    async def fetch_mutuals(self, user_id: str):  # NOTE: Zomatre in the Revolt Server said that this is just for Session tokens, and the docs are wrong
+    async def fetch_mutuals(
+        self, user_id: str
+    ):  # NOTE: Zomatre in the Revolt Server said that this is just for Session tokens, and the docs are wrong
         """
         Gets the mutual friends? and servers with a user.
 
@@ -267,7 +271,9 @@ class HTTPHandler:
         permissions: int
             The permission to set.
         """
-        return await self.request("PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions})
+        return await self.request(
+            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
+        )
 
     async def send_message(
         self,
@@ -275,7 +281,9 @@ class HTTPHandler:
         content: str,
         *,
         attachments: Optional[List[str]] = None,
-        embeds: Optional[List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]] = None,
+        embeds: Optional[
+            List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]
+        ] = None,
         replies: Optional[List[Dict[Literal["id", "mention"], Union[str, bool]]]] = None,
         masquerade: Optional[Dict[Literal["name", "avatar"], str]] = None,
     ):
@@ -373,7 +381,9 @@ class HTTPHandler:
         message_id: str,
         content: str,
         *,
-        embeds: Optional[List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]] = None,
+        embeds: Optional[
+            List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]
+        ] = None,
     ):
         """
         Edits a message.
