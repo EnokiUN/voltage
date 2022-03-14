@@ -1,11 +1,17 @@
+from __future__ import annotations
 from json import decoder, dumps
-from typing import Dict, List, Literal, Optional, Union
-
-from aiohttp import ClientSession
+from aiohttp import ClientSession, FormData
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
+from asyncio import gather
 
 # Internal imports
 from ..errors import HTTPError
+from ..file import File
+from ..embed import TextEmbed
 
+if TYPE_CHECKING:
+    from ..enums import *
+    from ..types import *
 
 class HTTPHandler:
     """
@@ -20,15 +26,17 @@ class HTTPHandler:
     api_url: Optional[str]
         The url of the api. Defaults to "https://api.revolt.chat/".
     """
+    __slots__ = ("client", "token", "api_url", "api_info")
 
-    def __init__(self, client: ClientSession, token: str, api_url: Optional[str] = "https://api.revolt.chat/"):
+    def __init__(self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/"):
         self.client = client
         self.token = token
         self.api_url = api_url
+        self.api_info: Optional[ApiInfoPayload] = None
 
     async def request(
         self, method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"], url: str, auth: Optional[bool] = True, **kwargs
-    ):
+    ) -> Any:
         """
         Makes a request to the API.
 
@@ -65,7 +73,25 @@ class HTTPHandler:
                     return dumps(await request.json())
             raise HTTPError(request)
 
-    async def query_node(self):
+    async def upload_file(self, file: bytes, name: str, tag: str) -> AutumnPayload:
+        if self.api_info is None:
+            self.api_info = await self.query_node()
+
+        headers = {
+            "User-Agent": "Voltage (beta)",
+        }
+        
+        autumn = f'{self.api_info["features"]["autumn"]["url"]}/{tag}'
+
+        form = FormData()
+        form.add_field("file", file, filename=name)
+
+        async with self.client.post(autumn, data=form, headers=headers) as request:
+            if 200 >= request.status <= 300:
+                return await request.json()
+            raise HTTPError(request)
+
+    async def query_node(self) -> ApiInfoPayload:
         """
         Gets info about the API.
         """
@@ -89,7 +115,7 @@ class HTTPHandler:
         profile: Optional[Dict[str, str]] = None,
         avatar: Optional[str] = None,
         remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]] = None,
-    ):
+    ) -> UserPayload:
         """
         Edits the bot's profile.
 
@@ -104,7 +130,7 @@ class HTTPHandler:
         remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]]
             The thing to remove from the bot.
         """
-        data = {}
+        data: Dict[str, Any] = {}
         if status:
             data["status"] = status
         if profile:
@@ -115,13 +141,13 @@ class HTTPHandler:
             data["remove"] = remove
         return await self.request("PATCH", "users/me", json=data)
 
-    async def fetch_self(self):
+    async def fetch_self(self) -> UserPayload:
         """
         Gets info about the bot.
         """
         return await self.request("GET", "users/@me")
 
-    async def fetch_user_profile(self, user_id: str):
+    async def fetch_user_profile(self, user_id: str) -> UserProfilePayload:
         """
         Gets the profile of a user.
 
@@ -132,7 +158,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}/profile")
 
-    async def fetch_default_avatar(self, user_id: str):
+    async def fetch_default_avatar(self, user_id: str) -> str:
         """
         Gets the default avatar of a user.
 
@@ -143,9 +169,9 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}/default_avatar")
 
-    async def fetch_mutuals(self, user_id: str):
+    async def fetch_mutuals(self, user_id: str) -> Dict[str, List[str]]:
         """
-        Gets the mutual friends? and servers with a user.
+        Gets the mutual friends and servers with a user.
 
         Parameters
         ----------
@@ -154,13 +180,13 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}/mutual")
 
-    async def fetch_dms(self):
+    async def fetch_dms(self) -> List[DMChannelPayload]:
         """
         Gets all the direct messages and group dms a bot is in.
         """
         return await self.request("GET", "users/dms")
 
-    async def open_dm(self, user_id: str):
+    async def open_dm(self, user_id: str) -> DMChannelPayload:
         """
         Opens a direct message with a user.
 
@@ -171,7 +197,7 @@ class HTTPHandler:
         """
         return await self.request("POST", f"users/{user_id}/dm")
 
-    async def fetch_channel(self, channel_id: str):
+    async def fetch_channel(self, channel_id: str) -> ChannelPayload:
         """
         Gets info about a channel.
 
@@ -191,7 +217,7 @@ class HTTPHandler:
         icon: Optional[str] = None,
         nsfw: Optional[bool] = None,
         remove: Optional[Literal["Description", "Icon"]] = None,
-    ):
+    ) -> ChannelPayload:
         """
         Edits a channel.
 
@@ -210,7 +236,7 @@ class HTTPHandler:
         remove: Optional[Literal["Description", "Icon"]]
             The thing to remove from the channel.
         """
-        data = {}
+        data: Dict[str, Any] = {}
         if name:
             data["name"] = name
         if description:
@@ -234,7 +260,7 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"channels/{channel_id}")
 
-    async def create_invite(self, channel_id: str):
+    async def create_invite(self, channel_id: str) -> InvitePayload:
         """
         Creates an invite for a channel.
 
@@ -245,7 +271,7 @@ class HTTPHandler:
         """
         return await self.request("POST", f"channels/{channel_id}/invites")
 
-    async def set_role_perms(self, channel_id: str, role_id: str, permission: int):
+    async def set_role_perms(self, channel_id: str, role_id: str, permission: int) -> PermissionPayload:
         """
         Sets the permissions of a role in a channel.
 
@@ -262,7 +288,7 @@ class HTTPHandler:
             "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permission}
         )
 
-    async def set_default_perms(self, channel_id: str, permission: int):
+    async def set_default_perms(self, channel_id: str, permission: int) -> PermissionPayload:
         """
         Sets the default permissions of a channel.
 
@@ -280,11 +306,11 @@ class HTTPHandler:
         channel_id: str,
         content: str,
         *,
-        attachments: Optional[List[str]] = None,
-        embeds: Optional[List[Dict[str, str]]] = None,
-        replies: Optional[List[Dict[str, Union[str, bool]]]] = None,
-        masquerade: Optional[Dict[str, str]] = None,
-    ):
+        attachments: Optional[List[Union[str, File]]] = None,
+        embeds: Optional[List[TextEmbedPayload]] = None,
+        replies: Optional[List[MessageReplyPayload]] = None,
+        masquerade: Optional[MasqueradePayload] = None,
+    ) -> MessagePayload:
         """
         Sends a message to a channel.
 
@@ -303,13 +329,18 @@ class HTTPHandler:
         masquerade: Optional[Dict[str, str]]
             The masquerade of the message.
         """
-        data = {"content": content}
+        data: Dict[str, Any] = {"content": content}
         if attachments:
-            data["attachments"] = attachments
+            data["attachments"] = await gather(*[self.handle_attachment(attachment) for attachment in attachments])
         if embeds:
+            new_embeds: List[TextEmbedPayload] = []
             for embed in embeds:
-                embed["type"] = "text"
-            data["embeds"] = embeds
+                if isinstance(embed, TextEmbed):
+                    new_embeds.append(embed.to_dict())
+                else:
+                    embed["type"] = "Text"
+                    new_embeds.append(embed)
+            data["embeds"] = new_embeds
         if replies:
             data["replies"] = replies
         if masquerade:
@@ -326,7 +357,7 @@ class HTTPHandler:
         after: Optional[str] = None,
         nearby: Optional[str] = None,
         include_users: Optional[bool] = None,
-    ):
+    ) -> List[MessagePayload]:
         """
         Gets messages from a channel.
 
@@ -347,7 +378,7 @@ class HTTPHandler:
         include_users: Optional[bool]
             Whether to include the users in the messages.
         """
-        data = {"sort": sort}
+        data: Dict[str, Any] = {"sort": sort}
         if limit:
             data["limit"] = limit
         if before:
@@ -360,7 +391,7 @@ class HTTPHandler:
             data["include_users"] = include_users
         return await self.request("GET", f"channels/{channel_id}/messages", params=data)
 
-    async def fetch_message(self, channel_id: str, message_id: str):
+    async def fetch_message(self, channel_id: str, message_id: str) -> List[MessagePayload]:
         """
         Gets a message from a channel.
 
@@ -374,8 +405,8 @@ class HTTPHandler:
         return await self.request("GET", f"channels/{channel_id}/messages/{message_id}")
 
     async def edit_message(
-        self, channel_id: str, message_id: str, content: str, *, embeds: Optional[List[Dict[str, str]]] = None
-    ):
+        self, channel_id: str, message_id: str, content: str, *, embeds: Optional[List[TextEmbedPayload]] = None
+    ) -> MessagePayload:
         """
         Edits a message.
 
@@ -390,11 +421,16 @@ class HTTPHandler:
         embeds: Optional[List[Dict[str, str]]]
             The embeds of the message.
         """
-        data = {"content": content}
+        data: Dict[str, Any] = {"content": content}
         if embeds:
+            new_embeds: List[TextEmbedPayload] = []
             for embed in embeds:
-                embed["type"] = "text"
-            data["embeds"] = embeds
+                if isinstance(embed, TextEmbed):
+                    new_embeds.append(embed.to_dict())
+                else:
+                    embed["type"] = "Text"
+                    new_embeds.append(embed)
+            data["embeds"] = new_embeds
         return await self.request("PATCH", f"channels/{channel_id}/messages/{message_id}", json=data)
 
     async def delete_message(self, channel_id: str, message_id: str):
@@ -410,7 +446,7 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}")
 
-    async def poll_message_changed(self, channel_id: str, ids: List[str]):
+    async def poll_message_changed(self, channel_id: str, ids: List[str]) -> Dict[str, Union[str, List[MessagePayload]]]:
         """
         Polls for a message change.
 
@@ -433,7 +469,7 @@ class HTTPHandler:
         after: Optional[str] = None,
         sort: Optional[Literal["Latest", "Oldest", "Relevance"]] = None,
         include_users: Optional[bool] = None,
-    ):
+    ) -> List[MessagePayload]:
         """
         Searches for a message.
 
@@ -454,7 +490,7 @@ class HTTPHandler:
         include_users: Optional[bool]
             Whether to include the users in the messages.
         """
-        data = {"query": query}
+        data: Dict[str, Any] = {"query": query}
         if limit:
             data["limit"] = limit
         if before:
@@ -467,7 +503,7 @@ class HTTPHandler:
             data["include_users"] = include_users
         return await self.request("GET", f"channels/{channel_id}/messages/search", params=data)
 
-    async def fetch_group_members(self, channel_id: str):
+    async def fetch_group_members(self, channel_id: str) -> List[UserPayload]:
         """
         Gets the members of a group.
 
@@ -478,7 +514,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"channels/{channel_id}/members")
 
-    async def join_call(self, channel_id: str):
+    async def join_call(self, channel_id: str) -> Dict[str, str]:
         """
         Joins a call.
 
@@ -489,7 +525,7 @@ class HTTPHandler:
         """
         return await self.request("POST", f"channels/{channel_id}/join_call")
 
-    async def fetch_server(self, server_id: str):
+    async def fetch_server(self, server_id: str) -> ServerPayload:
         """
         Gets info about a server.
 
@@ -511,7 +547,7 @@ class HTTPHandler:
         system_messages: Optional[Dict[str, str]] = None,
         nsfw: Optional[bool] = None,
         remove: Optional[Literal["Banner", "Description", "Icon"]] = None,
-    ):
+    ) -> ServerPayload:
         """
         Edits a server.
 
@@ -536,7 +572,7 @@ class HTTPHandler:
         remove: Optional[Literal["Banner", "Description", "Icon"]]
             The field to remove.
         """
-        data = {}
+        data: Dict[str, Any] = {}
         if name:
             data["name"] = name
         if description:
@@ -574,7 +610,7 @@ class HTTPHandler:
         name: str,
         description: Optional[str] = None,
         nsfw: Optional[bool] = None,
-    ):
+    ) -> ChannelPayload:
         """
         Creates a channel.
 
@@ -591,14 +627,14 @@ class HTTPHandler:
         nsfw: Optional[bool]
             Whether the channel is nsfw.
         """
-        data = {"type": type, "name": name}
+        data: Dict[str, Any] = {"type": type, "name": name}
         if description:
             data["description"] = description
         if nsfw:
             data["nsfw"] = nsfw
         return await self.request("POST", f"servers/{server_id}/channels", json=data)
 
-    async def fetch_invites(self, server_id: str):
+    async def fetch_invites(self, server_id: str) -> List[InvitePayload]:
         """
         Gets the invites of a server.
 
@@ -609,7 +645,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"servers/{server_id}/invites")
 
-    async def fetch_member(self, server_id: str, member_id: str):
+    async def fetch_member(self, server_id: str, member_id: str) -> MemberPayload:
         """
         Gets info about a member.
 
@@ -631,7 +667,7 @@ class HTTPHandler:
         avatar: Optional[str] = None,
         roles: Optional[List[str]] = None,
         remove: Optional[Literal["Avatar", "Nickname"]] = None,
-    ):
+    ) -> MemberPayload:
         """
         Edits a member.
 
@@ -650,7 +686,7 @@ class HTTPHandler:
         remove: Optional[Literal["Avatar", "Nickname"]]
             The field to remove.
         """
-        data = {}
+        data: Dict[str, Any] = {}
         if nickname:
             data["nick"] = nickname
         if avatar:
@@ -661,7 +697,7 @@ class HTTPHandler:
             data["remove"] = remove
         return await self.request("PATCH", f"servers/{server_id}/members/{member_id}", json=data)
 
-    async def kick_member(self, server_id: str, member_id: str):
+    async def kick_member(self, server_id: str, member_id: str) -> None:
         """
         Kicks a member.
 
@@ -705,7 +741,7 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"servers/{server_id}/bans/{member_id}")
 
-    async def fetch_bans(self, server_id: str):
+    async def fetch_bans(self, server_id: str) -> List[BanPayload]:
         """
         Gets the bans of a server.
 
@@ -716,7 +752,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"servers/{server_id}/bans")
 
-    async def set_role_permission(self, server_id: str, role_id: str, permissions: Dict[str, int]):
+    async def set_role_permission(self, server_id: str, role_id: str, permissions: Dict[str, int]) -> RolePayload:
         """
         Sets the permissions of a role.
 
@@ -731,7 +767,7 @@ class HTTPHandler:
         """
         return await self.request("PUT", f"servers/{server_id}/roles/{role_id}", json={"permissions": permissions})
 
-    async def set_default_permissions(self, server_id: str, permissions: Dict[str, int]):
+    async def set_default_permissions(self, server_id: str, permissions: Dict[str, int]) -> ServerPayload:
         """
         Sets the default permissions of a server.
 
@@ -744,7 +780,7 @@ class HTTPHandler:
         """
         return await self.request("PUT", f"servers/{server_id}/default_role", json={"permissions": permissions})
 
-    async def create_role(self, server_id: str, name: str):
+    async def create_role(self, server_id: str, name: str) -> RolePayload:
         """
         Creates a role.
 
@@ -767,7 +803,7 @@ class HTTPHandler:
         hoist: Optional[bool] = None,
         rank: Optional[int] = None,
         remove: Optional[Literal["Colour"]] = None,
-    ):
+    ) -> RolePayload:
         """
         Edits a role.
 
@@ -788,7 +824,7 @@ class HTTPHandler:
         remove: Optional[Literal["Colour"]]
             The field to remove.
         """
-        data = {"name": name}
+        data: Dict[str, Any] = {"name": name}
         if colour:
             data["color"] = colour
         if hoist:
@@ -812,7 +848,7 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"servers/{server_id}/roles/{role_id}")
 
-    async def fetch_invite(self, invite_code: str):
+    async def fetch_invite(self, invite_code: str) -> InvitePayload:
         """
         Gets info about an invite.
 
@@ -833,3 +869,9 @@ class HTTPHandler:
             The code of the invite.
         """
         return await self.request("DELETE", f"invites/{invite_code}")
+        
+    async def handle_attachment(self, attachment_data: Union[str, File]) -> str:
+        if isinstance(attachment_data, File):
+            return await attachment_data.to_sendable(self)
+        else:
+            return attachment_data
