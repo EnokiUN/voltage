@@ -137,7 +137,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}/default_avatar")
 
-    async def fetch_mutuals(self, user_id: str):
+    async def fetch_mutuals(self, user_id: str):  # NOTE: Zomatre in the Revolt Server said that this is just for Session tokens, and the docs are wrong
         """
         Gets the mutual friends? and servers with a user.
 
