@@ -1,17 +1,19 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Union, Optional
+
+from typing import TYPE_CHECKING, Optional, Union
 
 # Internal imports
 from .enums import EmbedType
 
 if TYPE_CHECKING:
-    from .types import WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload
     from .internals import CacheHandler
+    from .types import ImageEmbedPayload, TextEmbedPayload, WebsiteEmbedPayload
+
 
 class WebsiteEmbed:
     """
     A class that represents a website embed.
-    
+
     Attributes
     ----------
     title: Optional[str]
@@ -33,6 +35,7 @@ class WebsiteEmbed:
     site_name: Optional[str]
         The site name of the embed.
     """
+
     type = EmbedType.website
 
     def __init__(self, embed: WebsiteEmbedPayload):
@@ -46,10 +49,11 @@ class WebsiteEmbed:
         self.icon_url = embed.get("icon_url")
         self.site_name = embed.get("site_name")
 
+
 class ImageEmbed:
     """
     A class that represents an image embed.
-    
+
     Attributes
     ----------
     url: Optional[str]
@@ -61,6 +65,7 @@ class ImageEmbed:
     width: Optional[int]
         The width of the embed.
     """
+
     type = EmbedType.image
 
     def __init__(self, embed: ImageEmbedPayload):
@@ -69,11 +74,12 @@ class ImageEmbed:
         self.height = embed.get("height")
         self.width = embed.get("width")
 
+
 class TextEmbed:
     """
     A class that represents a text embed.
     This type of embed can be constructed using the new_embed function then sent.
-    
+
     Attributes
     ----------
     title: Optional[str]
@@ -89,6 +95,7 @@ class TextEmbed:
     media: Optional[Asset]
         The media of the embed.
     """
+
     type = EmbedType.text
 
     def __init__(self, embed: TextEmbedPayload):
@@ -118,18 +125,28 @@ class TextEmbed:
             embed["icon_url"] = icon_url
         if media := self.media:
             embed["media"] = media
-        
+
         return embed
+
 
 class NoneEmbed:
     type = EmbedType.none
-    
+
+
 Embed = Union[WebsiteEmbed, ImageEmbed, TextEmbed, NoneEmbed]
 
-def new_embed(title: Optional[str] = None, description: Optional[str] = None, url: Optional[str] = None, colour: Optional[int] = None, icon_url: Optional[str] = None, media: Optional[str] = None) -> TextEmbed:
+
+def new_embed(
+    title: Optional[str] = None,
+    description: Optional[str] = None,
+    url: Optional[str] = None,
+    colour: Optional[int] = None,
+    icon_url: Optional[str] = None,
+    media: Optional[str] = None,
+) -> TextEmbed:
     """
     The base function to create a Voltage TextEmbed for sending purposes.
-    
+
     Parameters
     ----------
     title: Optional[str]

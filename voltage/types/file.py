@@ -1,6 +1,9 @@
 from __future__ import annotations
-from typing import TypedDict, Literal
+
+from typing import Literal, TypedDict
+
 from typing_extensions import NotRequired
+
 
 class FileMetadataPayload(TypedDict):
     type: Literal["Video", "Image", "File", "Text", "Audio"]

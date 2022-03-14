@@ -1,17 +1,21 @@
 from __future__ import annotations
-from json import decoder, dumps
-from aiohttp import ClientSession, FormData
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
+
 from asyncio import gather
+from json import decoder, dumps
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
+
+from aiohttp import ClientSession, FormData
+
+from ..embed import TextEmbed
 
 # Internal imports
 from ..errors import HTTPError
 from ..file import File
-from ..embed import TextEmbed
 
 if TYPE_CHECKING:
     from ..enums import *
     from ..types import *
+
 
 class HTTPHandler:
     """
@@ -26,6 +30,7 @@ class HTTPHandler:
     api_url: Optional[str]
         The url of the api. Defaults to "https://api.revolt.chat/".
     """
+
     __slots__ = ("client", "token", "api_url", "api_info")
 
     def __init__(self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/"):
@@ -74,7 +79,7 @@ class HTTPHandler:
         headers = {
             "User-Agent": "Voltage (beta)",
         }
-        
+
         autumn = f'{self.api_info["features"]["autumn"]["url"]}/{tag}'
 
         form = FormData()
@@ -433,7 +438,9 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}")
 
-    async def poll_message_changed(self, channel_id: str, ids: List[str]) -> Dict[str, Union[str, List[MessagePayload]]]:
+    async def poll_message_changed(
+        self, channel_id: str, ids: List[str]
+    ) -> Dict[str, Union[str, List[MessagePayload]]]:
         """
         Polls for a message change.
 
@@ -856,7 +863,7 @@ class HTTPHandler:
             The code of the invite.
         """
         return await self.request("DELETE", f"invites/{invite_code}")
-        
+
     async def handle_attachment(self, attachment_data: Union[str, File]) -> str:
         if isinstance(attachment_data, File):
             return await attachment_data.to_sendable(self)

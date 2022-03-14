@@ -1,5 +1,7 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, List, TypedDict, Literal
+
+from typing import TYPE_CHECKING, List, Literal, TypedDict
+
 from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
@@ -7,16 +9,20 @@ if TYPE_CHECKING:
 
 RelationPayload = Literal["Block", "BlockedOther", "Friend", "Incoming", "None", "Outgoing", "User"]
 
+
 class UserBotPayload(TypedDict):
     owner: str
+
 
 class StatusPayload(TypedDict):
     text: NotRequired[str]
     presence: NotRequired[Literal["Busy", "Idle", "Online", "Invisible"]]
 
+
 class UserRelationPayload(TypedDict):
     status: RelationPayload
     _id: str
+
 
 class UserPayload(TypedDict):
     _id: str
@@ -29,6 +35,7 @@ class UserPayload(TypedDict):
     online: NotRequired[bool]
     relationship: NotRequired[UserRelationPayload]
     flags: NotRequired[int]
+
 
 class UserProfilePayload(UserPayload):
     content: NotRequired[str]
