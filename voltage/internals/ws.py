@@ -31,6 +31,7 @@ class WebSocketHandler:
     loop: asyncio.AbstractEventLoop
         The event loop.
     """
+
     __slots__ = ("client", "http", "ws", "token", "dispatch", "raw_dispatch", "loop")
 
     def __init__(

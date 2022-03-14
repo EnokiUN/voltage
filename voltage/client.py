@@ -1,5 +1,6 @@
 from asyncio import get_event_loop
-from typing import Optional, Callable, Any
+from typing import Any, Callable, Optional
+
 import aiohttp
 
 # Internal imports

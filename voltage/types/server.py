@@ -1,5 +1,7 @@
 from __future__ import annotations
-from typing import Dict, TypedDict, TYPE_CHECKING, List, Tuple, Literal
+
+from typing import TYPE_CHECKING, Dict, List, Literal, Tuple, TypedDict
+
 from typing_extensions import NotRequired
 
 from voltage.types.channel import CategoryPayload
@@ -7,24 +9,30 @@ from voltage.types.channel import CategoryPayload
 if TYPE_CHECKING:
     from .file import FilePayload
 
+
 class _MemberBase(TypedDict):
     nickname: NotRequired[str]
     avatar: NotRequired[FilePayload]
     roles: NotRequired[List[str]]
 
+
 class MemberIDPayload(_MemberBase):
     server: str
     user: str
 
+
 class MemberPayload(_MemberBase):
     _id: MemberIDPayload
 
+
 PermissionPayload = Tuple[int, int]
+
 
 class RolePayload(TypedDict):
     name: str
     permissions: PermissionPayload
-    
+
+
 class InvitePayload(TypedDict):
     type: Literal["SERVER"]
     serer_id: str
@@ -38,17 +46,20 @@ class InvitePayload(TypedDict):
     user_avatar: NotRequired[str]
     member_count: int
 
+
 class PartialInvitePayload(TypedDict):
     _id: str
     server: str
     channel: str
     creator: str
 
+
 class SystemMessagesConfigPayload(TypedDict):
     user_joined: NotRequired[str]
     user_left: NotRequired[str]
     user_kicked: NotRequired[str]
     user_banned: NotRequired[str]
+
 
 class ServerPayload(TypedDict):
     _id: str
@@ -68,18 +79,22 @@ class ServerPayload(TypedDict):
     analytics: NotRequired[bool]
     discoverable: NotRequired[bool]
 
+
 class BannedUserPayload(TypedDict):
     _id: str
     username: str
     avatar: NotRequired[FilePayload]
 
+
 class BanIdPayload(TypedDict):
     server: str
     user: str
 
+
 class BanPayload(TypedDict):
     _id: BanIdPayload
     reason: NotRequired[str]
+
 
 class ServerBansPayload(TypedDict):
     users: List[BannedUserPayload]

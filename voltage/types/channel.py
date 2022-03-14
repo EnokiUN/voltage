@@ -1,24 +1,30 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Literal, TypedDict, Union, List
+
+from typing import TYPE_CHECKING, List, Literal, TypedDict, Union
+
 from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
     from .file import FilePayload
     from .message import MessagePayload
 
+
 class BaseChannelPayload(TypedDict):
     _id: str
     nonce: NotRequired[str]
 
+
 class SavedMessagePayload(BaseChannelPayload):
     user: str
     channel_type: Literal["SavedMessage"]
+
 
 class DMChannelPayload(BaseChannelPayload):
     active: bool
     recipients: List[str]
     channel_type: Literal["DirectMessage"]
     last_message: MessagePayload
+
 
 class GroupDMChannelPayload(BaseChannelPayload):
     recipients: List[str]
@@ -28,6 +34,7 @@ class GroupDMChannelPayload(BaseChannelPayload):
     icon: NotRequired[FilePayload]
     permission: NotRequired[int]
     description: NotRequired[str]
+
 
 class TextChannelPayload(BaseChannelPayload):
     server: str
@@ -39,6 +46,7 @@ class TextChannelPayload(BaseChannelPayload):
     last_message: NotRequired[str]
     channel_type: Literal["TextChannel"]
 
+
 class VoiceChannelPayload(BaseChannelPayload):
     server: str
     name: str
@@ -48,7 +56,11 @@ class VoiceChannelPayload(BaseChannelPayload):
     role_permissions: NotRequired[int]
     channel_type: Literal["VoiceChannel"]
 
-ChannelPayload = Union[SavedMessagePayload, DMChannelPayload, GroupDMChannelPayload, TextChannelPayload, VoiceChannelPayload]
+
+ChannelPayload = Union[
+    SavedMessagePayload, DMChannelPayload, GroupDMChannelPayload, TextChannelPayload, VoiceChannelPayload
+]
+
 
 class CategoryPayload(TypedDict):
     id: str
