@@ -133,3 +133,4 @@ dmypy.json
 
 # PyCharm stuff
 .idea/
+res.py
