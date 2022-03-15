@@ -14,7 +14,7 @@ An example payload bot:
 
     client = voltage.Client()
 
-    @client.on('message')
+    @client.on('message', raw=True)
     async def on_message(payload):
         if payload['content'] == 'ping':
             await client.send_message(payload['channel'], 'pong')
