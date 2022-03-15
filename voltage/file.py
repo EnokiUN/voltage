@@ -34,9 +34,8 @@ class File:
 
         filename = filename if not filename is None else "file"
 
-        if spoiler or filename.startswith("SPOILER_"):
-            if not filename.startswith("SPOILER_"):
-                filename = f"SPOILER_{filename}"
+        if spoiler and not filename.startswith("SPOILER_"):
+            filename = f"SPOILER_{filename}"
 
         self.filename = filename
 
