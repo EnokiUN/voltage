@@ -15,6 +15,6 @@ __copyright__ = "Copyright (c) 2021-present EnokiUN"
 __version__ = "0.1.0a"
 
 from .client import Client
-from .embed import Embed, new_embed
+from .embed import Embed, SendableEmbed
 from .enums import AssetType, ChannelType, EmbedType, PresenseType, SortType
 from .file import File
