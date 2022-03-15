@@ -311,7 +311,9 @@ class HTTPHandler:
         permissions: int
             The permission to set.
         """
-        return await self.request("PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions})
+        return await self.request(
+            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
+        )
 
     async def send_message(
         self,

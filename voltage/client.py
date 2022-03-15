@@ -1,5 +1,5 @@
 from asyncio import get_event_loop
-from typing import Any, Callable, Optional, Dict
+from typing import Any, Callable, Dict, Optional
 
 import aiohttp
 
@@ -30,7 +30,7 @@ class Client:
 
     Methods
     -------
-    listen: 
+    listen:
         Registers a function to listen for an event.
     run:
         Runs the client.
