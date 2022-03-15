@@ -294,7 +294,7 @@ class HTTPHandler:
         """
         return await self.request("POST", f"channels/{channel_id}/invites")
 
-    async def set_role_perms(self, channel_id: str, role_id: str, permission: int) -> PermissionPayload:
+    async def set_role_perms(self, channel_id: str, role_id: str, permissions: int) -> PermissionPayload:
         """
         Sets the permissions of a role in a channel.
 
@@ -308,10 +308,10 @@ class HTTPHandler:
             The permissions to set.
         """
         return await self.request(
-            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permission}
+            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permissions}
         )
 
-    async def set_default_perms(self, channel_id: str, permission: int) -> PermissionPayload:
+    async def set_default_perms(self, channel_id: str, permissions: int) -> PermissionPayload:
         """
         Sets the default permissions of a channel.
 
@@ -322,7 +322,9 @@ class HTTPHandler:
         permissions: int
             The permission to set.
         """
-        return await self.request("PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permission})
+        return await self.request(
+            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
+        )
 
 
     async def send_message(

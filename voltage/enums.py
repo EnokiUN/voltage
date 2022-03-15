@@ -3,7 +3,7 @@ import enum
 
 class EmbedType(enum.Enum):
     """
-    An enum which represents a Embed's type.
+    An enum which represents an Embed's type.
     """
 
     website = "Website"

@@ -70,7 +70,7 @@ class WebsiteEmbedPayload(TypedDict):
     colour: NotRequired[str]
 
 
-class ImageEmbedPayload(TypedDict):
+class ImageEmbedPayload(TypedDict):  # TODO? idk
     type: Literal["Image"]
 
 

@@ -34,16 +34,14 @@ class File:
 
         filename = filename if not filename is None else "file"
 
-        if spoiler or filename.startswith("SPOILER_"):
-            spoiler = True
-            if not filename.startswith("SPOILER_"):
-                filename = f"SPOILER_{filename}"
+        if spoiler and not filename.startswith("SPOILER_"):
+            filename = f"SPOILER_{filename}"
 
         self.filename = filename
 
     async def get_id(self, http: "HTTPHandler") -> str:
         """
-        Uploads a file to autumn then returns it's id for sending.
+        Uploads a file to autumn then returns its id for sending.
 
         Parameters
         ----------
