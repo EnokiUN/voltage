@@ -30,7 +30,10 @@ class Client:
 
     Methods
     -------
-    TODO
+    listen: 
+        Registers a function to listen for an event.
+    run:
+        Runs the client.
     """
 
     def __init__(self):
