@@ -2,7 +2,6 @@ import re
 
 from setuptools import setup
 
-version = ""
 with open("voltage/__init__.py") as f:
     match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
     if match is not None:
@@ -10,21 +9,19 @@ with open("voltage/__init__.py") as f:
     else:
         raise RuntimeError("version is not set")
 
-requirements = []
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
 
-readme = ""
 with open("README.rst") as f:
     readme = f.read()
 
 setup(
     name="voltage",
     author="EnokiUN",
-    url="https://github.com/EnokiUN/voltag",
+    url="https://github.com/EnokiUN/voltage",
     project_urls={
-        "Documentation": "https://psup.readthedocs.io/en/latest/",
+        "Documentation": "https://voltage.readthedocs.io/en/latest",
         "Issue tracker": "https://github.com/enokiun/voltage/issues",
     },
     version=version,
