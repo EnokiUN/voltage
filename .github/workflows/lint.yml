@@ -1,6 +1,6 @@
 name: Lint
 
-on: [pull_request, push]
+on: [push] # what if it lints for something that isn't there :panik:
 
 jobs:
   build:
@@ -28,6 +28,7 @@ jobs:
       run: |
           git config user.name "Automated Linter"
     - name: Push To Git
+      continue-on-error: true
       run: |
           git pull
           git add .
