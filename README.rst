@@ -14,12 +14,12 @@ An example payload bot:
 
     client = voltage.Client()
 
-    @client.on('message', raw=True)
+    @client.listen('message', raw=True)
     async def on_message(payload):
         if payload['content'] == 'ping':
             await client.send_message(payload['channel'], 'pong')
         if payload['content'] == 'embed':
             embed = voltage.new_embed(title="Hello World", description="This is an embed")
-            await client.send_message(payload['channel'], content"Hi", embed=embed) # Adding content since it's required by revolt.
+            await client.send_message(payload['channel'], content="Hi", embed=[embed]) # Adding content since it's required by revolt.
 
     client.run("TOKEN")
