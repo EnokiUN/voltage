@@ -1,18 +1,21 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional
+
 from re import sub
 import voltage
 
 if TYPE_CHECKING:
-    from ..internals import HTTPHandler
     from .. import Client
+    from ..internals import HTTPHandler
     from ..types import MessagePayload
 
-async def eval(client: Client, message: MessagePayload, superuser_ids: list[str], message_start: Optional[str] = "!eval"):
+
+async def eval(
+    client: Client, message: MessagePayload, superuser_ids: list[str], message_start: Optional[str] = "!eval"
+):
     """
     A function that provides a very basic asynchronous eval function.
     DANGER: THIS FUNCTION CAN PUT YOUR HOST MACHINE IN DANGER SO BE CAREFUL OF WHO USES IT AND HOW IT IS USED.
-    
+
     Parameters
     ----------
     client: pyvolt.Client
@@ -41,6 +44,8 @@ async def eval(client: Client, message: MessagePayload, superuser_ids: list[str]
         try:
             res = await locals()["__eval__func"](client, message, client.http)
             if res:
-                await client.http.send_message(message["channel"], str(res).replace(client.http.token, "[TOKEN REDACTED]"))
+                await client.http.send_message(
+                    message["channel"], str(res).replace(client.http.token, "[TOKEN REDACTED]")
+                )
         except Exception as e:
             await client.http.send_message(message["channel"], f"Error: {e}")
