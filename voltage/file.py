@@ -1,4 +1,3 @@
-from io import BytesIO
 from typing import TYPE_CHECKING, Optional, Union
 
 # Internal imports
@@ -42,7 +41,7 @@ class File:
 
         self.filename = filename
 
-    async def to_sendable(self, http: "HTTPHandler") -> str:
+    async def get_id(self, http: "HTTPHandler") -> str:
         """
         Uploads a file to autumn then returns it's id for sending.
 
