@@ -1,6 +1,6 @@
 import re
 
-from setuptools import setup # type: ignore
+from setuptools import setup  # type: ignore
 
 with open("voltage/__init__.py") as f:
     match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
