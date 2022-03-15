@@ -1,18 +1,20 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+
 from asyncio import get_running_loop
+from typing import TYPE_CHECKING
 
 # Internal imports
 from .enums import AssetType
 
 if TYPE_CHECKING:
-    from .types import FilePayload
     from .internals import HTTPHandler
+    from .types import FilePayload
+
 
 class Asset:
     """
     A class that represents a revolt asset.
-    
+
     Attributes
     ----------
     id: str
@@ -34,6 +36,7 @@ class Asset:
     url: str
         The url of the asset.
     """
+
     def __init__(self, data: FilePayload, http: HTTPHandler):
         self.data = data
         self.http = http
@@ -58,7 +61,7 @@ class Asset:
     async def get_binary(self) -> bytes:
         """
         Gets the binary data of the asset.
-        
+
         Returns
         -------
         bytes
@@ -66,10 +69,11 @@ class Asset:
         """
         return await self.http.get_file_binary(self.url)
 
+
 class PartialAsset(Asset):
     """
     A partial asset caused by data lack.
-    
+
     Attributes
     ----------
     url: str
@@ -91,6 +95,7 @@ class PartialAsset(Asset):
     type: Optional[voltage.AssetType]
         The type of the asset.
     """
+
     def __init__(self, url: str, http: HTTPHandler):
         self.url = url
         self.http = http

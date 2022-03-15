@@ -90,6 +90,7 @@ class NoneEmbed(TypedDict):
 
 EmbedPayload = Union[WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed]
 
+
 class SendableEmbedPayload(TypedDict):
     type: Literal["Text"]
     title: NotRequired[str]

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from asyncio import gather
-from json import decoder, dumps
 from io import BytesIO
+from json import decoder, dumps
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
 
 from aiohttp import ClientSession, FormData
@@ -410,7 +410,12 @@ class HTTPHandler:
         return await self.request("GET", f"channels/{channel_id}/messages/{message_id}")
 
     async def edit_message(
-        self, channel_id: str, message_id: str, content: str, *, embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None
+        self,
+        channel_id: str,
+        message_id: str,
+        content: str,
+        *,
+        embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
     ) -> MessagePayload:
         """
         Edits a message.

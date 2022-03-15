@@ -1,14 +1,22 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union, Dict
+
+from typing import TYPE_CHECKING, Dict, Optional, Union
+
+from .asset import Asset
 
 # Internal imports
 from .enums import EmbedType
-from .asset import Asset
 from .file import File
 
 if TYPE_CHECKING:
     from .internals import HTTPHandler
-    from .types import ImageEmbedPayload, TextEmbedPayload, WebsiteEmbedPayload, SendableEmbedPayload
+    from .types import (
+        ImageEmbedPayload,
+        SendableEmbedPayload,
+        TextEmbedPayload,
+        WebsiteEmbedPayload,
+    )
+
 
 class WebsiteEmbed:
     """
@@ -94,6 +102,7 @@ class TextEmbed:
     media: Optional[Asset]
         The media of the embed.
     """
+
     type = EmbedType.text
 
     def __init__(self, embed: TextEmbedPayload, http: HTTPHandler):
@@ -105,12 +114,15 @@ class TextEmbed:
         media = embed.get("media")
         self.media = Asset(media, http) if media else None
 
+
 class NoneEmbed:
     type = EmbedType.none
 
+
 Embed = Union[WebsiteEmbed, ImageEmbed, TextEmbed, NoneEmbed]
 
-class SendableEmbed: # It's Zoma's fault the name is this long.
+
+class SendableEmbed:  # It's Zoma's fault the name is this long.
     """
     A class that represents a sendable TextEmbed.
     This type of embed can be constructed using the new_embed function then sent.
@@ -131,7 +143,16 @@ class SendableEmbed: # It's Zoma's fault the name is this long.
     media: Optional[str]
         The media of the embed.
     """
-    def __init__(self, title: Optional[str] = None, description: Optional[str] = None, url: Optional[str] = None, colour: Optional[int] = None, icon_url: Optional[str] = None, media: Optional[Union[str, File]] = None):
+
+    def __init__(
+        self,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        url: Optional[str] = None,
+        colour: Optional[int] = None,
+        icon_url: Optional[str] = None,
+        media: Optional[Union[str, File]] = None,
+    ):
         self.title = title
         self.description = description
         self.url = url
@@ -164,5 +185,9 @@ class SendableEmbed: # It's Zoma's fault the name is this long.
             if isinstance(self.media, File):
                 embed["media"] = await self.media.get_id(http)
             else:
-                embed["media"] = (await http.upload_file((await http.get_file_binary(self.media.split("?")[0])), "Embed Attachment", "attachments"))["id"]
+                embed["media"] = (
+                    await http.upload_file(
+                        (await http.get_file_binary(self.media.split("?")[0])), "Embed Attachment", "attachments"
+                    )
+                )["id"]
         return embed
