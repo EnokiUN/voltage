@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import TYPE_CHECKING, Optional
 
 from re import sub
 import voltage
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
 
 
 async def eval(
-    client: Client, message: MessagePayload, superuser_ids: list[str], message_start: Optional[str] = "!eval"
+    client: Client, message: MessagePayload, superuser_ids: list[str], message_start: str = "!eval"
 ):
     """
     A function that provides a very basic asynchronous eval function.
@@ -24,10 +25,12 @@ async def eval(
         The raw message object to eval (mainly because a non raw one hasn't been added yet).
     supeuser_ids: List[:class:`str`]
         The id's of people who are supposed to have eval access.
-    message_start: Optional[:class:`str`]
+    message_start: :class:`str`
         The expected start of the message with the prefix included. (ex "!eval")
         Defaults to "!eval".
     """
+    if not isinstance(message["content"], str):
+        return
     if message["content"].startswith(message_start):
         if message["author"] not in superuser_ids:
             return await client.http.send_message(message["channel"], "You don't have access to this command.")
@@ -40,7 +43,7 @@ async def eval(
         if not lines[-1].startswith("    "):
             lines[-1] = "return " + lines[-1]
         cmd = "async def __eval__func(client, payload, http):\n    " + "\n    ".join(lines)
-        exec(cmd)
+        exec(cmd) # nosec 
         try:
             res = await locals()["__eval__func"](client, message, client.http)
             if res:
