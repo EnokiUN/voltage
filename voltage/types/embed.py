@@ -79,7 +79,7 @@ class TextEmbedPayload(TypedDict):
     title: NotRequired[str]
     description: NotRequired[str]
     url: NotRequired[str]
-    media: NotRequired[str]
+    media: NotRequired[FilePayload]
     icon_url: NotRequired[str]
     colour: NotRequired[str]
 
@@ -89,3 +89,12 @@ class NoneEmbed(TypedDict):
 
 
 EmbedPayload = Union[WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed]
+
+class SendableEmbedPayload(TypedDict):
+    type: Literal["Text"]
+    title: NotRequired[str]
+    description: NotRequired[str]
+    url: NotRequired[str]
+    media: NotRequired[str]
+    icon_url: NotRequired[str]
+    colour: NotRequired[str]
