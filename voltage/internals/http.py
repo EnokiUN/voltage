@@ -326,7 +326,6 @@ class HTTPHandler:
             "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
         )
 
-
     async def send_message(
         self,
         channel_id: str,
