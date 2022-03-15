@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from asyncio import gather
 from json import decoder, dumps
+from io import BytesIO
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
 
 from aiohttp import ClientSession, FormData
 
-from ..embed import TextEmbed
+from ..embed import SendableEmbed
 
 # Internal imports
 from ..errors import HTTPError
@@ -73,14 +74,13 @@ class HTTPHandler:
             raise HTTPError(request)
 
     async def upload_file(self, file: bytes, name: str, tag: str) -> AutumnPayload:
-        if self.api_info is None:
-            self.api_info = await self.query_node()
+        api_info = await self.get_api_info()
 
         headers = {
             "User-Agent": "Voltage (beta)",
         }
 
-        autumn = f'{self.api_info["features"]["autumn"]["url"]}/{tag}'
+        autumn = f'{api_info["features"]["autumn"]["url"]}/{tag}'
 
         form = FormData()
         form.add_field("file", file, filename=name)
@@ -90,11 +90,33 @@ class HTTPHandler:
                 return await request.json()
             raise HTTPError(request)
 
+    async def get_file_binary(self, url: str) -> bytes:
+        """
+        Gets the binary of a file.
+
+        Parameters
+        ----------
+        url: str
+            The url of the file.
+        """
+        async with self.client.get(url) as request:
+            if 200 >= request.status <= 300:
+                return await request.read()
+            raise HTTPError(request)
+
     async def query_node(self) -> ApiInfoPayload:
         """
         Gets info about the API.
         """
         return await self.request("GET", "")
+
+    async def get_api_info(self) -> ApiInfoPayload:
+        """
+        query_node but better.
+        """
+        if self.api_info is None:
+            self.api_info = await self.query_node()
+        return self.api_info
 
     async def fetch_user(self, user_id: str):
         """
@@ -159,7 +181,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"users/{user_id}/profile")
 
-    async def fetch_default_avatar(self, user_id: str) -> str:
+    async def fetch_default_avatar(self, user_id: str) -> bytes:
         """
         Gets the default avatar of a user.
 
@@ -168,7 +190,7 @@ class HTTPHandler:
         user_id: str
             The id of the user.
         """
-        return await self.request("GET", f"users/{user_id}/default_avatar")
+        return await self.get_file_binary(f"users/{user_id}/default_avatar")
 
     async def fetch_dms(self) -> List[DMChannelPayload]:
         """
@@ -297,7 +319,7 @@ class HTTPHandler:
         content: str,
         *,
         attachments: Optional[List[Union[str, File]]] = None,
-        embeds: Optional[List[TextEmbedPayload]] = None,
+        embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
         replies: Optional[List[MessageReplyPayload]] = None,
         masquerade: Optional[MasqueradePayload] = None,
     ) -> MessagePayload:
@@ -323,14 +345,7 @@ class HTTPHandler:
         if attachments:
             data["attachments"] = await gather(*[self.handle_attachment(attachment) for attachment in attachments])
         if embeds:
-            new_embeds: List[TextEmbedPayload] = []
-            for embed in embeds:
-                if isinstance(embed, TextEmbed):
-                    new_embeds.append(embed.to_dict())
-                else:
-                    embed["type"] = "Text"
-                    new_embeds.append(embed)
-            data["embeds"] = new_embeds
+            data["embeds"] = await gather(*[self.handle_embed(embed) for embed in embeds])
         if replies:
             data["replies"] = replies
         if masquerade:
@@ -395,7 +410,7 @@ class HTTPHandler:
         return await self.request("GET", f"channels/{channel_id}/messages/{message_id}")
 
     async def edit_message(
-        self, channel_id: str, message_id: str, content: str, *, embeds: Optional[List[TextEmbedPayload]] = None
+        self, channel_id: str, message_id: str, content: str, *, embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None
     ) -> MessagePayload:
         """
         Edits a message.
@@ -413,14 +428,7 @@ class HTTPHandler:
         """
         data: Dict[str, Any] = {"content": content}
         if embeds:
-            new_embeds: List[TextEmbedPayload] = []
-            for embed in embeds:
-                if isinstance(embed, TextEmbed):
-                    new_embeds.append(embed.to_dict())
-                else:
-                    embed["type"] = "Text"
-                    new_embeds.append(embed)
-            data["embeds"] = new_embeds
+            data["embeds"] = await gather(*[self.handle_embed(embed) for embed in embeds])
         return await self.request("PATCH", f"channels/{channel_id}/messages/{message_id}", json=data)
 
     async def delete_message(self, channel_id: str, message_id: str):
@@ -864,6 +872,12 @@ class HTTPHandler:
 
     async def handle_attachment(self, attachment_data: Union[str, File]) -> str:
         if isinstance(attachment_data, File):
-            return await attachment_data.to_sendable(self)
+            return await attachment_data.get_id(self)
         else:
             return attachment_data
+
+    async def handle_embed(self, embed_data: Union[SendableEmbedPayload, SendableEmbed]) -> SendableEmbedPayload:
+        if isinstance(embed_data, SendableEmbed):
+            return await embed_data.to_dict(self)
+        else:
+            return embed_data
