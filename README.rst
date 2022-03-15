@@ -7,6 +7,7 @@ A Simple Pythonic Asynchronous API wrapper for Revolt.
 nothing much here yet tho.
 
 An example payload bot:
+
 .. code-block:: python3
 
     import voltage
@@ -22,5 +23,3 @@ An example payload bot:
             await client.send_message(payload['channel'], content"Hi", embed=embed) # Adding content since it's required by revolt.
 
     client.run("TOKEN")
-
-        
