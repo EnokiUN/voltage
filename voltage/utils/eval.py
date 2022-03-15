@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional
 
 from re import sub
+from typing import TYPE_CHECKING, Optional
 
 import voltage
 
@@ -11,9 +11,7 @@ if TYPE_CHECKING:
     from ..types import MessagePayload
 
 
-async def eval(
-    client: Client, message: MessagePayload, superuser_ids: list[str], message_start: str = "!eval"
-):
+async def eval(client: Client, message: MessagePayload, superuser_ids: list[str], message_start: str = "!eval"):
     """
     A function that provides a very basic asynchronous eval function.
     DANGER: THIS FUNCTION CAN PUT YOUR HOST MACHINE IN DANGER SO BE CAREFUL OF WHO USES IT AND HOW IT IS USED.
@@ -47,7 +45,7 @@ async def eval(
         if not lines[-1].startswith("    "):
             lines[-1] = "return " + lines[-1]
         cmd = "async def __eval__func(client, payload, http):\n    " + "\n    ".join(lines)
-        exec(cmd) # nosec 
+        exec(cmd)  # nosec
         try:
             res = await locals()["__eval__func"](client, message, client.http)
             if res:
