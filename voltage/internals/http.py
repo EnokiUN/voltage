@@ -192,6 +192,17 @@ class HTTPHandler:
         """
         return await self.get_file_binary(f"users/{user_id}/default_avatar")
 
+    async def fetch_mutuals(self, user_id: str):
+        """
+        Gets the mutual friends and servers of a user with the bot.
+
+        Parameters
+        ----------
+        user_id: :class:`str`
+            The id of the user.
+        """
+        return await self.request("GET", f"users/{user_id}/mutual")
+
     async def fetch_dms(self) -> List[DMChannelPayload]:
         """
         Gets all the direct messages and group dms a bot is in.
@@ -312,6 +323,7 @@ class HTTPHandler:
             The permission to set.
         """
         return await self.request("PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permission})
+
 
     async def send_message(
         self,
