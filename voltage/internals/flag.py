@@ -1,7 +1,7 @@
 # Ah shit here we go again
 from __future__ import annotations
 
-from typing import Callable, Optional, Type, TypeVar, Union, Any
+from typing import Any, Callable, Optional, Type, TypeVar, Union
 
 # Typing, boooo
 FB = TypeVar("FB", bound="FlagBase")
@@ -117,7 +117,7 @@ class FlagBase:
 
     def __lt__(self: FB, other: FB) -> bool:
         return (self.flags <= other.flags) and self.flags != other.flags
-    
+
     def __gt__(self: FB, other: FB) -> bool:
         return (self.flags > other.flags) and self.flags != other.flags
 
