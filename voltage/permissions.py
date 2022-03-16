@@ -79,35 +79,59 @@ class ChannelPermissions(FlagBase):
         return cls.new_with_flags(0b11111111)
 
     @FlagValue
-    def view():
+    def view(self):
+        """
+        Whether the view permission is granted.
+        """
         return 1 << 0
 
     @FlagValue
-    def send_messages():
+    def send_messages(self):
+        """
+        Whether the send messages permission is granted.
+        """
         return 1 << 1
 
     @FlagValue
-    def manage_messages():
+    def manage_messages(self):
+        """
+        Whether the manage messages permission is granted.
+        """
         return 1 << 2
 
     @FlagValue
-    def manage_channel():
+    def manage_channel(self):
+        """
+        Whether the manage channels permission is granted.
+        """
         return 1 << 3
 
     @FlagValue
-    def voice_call():
+    def voice_call(self):
+        """
+        Whether the voice call permission is granted.
+        """
         return 1 << 4
 
     @FlagValue
-    def invite_others():
+    def invite_others(self):
+        """
+        Whether the invite others permission is granted.
+        """
         return 1 << 5
 
     @FlagValue
-    def embed_links():
+    def embed_links(self):
+        """
+        Whether the embed links permission is granted.
+        """
         return 1 << 6
 
     @FlagValue
-    def upload_files():
+    def upload_files(self):
+        """
+        Whether the upload files permission is granted.
+        """
         return 1 << 7
 
 
@@ -194,41 +218,71 @@ class ServerPermissions(FlagBase):
         return cls.new_with_flags(0b1111000000111111)
 
     @FlagValue
-    def view():
+    def view(self):
+        """
+        Whether the view permission is granted.
+        """
         return 1 << 0
 
     @FlagValue
-    def manage_roles():
+    def manage_roles(self):
+        """
+        Whether the manage roles permission is granted.
+        """
         return 1 << 1
 
     @FlagValue
-    def manage_channels():
+    def manage_channels(self):
+        """
+        Whether the manage channels permission is granted.
+        """
         return 1 << 2
 
     @FlagValue
-    def manage_server():
+    def manage_server(self):
+        """
+        Whether the manage server permission is granted.
+        """
         return 1 << 3
 
     @FlagValue
-    def kick_members():
+    def kick_members(self):
+        """
+        Whether the kick members permission is granted.
+        """
         return 1 << 4
 
     @FlagValue
-    def ban_members():
+    def ban_members(self):
+        """
+        Whether the ban members permission is granted.
+        """
         return 1 << 5
 
     @FlagValue
-    def change_nickname():
+    def change_nickname(self):
+        """
+        Whether the change nickname permission is granted.
+        """
         return 1 << 12
 
     @FlagValue
-    def manage_nicknames():
+    def manage_nicknames(self):
+        """
+        Whether the manage nicknames permission is granted.
+        """
         return 1 << 13
 
     @FlagValue
-    def change_avatar():
+    def change_avatar(self):
+        """
+        Whether the change avatar permission is granted.
+        """
         return 1 << 14
 
     @FlagValue
-    def remove_avatars():
+    def remove_avatars(self):
+        """
+        Whether the remove avatars permission is granted.
+        """
         return 1 << 15

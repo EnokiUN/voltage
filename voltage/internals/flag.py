@@ -1,7 +1,7 @@
 # Ah shit here we go again
 from __future__ import annotations
 
-from typing import Callable, Optional, Type, TypeVar, Union
+from typing import Callable, Optional, Type, TypeVar, Union, Any
 
 # Typing, boooo
 FB = TypeVar("FB", bound="FlagBase")
@@ -18,8 +18,8 @@ class FlagValue:
         The flag's value.
     """
 
-    def __init__(self, func: Callable[[], int]):
-        self.value = func()
+    def __init__(self, func: Callable[[Any], int]):
+        self.value = func(None)
         self.__doc__ = func.__doc__  # DOCUMENTATION GO BRRRRRRR
 
     def __get__(self: FV, instance: Optional[FB], owner: Type[FB]) -> Union[bool, FV]:
@@ -72,11 +72,13 @@ class FlagBase:
         inst.flags = flags
         return inst
 
-    def __eq__(self: FB, other: FB):
+    def __eq__(self: FB, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
         return self.flags == other.flags
 
-    def __ne__(self: FB, other: FB):
-        return self.flags != other.flags
+    def __ne__(self: FB, other: object) -> bool:
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.flags)
@@ -135,70 +137,70 @@ class UserFlags(FlagBase):
     """
 
     @FlagValue
-    def developer():
+    def developer(self):
         """
         Whether the user has the developer badge.
         """
         return 1 << 0
 
     @FlagValue
-    def translator():
+    def translator(self):
         """
         Whether the user has the translator badge.
         """
         return 1 << 1
 
     @FlagValue
-    def supporter():
+    def supporter(self):
         """
         Whether the user has the supporter badge.
         """
         return 1 << 2
 
     @FlagValue
-    def responsible_disclosure():
+    def responsible_disclosure(self):
         """
         Whether the user has the responsible disclosure badge.
         """
         return 1 << 3
 
     @FlagValue
-    def founder():
+    def founder(self):
         """
         Whether the user has the founder badge.
         """
         return 1 << 4
 
     @FlagValue
-    def platform_moderator():
+    def platform_moderator(self):
         """
         Whether the user has the platform moderator badge.
         """
         return 1 << 5
 
     @FlagValue
-    def active_supporter():
+    def active_supporter(self):
         """
         Whether the user has the active supporter badge.
         """
         return 1 << 6
 
     @FlagValue
-    def paw():
+    def paw(self):
         """
         Whether the user has the paw badge.
         """
         return 1 << 7
 
     @FlagValue
-    def early_adopter():
+    def early_adopter(self):
         """
         Whether the user has the early adopter badge.
         """
         return 1 << 8
 
     @FlagValue
-    def reserved_relevant_joke_badge_1():
+    def reserved_relevant_joke_badge_1(self):
         """
         Whether the user has the relevant joke 1 (amogus) badge.
         """
