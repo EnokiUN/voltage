@@ -1,9 +1,21 @@
 # Thanks Jan <3
 from __future__ import annotations
+
 from typing import Optional
+
 from .internals import FlagBase, FlagValue
 
-def channel_permissions(view: Optional[bool] = False, send_messages: Optional[bool] = False, manage_messages: Optional[bool] = False, manage_channel: Optional[bool] = False, voice_call: Optional[bool] = False, invite_others: Optional[bool] = False, embed_links: Optional[bool] = False, upload_files: Optional[bool] = False):
+
+def channel_permissions(
+    view: Optional[bool] = False,
+    send_messages: Optional[bool] = False,
+    manage_messages: Optional[bool] = False,
+    manage_channel: Optional[bool] = False,
+    voice_call: Optional[bool] = False,
+    invite_others: Optional[bool] = False,
+    embed_links: Optional[bool] = False,
+    upload_files: Optional[bool] = False,
+):
     """
     A function which simplifies the process of creating a new channel permissions objects perhaps for comparison purposes.
 
@@ -45,6 +57,7 @@ def channel_permissions(view: Optional[bool] = False, send_messages: Optional[bo
         permission_int |= 1 << 7
     return ChannelPermissions.new_with_flags(permission_int)
 
+
 class ChannelPermissions(FlagBase):
     """
     A class which represents a channel permissions object.
@@ -56,6 +69,7 @@ class ChannelPermissions(FlagBase):
     all: :class:`ChannelPermissions`
         Returns a new :class:`ChannelPermissions` object with all permissions set to ``True``.
     """
+
     @classmethod
     def none(cls) -> ChannelPermissions:
         return cls.new_with_flags(0b0)
@@ -96,7 +110,19 @@ class ChannelPermissions(FlagBase):
     def upload_files():
         return 1 << 7
 
-def server_permissions(view: Optional[bool] = False, manage_roles: Optional[bool] = False, manage_channels: Optional[bool] = False, manage_server: Optional[bool] = False, kick_members: Optional[bool] = False, ban_members: Optional[bool] = False, change_nickname: Optional[bool] = False, manage_nicknames: Optional[bool] = False, change_avatar: Optional[bool] = False, remove_avatars: Optional[bool] = False):
+
+def server_permissions(
+    view: Optional[bool] = False,
+    manage_roles: Optional[bool] = False,
+    manage_channels: Optional[bool] = False,
+    manage_server: Optional[bool] = False,
+    kick_members: Optional[bool] = False,
+    ban_members: Optional[bool] = False,
+    change_nickname: Optional[bool] = False,
+    manage_nicknames: Optional[bool] = False,
+    change_avatar: Optional[bool] = False,
+    remove_avatars: Optional[bool] = False,
+):
     """
     A function which simplifies the process of creating a new server permissions objects perhaps for comparison purposes.
 
@@ -146,6 +172,7 @@ def server_permissions(view: Optional[bool] = False, manage_roles: Optional[bool
         permission_int |= 1 << 15
     return ServerPermissions.new_with_flags(permission_int)
 
+
 class ServerPermissions(FlagBase):
     """
     A class which represents a server permissions object.
@@ -157,6 +184,7 @@ class ServerPermissions(FlagBase):
     all: :class:`ServerPermissions`
         Returns a new :class:`ServerPermissions` object with all permissions set to ``True``.
     """
+
     @classmethod
     def none(cls) -> ServerPermissions:
         return cls.new_with_flags(0b0)

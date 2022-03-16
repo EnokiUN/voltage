@@ -18,4 +18,9 @@ from .client import Client
 from .embed import Embed, SendableEmbed
 from .enums import AssetType, ChannelType, EmbedType, PresenseType, SortType
 from .file import File
-from .permissions import channel_permissions, server_permissions, ChannelPermissions, ServerPermissions
+from .permissions import (
+    ChannelPermissions,
+    ServerPermissions,
+    channel_permissions,
+    server_permissions,
+)
