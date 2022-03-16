@@ -113,6 +113,12 @@ class FlagBase:
     def __gt__(self: FB, other: FB) -> bool:
         return self.flags > other.flags
 
+    def __le__(self: FB, other: FB) -> bool:
+        return self.flags <= other.flags
+    
+    def __ge__(self: FB, other: FB) -> bool:
+        return self.flags >= other.flags
+
     def _has_flag(self: FB, flag: int) -> bool:
         return (self.flags & flag) == flag
 
