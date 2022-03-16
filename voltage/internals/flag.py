@@ -117,7 +117,7 @@ class FlagBase:
         else:
             self.flags &= ~flag
 
-class UserFlags:
+class UserFlags(FlagBase):
     """
     A class which represents a user's flags (aka badges).
     """
