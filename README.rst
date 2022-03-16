@@ -14,6 +14,10 @@ An example payload bot:
 
     client = voltage.Client()
 
+    @client.listen('ready', raw=True)
+    async def on_ready(payload):
+        print("Started bot!")
+
     @client.listen('message', raw=True)
     async def on_message(payload):
         if payload['content'] == 'ping':
