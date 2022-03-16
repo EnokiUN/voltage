@@ -1,10 +1,12 @@
 # Ah shit here we go again
 from __future__ import annotations
-from typing  import TypeVar, Callable, Type, Optional, Union
+
+from typing import Callable, Optional, Type, TypeVar, Union
 
 # Typing, boooo
-FB = TypeVar('FB', bound='FlagBase')
-FV = TypeVar('FV', bound='FlagValue')
+FB = TypeVar("FB", bound="FlagBase")
+FV = TypeVar("FV", bound="FlagValue")
+
 
 class FlagValue:
     """
@@ -15,9 +17,10 @@ class FlagValue:
     value: :class:`int`
         The flag's value.
     """
+
     def __init__(self, func: Callable[[], int]):
         self.value = func()
-        self.__doc__ = func.__doc__ # DOCUMENTATION GO BRRRRRRR
+        self.__doc__ = func.__doc__  # DOCUMENTATION GO BRRRRRRR
 
     def __get__(self: FV, instance: Optional[FB], owner: Type[FB]) -> Union[bool, FV]:
         if instance:
@@ -28,7 +31,8 @@ class FlagValue:
         instance._set_flag(self.value, value)
 
     def __repr__(self):
-        return f'<FlagValue {self.value!r}>'
+        return f"<FlagValue {self.value!r}>"
+
 
 # Important for flags, they all gotta inherit from this.
 class FlagBase:
@@ -40,16 +44,17 @@ class FlagBase:
     flags: :class:`int`
         The value of the flags.
     """
-    __slots__ = ('flags',)
+
+    __slots__ = ("flags",)
 
     def __init__(self, **kwargs: bool):
         self.flags = 0
 
         for k, v in kwargs.items():
-            setattr(self, k, v) # tfw self.__setattr__ isn't the "right" way to do this
+            setattr(self, k, v)  # tfw self.__setattr__ isn't the "right" way to do this
 
     @classmethod
-    def new_with_flags(cls, flags): # Talk about convinience.
+    def new_with_flags(cls, flags):  # Talk about convinience.
         """
         Creates a new instance of this class with the given flags.
 
@@ -63,7 +68,7 @@ class FlagBase:
         :class:`FlagBase`
             The new instance.
         """
-        inst = cls.__new__(cls) # tfw cls() no work sometimes :/
+        inst = cls.__new__(cls)  # tfw cls() no work sometimes :/
         inst.flags = flags
         return inst
 
@@ -77,7 +82,7 @@ class FlagBase:
         return hash(self.flags)
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} flags={self.flags:#x}>'
+        return f"<{self.__class__.__name__} flags={self.flags:#x}>"
 
     def __iter__(self):
         for name, value in self.__class__.__dict__.items():
@@ -116,6 +121,7 @@ class FlagBase:
             self.flags |= flag
         else:
             self.flags &= ~flag
+
 
 class UserFlags(FlagBase):
     """
