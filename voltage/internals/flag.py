@@ -107,17 +107,17 @@ class FlagBase:
     def __sub__(self: FB, other: FB) -> FB:
         return self.__class__.new_with_flags(self.flags & ~other.flags)
 
-    def __lt__(self: FB, other: FB) -> bool:
-        return self.flags < other.flags
-
-    def __gt__(self: FB, other: FB) -> bool:
-        return self.flags > other.flags
-
     def __le__(self: FB, other: FB) -> bool:
-        return self.flags <= other.flags
-    
+        return (self.flags & other.flags) == self.flags
+
     def __ge__(self: FB, other: FB) -> bool:
-        return self.flags >= other.flags
+        return (self.flags | other.flags) == other.flags
+
+    def __lt__(self: FB, other: FB) -> bool:
+        return (self.flags <= other.flags) and self.flags != other.flags
+    
+    def __gt__(self: FB, other: FB) -> bool:
+        return (self.flags > other.flags) and self.flags != other.flags
 
     def _has_flag(self: FB, flag: int) -> bool:
         return (self.flags & flag) == flag
