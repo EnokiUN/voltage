@@ -16,7 +16,7 @@ __version__ = "0.1.0a"
 
 from .client import Client
 from .embed import Embed, SendableEmbed
-from .enums import AssetType, ChannelType, EmbedType, PresenseType, SortType
+from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType
 from .file import File
 from .permissions import (
     ChannelPermissions,

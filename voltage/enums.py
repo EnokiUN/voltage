@@ -46,9 +46,9 @@ class AssetType(enum.Enum):
     text = "Text"
 
 
-class PresenseType(enum.Enum):
+class PresenceType(enum.Enum):
     """
-    An enum which represents the type of a presense.
+    An enum which represents the type of a presence.
     """
 
     busy = "Busy"
