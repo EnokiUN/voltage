@@ -40,7 +40,7 @@ class RolePayload(TypedDict):
     rank: int
 
 class InvitePayload(TypedDict):
-    type: Literal["SERVER"]
+    type: Literal["Server"]
     serer_id: str
     server_name: str
     server_icon: NotRequired[str]

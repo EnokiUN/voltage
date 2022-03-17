@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from .asset import Asset
 
@@ -42,7 +42,7 @@ class Invite:
     def __init__(self, data: InvitePayload, code: str, cache: CacheHandler):
         self.code = code
         self.type = data['type']
-        self.payload = data
+        self.payload: Union[InvitePayload, PartialInvitePayload] = data
 
         self.server_id = data['serer_id']
         self.server = cache.get_server(self.server_id)
@@ -72,7 +72,7 @@ class Invite:
         self = Invite.__new__(Invite)
 
         self.code = code
-        self.paylaod = data
+        self.payload = data
         self.cache = cache
         self.type = "Server"
 

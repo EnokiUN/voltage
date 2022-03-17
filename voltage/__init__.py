@@ -25,3 +25,4 @@ from .permissions import (
     server_permissions,
 )
 from .roles import Role
+from .invites import Invite
