@@ -185,5 +185,5 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
             if isinstance(self.media, File):
                 embed["media"] = await self.media.get_id(http)
             else:
-                embed["media"] = (await get_file_from_url(http, self.media)).get_id()
+                embed["media"] = (await get_file_from_url(http, self.media)).get_id(http)
         return embed
