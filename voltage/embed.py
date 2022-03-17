@@ -122,6 +122,7 @@ class NoneEmbed:
 
 Embed = Union[WebsiteEmbed, ImageEmbed, TextEmbed, NoneEmbed]
 
+
 def create_embed(data: EmbedPayload, http: HTTPHandler) -> Embed:
     """
     A function that creates an embed from a dict.

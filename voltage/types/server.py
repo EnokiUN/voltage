@@ -32,12 +32,14 @@ class PartialRolePayload(TypedDict):
     name: str
     permissions: PermissionPayload
 
+
 class RolePayload(TypedDict):
     name: str
     permissions: PermissionPayload
     colour: NotRequired[str]
     hoist: NotRequired[bool]
     rank: int
+
 
 class InvitePayload(TypedDict):
     type: Literal["Server"]

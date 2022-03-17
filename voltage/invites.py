@@ -1,11 +1,12 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Union
 
 from .asset import Asset
 
 if TYPE_CHECKING:
-    from .types import InvitePayload, PartialInvitePayload
     from .internals import CacheHandler
+    from .types import InvitePayload, PartialInvitePayload
 
 
 class Invite:
@@ -37,21 +38,33 @@ class Invite:
     avatar: :class:`Asset`
         The avatar of the user who created the invite.
     """
-    __slots__ = ('code', 'type', 'payload', 'server_id', 'server', 'channel_id', 'channel', 'member_count', 'user', 'cache')
-    
+
+    __slots__ = (
+        "code",
+        "type",
+        "payload",
+        "server_id",
+        "server",
+        "channel_id",
+        "channel",
+        "member_count",
+        "user",
+        "cache",
+    )
+
     def __init__(self, data: InvitePayload, code: str, cache: CacheHandler):
         self.code = code
-        self.type = data['type']
+        self.type = data["type"]
         self.payload: Union[InvitePayload, PartialInvitePayload] = data
 
-        self.server_id = data['serer_id']
+        self.server_id = data["serer_id"]
         self.server = cache.get_server(self.server_id)
 
-        self.channel_id = data['channel_id']
+        self.channel_id = data["channel_id"]
         self.channel = cache.get_channel(self.channel_id)
-        self.member_count = data['member_count']
+        self.member_count = data["member_count"]
 
-        self.user = cache.get_user(data['user_name'], "name")
+        self.user = cache.get_user(data["user_name"], "name")
 
         self.cache = cache
 
@@ -76,14 +89,14 @@ class Invite:
         self.cache = cache
         self.type = "Server"
 
-        self.server_id = data['server']
+        self.server_id = data["server"]
         self.server = cache.get_server(self.server_id)
         self.member_count = len(self.server.members)
 
-        self.channel_id = data['channel']
+        self.channel_id = data["channel"]
         self.channel = cache.get_channel(self.channel_id)
 
-        self.user = cache.get_user(data['creator'])
+        self.user = cache.get_user(data["creator"])
 
         return self
 

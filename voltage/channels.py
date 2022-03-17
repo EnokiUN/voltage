@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union, Literal, Any
 
-from .internals import NotSupplied, CacheHandler
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+
 from .asset import Asset
 from .enums import ChannelType
+from .internals import CacheHandler, NotSupplied
 from .messageable import Messageable
 from .permissions import ChannelPermissions
 
@@ -12,8 +13,17 @@ if TYPE_CHECKING:
     from .message import Message
     from .roles import Role
     from .server import Server
+    from .types import (
+        ChannelPayload,
+        DMChannelPayload,
+        GroupDMChannelPayload,
+        OnChannelUpdatePayload,
+        SavedMessagePayload,
+        TextChannelPayload,
+        VoiceChannelPayload,
+    )
     from .user import User
-    from .types import (ChannelPayload, DMChannelPayload, GroupDMChannelPayload, SavedMessagePayload, TextChannelPayload, VoiceChannelPayload, OnChannelUpdatePayload)
+
 
 class Channel:
     """
@@ -28,11 +38,12 @@ class Channel:
     server: Optional[:class:`Server`]
         The server the channel belongs to.
     """
-    __slots__ = ('id', 'type', 'server', 'cache')
+
+    __slots__ = ("id", "type", "server", "cache")
 
     def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
-        self.id = data['_id']
-        self.type = ChannelType(data['channel_type'])
+        self.id = data["_id"]
+        self.type = ChannelType(data["channel_type"])
         self.server = cache.get_channel(server_id) if server_id else None
         self.cache = cache
 
@@ -45,12 +56,19 @@ class Channel:
     @property
     def mention(self):
         """Returns a string that allows you to mention the channel."""
-        return f'<#{self.id}>'
+        return f"<#{self.id}>"
 
     def _update(self, data: OnChannelUpdatePayload):
         raise NotImplementedError
 
-    async def edit(self, *, name: Optional[str] = None, description: Optional[str] = NotSupplied, icon: Optional[Union[str, File]] = NotSupplied, nsfw: Optional[bool] = None): # No idea where else to put this.
+    async def edit(
+        self,
+        *,
+        name: Optional[str] = None,
+        description: Optional[str] = NotSupplied,
+        icon: Optional[Union[str, File]] = NotSupplied,
+        nsfw: Optional[bool] = None,
+    ):  # No idea where else to put this.
         """Edits the channel.
 
         Parameters
@@ -64,10 +82,14 @@ class Channel:
         nsfw: Optional[:class:`bool`]
             Whether the channel is NSFW or not.
         """
-        remove: Optional[Literal["Description", "Icon"]] = "Description" if description is None else "Icon" if icon is None else None
+        remove: Optional[Literal["Description", "Icon"]] = (
+            "Description" if description is None else "Icon" if icon is None else None
+        )
         if isinstance(icon, File):
             icon = await icon.get_id(self.cache.http)
-        return self.cache.http.edit_channel(self.id, name=name, description=description, icon=icon, nsfw=nsfw, remove=remove)
+        return self.cache.http.edit_channel(
+            self.id, name=name, description=description, icon=icon, nsfw=nsfw, remove=remove
+        )
 
     async def delete(self):
         """Deletes the channel."""
@@ -95,10 +117,12 @@ class Channel:
         """
         return self.cache.http.set_role_perms(self.id, role.id, permissions.flags)
 
+
 class SavedMessageChannel(Channel, Messageable):
     """
     The class representing the Voltage saved messages channel.
     """
+
     def __init__(self, data: SavedMessagePayload, cache: CacheHandler):
         super().__init__(data, cache)
 
@@ -111,10 +135,12 @@ class SavedMessageChannel(Channel, Messageable):
     async def set_role_permission(self):
         raise NotImplementedError
 
+
 class DMChannel(Channel, Messageable):
     """
     The class representing the Voltage direct messages channel.
     """
+
     def __init__(self, data: DMChannelPayload, cache: CacheHandler):
         super().__init__(data, cache)
 
@@ -126,6 +152,7 @@ class DMChannel(Channel, Messageable):
 
     async def set_role_permission(self):
         raise NotImplementedError
+
 
 class GroupDMChannel(Channel, Messageable):
     """
@@ -148,29 +175,30 @@ class GroupDMChannel(Channel, Messageable):
     permissions: :class:`ChannelPermissions`
         The permissions of the group direct messages channel.
     """
-    __slots__ = ('name', 'description', 'nsfw','owner', 'recipients', 'icon', 'permissions')
+
+    __slots__ = ("name", "description", "nsfw", "owner", "recipients", "icon", "permissions")
 
     def __init__(self, data: GroupDMChannelPayload, cache: CacheHandler):
         super().__init__(data, cache)
-        self.name = data['name']
-        self.description = data.get('description')
-        self.nsfw = data.get('nsfw', False)
-        self.owner = cache.get_user(data['owner'])
-        self.recipients = [cache.get_user(recipient) for recipient in data['recipients']]
+        self.name = data["name"]
+        self.description = data.get("description")
+        self.nsfw = data.get("nsfw", False)
+        self.owner = cache.get_user(data["owner"])
+        self.recipients = [cache.get_user(recipient) for recipient in data["recipients"]]
 
         self.icon: Optional[Asset]
-        if icon := data.get('icon'):
+        if icon := data.get("icon"):
             self.icon = Asset(icon, self.cache.http)
         else:
             self.icon = None
 
-        self.permissions = ChannelPermissions.new_with_flags(data.get('permissions', 0))
+        self.permissions = ChannelPermissions.new_with_flags(data.get("permissions", 0))
 
     async def set_role_permission(self):
         raise NotImplementedError
 
-    def _update(self, data: Any): # Finally, inner peace.
-        if clear := data.get('clear'):
+    def _update(self, data: Any):  # Finally, inner peace.
+        if clear := data.get("clear"):
             if clear == "Icon":
                 self.icon = None
             elif clear == "Description":
@@ -198,13 +226,14 @@ class GroupDMChannel(Channel, Messageable):
         # Seriously considering removing typing from the lib
         # after 38479823748923 iterations i give up
         # wait, I have an idea
-        if new := data.get('data'):
-            if name := new.get('name'):
+        if new := data.get("data"):
+            if name := new.get("name"):
                 self.name = name
-            if description := new.get('description'):
+            if description := new.get("description"):
                 self.description = description
-            if recipients := new.get('recipients', []):
+            if recipients := new.get("recipients", []):
                 self.recipients = [self.cache.get_user(recipient) for recipient in recipients]
+
 
 class TextChannel(Channel, Messageable):
     """
@@ -227,41 +256,45 @@ class TextChannel(Channel, Messageable):
     icon: Optional[:class:`Asset`]
         The icon of the text channel.
     """
-    __slots__ = ('name', 'description', 'last_message', 'nsfw', 'default_permissions', 'role_permissions', 'icon')
+
+    __slots__ = ("name", "description", "last_message", "nsfw", "default_permissions", "role_permissions", "icon")
 
     def __init__(self, data: TextChannelPayload, cache: CacheHandler):
         super().__init__(data, cache)
-        self.name = data['name']
-        self.description = data.get('description')
-        self.nsfw = data.get('nsfw', False)
+        self.name = data["name"]
+        self.description = data.get("description")
+        self.nsfw = data.get("nsfw", False)
 
-        if last_message := data.get('last_message'):
+        if last_message := data.get("last_message"):
             self.last_message = Message(last_message, self.cache)
         else:
             self.last_message = None
-        
-        self.default_permissions = ChannelPermissions.new_with_flags(data.get('default_permissions', 0))
-        self.role_permissions = {role: ChannelPermissions.new_with_flags(permissions) for role, permissions in data.get('role_permissions', {}).items()}
-        
+
+        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
+        self.role_permissions = {
+            role: ChannelPermissions.new_with_flags(permissions)
+            for role, permissions in data.get("role_permissions", {}).items()
+        }
+
         self.icon: Optional[Asset]
-        if icon := data.get('icon'):
+        if icon := data.get("icon"):
             self.icon = Asset(icon, self.cache.http)
         else:
             self.icon = None
 
-
     def _update(self, data: Any):
-        if clear := data.get('clear'):
+        if clear := data.get("clear"):
             if clear == "Icon":
                 self.icon = None
             elif clear == "Description":
                 self.description = None
 
-        if new := data.get('data'):
-            if name := new.get('name'):
+        if new := data.get("data"):
+            if name := new.get("name"):
                 self.name = name
-            if description := new.get('description'):
+            if description := new.get("description"):
                 self.description = description
+
 
 class VoiceChannel(Channel):
     """
@@ -280,36 +313,44 @@ class VoiceChannel(Channel):
     icon: Optional[:class:`Asset`]
         The icon of the voice channel.
     """
-    __slots__ = ('name', 'description', 'default_permissions', 'role_permissions', 'icon')
+
+    __slots__ = ("name", "description", "default_permissions", "role_permissions", "icon")
+
     def __init__(self, data: VoiceChannelPayload, cache: CacheHandler):
         super().__init__(data, cache)
-        self.name = data['name']
-        self.description = data.get('description')
+        self.name = data["name"]
+        self.description = data.get("description")
 
-        self.default_permissions = ChannelPermissions.new_with_flags(data.get('default_permissions', 0))
-        self.role_permissions = {role: ChannelPermissions.new_with_flags(permissions) for role, permissions in data.get('role_permissions', {}).items()}
+        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
+        self.role_permissions = {
+            role: ChannelPermissions.new_with_flags(permissions)
+            for role, permissions in data.get("role_permissions", {}).items()
+        }
 
         self.icon: Optional[Asset]
-        if icon := data.get('icon'):
+        if icon := data.get("icon"):
             self.icon = Asset(icon, self.cache.http)
         else:
             self.icon = None
 
     def _update(self, data: Any):
-        if clear := data.get('clear'):
+        if clear := data.get("clear"):
             if clear == "Icon":
                 self.icon = None
             elif clear == "Description":
                 self.description = None
 
-        if new := data.get('data'):
-            if name := new.get('name'):
+        if new := data.get("data"):
+            if name := new.get("name"):
                 self.name = name
-            if description := new.get('description'):
+            if description := new.get("description"):
                 self.description = description
 
+
 # no fuck you not again
-def create_channel(data: Any, cache: CacheHandler) -> Union[TextChannel, VoiceChannel, GroupDMChannel, SavedMessageChannel, DMChannel]:
+def create_channel(
+    data: Any, cache: CacheHandler
+) -> Union[TextChannel, VoiceChannel, GroupDMChannel, SavedMessageChannel, DMChannel]:
     """
     Creates a channel based on the data provided.
 
@@ -325,16 +366,16 @@ def create_channel(data: Any, cache: CacheHandler) -> Union[TextChannel, VoiceCh
     :class:`Channel`
         The created channel.
     """
-    type = data['channel_type']
-    if type == 'Text':
+    type = data["channel_type"]
+    if type == "Text":
         return TextChannel(data, cache)
-    elif type == 'Voice':
+    elif type == "Voice":
         return VoiceChannel(data, cache)
-    elif type == 'Group':
+    elif type == "Group":
         return GroupDMChannel(data, cache)
-    elif type == 'SavedMessage':
+    elif type == "SavedMessage":
         return SavedMessageChannel(data, cache)
-    elif type == 'DirectMessage':
+    elif type == "DirectMessage":
         return DMChannel(data, cache)
     else:
         raise ValueError(f"Unknown channel type: {type}")

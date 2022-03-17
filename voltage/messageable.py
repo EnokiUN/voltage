@@ -1,18 +1,19 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, List, Union
+
+from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
 from .enums import SortType
 
 if TYPE_CHECKING:
-    from .types import SendableEmbedPayload
-    from .internals import CacheHandler
     from .embed import Embed, SendableEmbed
     from .file import File
-    from .messages import Message, MessageReply, MessageMasquerade
+    from .internals import CacheHandler
+    from .messages import Message, MessageMasquerade, MessageReply
+    from .types import SendableEmbedPayload
 
 
-class Messageable: # Really missing rust traits rn :(
+class Messageable:  # Really missing rust traits rn :(
     """
     A class which all messageable have to inhertit from.
 
@@ -23,6 +24,7 @@ class Messageable: # Really missing rust traits rn :(
     cache: :class:`CacheHandler`
         The cache handler of the messageable object.
     """
+
     __slots__ = ()
 
     cache: CacheHandler
@@ -36,9 +38,20 @@ class Messageable: # Really missing rust traits rn :(
         :class:`str`
             The ID of the messageable object's channel.
         """
-        return NotImplemented # TIL: NotImplemented is a thing, thank you mr random stackoverflow user.
+        return NotImplemented  # TIL: NotImplemented is a thing, thank you mr random stackoverflow user.
 
-    async def send(self, content: str, *, embed: Optional[Union[SendableEmbed, SendableEmbedPayload]] = None, embeds: Optional[List[Union[SendableEmbed, SendableEmbedPayload]]] = None, attachment: Optional[Union[File, str]] = None, attachments: Optional[List[Union[File, str]]] = None, reply: Optional[MessageReply] = None, replies: Optional[List[MessageReply]] = None, masquerade: Optional[MessageMasquerade] = None) -> Message: # YEAH BABY, THAT'S WHAT WE'VE BEEN WAITING FOR, THAT'S WHAT IT'S ALL ABOUT, WOOOOOOOOOOOOOOOO
+    async def send(
+        self,
+        content: str,
+        *,
+        embed: Optional[Union[SendableEmbed, SendableEmbedPayload]] = None,
+        embeds: Optional[List[Union[SendableEmbed, SendableEmbedPayload]]] = None,
+        attachment: Optional[Union[File, str]] = None,
+        attachments: Optional[List[Union[File, str]]] = None,
+        reply: Optional[MessageReply] = None,
+        replies: Optional[List[MessageReply]] = None,
+        masquerade: Optional[MessageMasquerade] = None,
+    ) -> Message:  # YEAH BABY, THAT'S WHAT WE'VE BEEN WAITING FOR, THAT'S WHAT IT'S ALL ABOUT, WOOOOOOOOOOOOOOOO
         """
         Send a message to the messageable object's channel.
 
@@ -68,8 +81,10 @@ class Messageable: # Really missing rust traits rn :(
         """
         embeds = [embed] if embed else embeds
         replies = [reply] if reply else replies
-        
-        message = await self.cache.http.send_message(await self.get_id(), content, embeds=embeds, attachments=attachments, replies=replies, masquerade=masquerade)
+
+        message = await self.cache.http.send_message(
+            await self.get_id(), content, embeds=embeds, attachments=attachments, replies=replies, masquerade=masquerade
+        )
         return self.cache.add_messsage(message)
 
     async def fetch_message(self, message_id: str) -> Message:
@@ -88,7 +103,15 @@ class Messageable: # Really missing rust traits rn :(
         """
         return await self.cache.fetch_message(message_id)
 
-    async def history(self, limit: int = 100, *, sort: SortType = SortType.latest, before: Optional[str] = None, after: Optional[str] = None, nearby: Optional[str] = None) -> List[Message]:
+    async def history(
+        self,
+        limit: int = 100,
+        *,
+        sort: SortType = SortType.latest,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+        nearby: Optional[str] = None,
+    ) -> List[Message]:
         """
         Fetch the messageable object's channel's history.
 
@@ -110,10 +133,18 @@ class Messageable: # Really missing rust traits rn :(
         List[:class:`Message`]
             The messages that got fetched.
         """
-        messages = await self.cache.http.fetch_messages(await self.get_id(), sort.value, limit=limit, before=before, after=after, nearby=nearby, include_users=False) # type: ignore
+        messages = await self.cache.http.fetch_messages(await self.get_id(), sort.value, limit=limit, before=before, after=after, nearby=nearby, include_users=False)  # type: ignore
         return [Message(data, self.cache) for data in messages]
-    
-    async def search(self, query: str, *, sort: SortType = SortType.latest, limit: int = 100, before: Optional[str] = None, after: Optional[str] = None) -> List[Message]:
+
+    async def search(
+        self,
+        query: str,
+        *,
+        sort: SortType = SortType.latest,
+        limit: int = 100,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> List[Message]:
         """
         Search for messages in the messageable object's channel.
 
@@ -135,5 +166,7 @@ class Messageable: # Really missing rust traits rn :(
         List[:class:`Message`]
             The messages that got found.
         """
-        messages = await self.cache.http.search_for_message(await self.get_id(), query, sort=sort.value, limit=limit, before=before, after=after, include_users=False)
+        messages = await self.cache.http.search_for_message(
+            await self.get_id(), query, sort=sort.value, limit=limit, before=before, after=after, include_users=False
+        )
         return [Message(data, self.cache) for data in messages]

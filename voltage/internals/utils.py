@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import Any
+
 
 class _NotSupplied:
     def __eq__(self, other):
@@ -9,6 +11,7 @@ class _NotSupplied:
         return False
 
     def __repr__(self):
-        return 'NotSupplied'
+        return "NotSupplied"
+
 
 NotSupplied: Any = _NotSupplied()

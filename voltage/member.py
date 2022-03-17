@@ -1,18 +1,24 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union, Any
+
+from typing import TYPE_CHECKING, Any, Optional, Union
+
+from .asset import Asset
 
 # Internal imports
 from .user import User
-from .asset import Asset
 
 if TYPE_CHECKING:
-    from .types import MemberPayload, OnServerMemberUpdatePayload
     from .internals import CacheHandler
     from .server import Server
+    from .types import MemberPayload, OnServerMemberUpdatePayload
 
-def make_member_dot_zip(member: Member, user: User): # very excellanto functiono it take memberru object and it users objecto and give it all atrr like naem, avartar and sow on.
+
+def make_member_dot_zip(
+    member: Member, user: User
+):  # very excellanto functiono it take memberru object and it users objecto and give it all atrr like naem, avartar and sow on.
     for i in user.__slots__:
         setattr(member, i, getattr(user, i))
+
 
 class Member(User):
     """
@@ -31,23 +37,24 @@ class Member(User):
     roles: List[:class:`Role`]
         The member's roles.
     """
+
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
-        user = cache.get_user(data['_id'])
+        user = cache.get_user(data["_id"])
         make_member_dot_zip(self, user)
 
-        self.nickname = data.get('nickname')
+        self.nickname = data.get("nickname")
 
-        if av := data.get('avatar'):
+        if av := data.get("avatar"):
             self.server_avatar: Optional[Asset] = Asset(av, cache.http)
         else:
             self.server_avatar = None
 
-        self.roles = sorted([server.get_role(i) for i in data.get('roles', [])], key=lambda r: r.rank, reverse=True)
+        self.roles = sorted([server.get_role(i) for i in data.get("roles", [])], key=lambda r: r.rank, reverse=True)
 
         self.server = server
 
     def __repr__(self):
-        return f'<Member {self.name}>'
+        return f"<Member {self.name}>"
 
     @property
     def display_name(self):
@@ -84,25 +91,23 @@ class Member(User):
         """
         await self.cache.http.ban_member(self.server.id, self.id, reason=reason)
 
-
     async def unban(self):
         """
         A method that unbans the member from the server.
         """
         await self.cache.http.unban_member(self.server.id, self.id)
 
-    async def _update(self, data: Union[Any, OnServerMemberUpdatePayload]): # god bless mypy
-        if clear := data.get('clear'):
+    async def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
+        if clear := data.get("clear"):
             if clear == "Nickname":
                 self.nickname = None
             elif clear == "Avatar":
                 self.server_avatar = None
 
-        if new := data.get('data'):
-            if new.get('nickname'):
-                self.nickname = new['nickname']
-            if new.get('avatar'):
-                self.server_avatar = Asset(new['avatar'], self.cache.http)
-            if new.get('roles'):
-                self.roles = sorted([self.server.get_role(i) for i in new['roles']], key=lambda r: r.rank, reverse=True)
-
+        if new := data.get("data"):
+            if new.get("nickname"):
+                self.nickname = new["nickname"]
+            if new.get("avatar"):
+                self.server_avatar = Asset(new["avatar"], self.cache.http)
+            if new.get("roles"):
+                self.roles = sorted([self.server.get_role(i) for i in new["roles"]], key=lambda r: r.rank, reverse=True)

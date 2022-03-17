@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, NamedTuple, Optional
 
 from .asset import Asset
@@ -8,27 +9,34 @@ from .messageable import Messageable
 
 if TYPE_CHECKING:
     from .internals import CacheHandler
-    from .types import UserPayload, OnUserUpdatePayload
+    from .types import OnUserUpdatePayload, UserPayload
+
 
 class Relationship(NamedTuple):
     """A tuple that represents the relationship between two users."""
+
     type: RelationshipType
     user: User
 
+
 class Status(NamedTuple):
     """A tuple that represents the status of a user."""
+
     text: Optional[str]
     presence: PresenceType
 
+
 class UserProfile(NamedTuple):
     """A tuple that represent's a user's profile."""
+
     content: Optional[str]
     background: Optional[Asset]
+
 
 class User(Messageable):
     """
     A class that represents a Voltage user.
-    
+
     Attributes
     ----------
     id: :class:`str`
@@ -52,33 +60,57 @@ class User(Messageable):
     owner: :class:`User`
         The bot's owner.
     """
-    __slots__ = ('id', 'name', 'avatar', 'dm_channel', 'flags', 'badges', 'online', 'status', 'relationships', 'avatar', 'profile', 'bot', 'owner', 'cache', 'masquerade_name', 'masquerade_avatar')
+
+    __slots__ = (
+        "id",
+        "name",
+        "avatar",
+        "dm_channel",
+        "flags",
+        "badges",
+        "online",
+        "status",
+        "relationships",
+        "avatar",
+        "profile",
+        "bot",
+        "owner",
+        "cache",
+        "masquerade_name",
+        "masquerade_avatar",
+    )
 
     def __init__(self, data: UserPayload, cache: CacheHandler):
         self.cache = cache
-        self.id = data['_id']
-        
-        self.name = data['username']
-        self.dm_channel = cache.get_dm_channel(self.id)
-        self.flags = data.get('flags', 0)
-        self.badges = UserFlags.new_with_flags(self.flags)
-        self.online = data.get('online', False)
+        self.id = data["_id"]
 
-        avatar = data.get('avatar')
+        self.name = data["username"]
+        self.dm_channel = cache.get_dm_channel(self.id)
+        self.flags = data.get("flags", 0)
+        self.badges = UserFlags.new_with_flags(self.flags)
+        self.online = data.get("online", False)
+
+        avatar = data.get("avatar")
         self.avatar = Asset(avatar, cache.http) if avatar else None
 
         relationships = []
-        for i in data.get('relations', []):
-            if user := cache.get_user(i['_id']):
-                relationships.append(Relationship(RelationshipType(i['status']), cache.get_user(i['_id'])))
-    
+        for i in data.get("relations", []):
+            if user := cache.get_user(i["_id"]):
+                relationships.append(Relationship(RelationshipType(i["status"]), cache.get_user(i["_id"])))
+
         self.relationships = relationships
 
-        self.status = Status(data.get('status', {}).get('text'), PresenceType(data.get('status', {}).get('presence'))) if data.get('status') else Status(None, PresenceType.invisible)
+        self.status = (
+            Status(data.get("status", {}).get("text"), PresenceType(data.get("status", {}).get("presence")))
+            if data.get("status")
+            else Status(None, PresenceType.invisible)
+        )
 
         self.profile = UserProfile(None, None)
 
-        self.bot, self.owner = (data.get('bot', False), cache.get_user(data.get('owner_id'), cache)) if data.get('bot') else (False, None)
+        self.bot, self.owner = (
+            (data.get("bot", False), cache.get_user(data.get("owner_id"), cache)) if data.get("bot") else (False, None)
+        )
 
         self.masquerade_name: Optional[str] = None
         self.masquerade_avatar: Optional[Asset] = None
@@ -141,13 +173,13 @@ class User(Messageable):
             The user's profile.
         """
         data = await self.cache.http.fetch_user_profile(self.id)
-        bg = data.get('background')
+        bg = data.get("background")
         background = Asset(bg, self.cache.http) if bg is not None else None
-        self.profile = UserProfile(data.get('content'), background)
+        self.profile = UserProfile(data.get("content"), background)
         return self.profile
 
     async def _update(self, data: OnUserUpdatePayload):
-        if clear := data.get('clear'):
+        if clear := data.get("clear"):
             if clear == "ProfileContent":
                 self.profile = UserProfile(None, self.profile.background)
             elif clear == "ProfileBackground":
@@ -157,16 +189,15 @@ class User(Messageable):
             elif clear == "Avatar":
                 self.avatar = None
 
-        if new := data.get('data'):
-            if status := new.get('status'):
-                presence = status.get('presence') or self.status.presence
-                self.status = Status(status.get('text'), PresenceType(presence))
-            if bg := new.get('profile.background'):
+        if new := data.get("data"):
+            if status := new.get("status"):
+                presence = status.get("presence") or self.status.presence
+                self.status = Status(status.get("text"), PresenceType(presence))
+            if bg := new.get("profile.background"):
                 self.profile = UserProfile(self.profile.content, Asset(bg, self.cache.http))
-            if content := new.get('profile.content'):
+            if content := new.get("profile.content"):
                 self.profile = UserProfile(content, self.profile.background)
-            if avatar := new.get('avatar'):
+            if avatar := new.get("avatar"):
                 self.avatar = Asset(avatar, self.cache.http)
-            if online := new.get('online'):
+            if online := new.get("online"):
                 self.online = online
-
