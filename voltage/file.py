@@ -4,6 +4,23 @@ from typing import TYPE_CHECKING, Optional, Union
 if TYPE_CHECKING:
     from .internals import HTTPHandler
 
+async def get_file_from_url(http: HTTPHandler, url: str, filename: str = "Attachment", spoiler: bool = False) -> File:
+    """
+    Returns a file object from the supplied URL.
+
+    Parameters
+    ----------
+    http: :class:`HTTPHandler`
+        The HTTP handler to use.
+    url: :class:`str`
+        The URL to get the file from.
+
+    Returns
+    -------
+    :class:`File`
+        The file object.
+    """
+    return File(await http.get_file_binary(url.split("?")[0]), filename=filename, spoiler=spoiler)
 
 class File:
     """
