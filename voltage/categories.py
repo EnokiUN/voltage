@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .channel import Channel
+    from .channels import Channel
     from .internals import CacheHandler
     from .types import CategoryPayload
 
