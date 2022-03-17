@@ -37,3 +37,4 @@ from .permissions import (
 )
 from .roles import Role
 from .user import User
+from .message import Message, MessageReply, MessageMasquerade
