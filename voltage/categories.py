@@ -1,5 +1,5 @@
 from __future__ import annotations
-from types import TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .types import CategoryPayload
@@ -7,6 +7,19 @@ if TYPE_CHECKING:
     from .channel import Channel
 
 class Category:
+    """
+    A class that represents a Voltage category.
+
+    Attributes
+    ----------
+    name: :class:`str`
+        The name of the category.
+    description: :class:`str`
+        The name of the category.
+    channels: List[:class:`Channel`]
+        A list of all channels in the category.
+    """
+    __slots__ = ('name', 'id', 'channel_ids', 'cache')
     def __init__(self, data: CategoryPayload, cache: CacheHandler):
         self.name = data['title']
         self.id = data['id']
