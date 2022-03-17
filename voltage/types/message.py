@@ -6,7 +6,7 @@ from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
     from .embed import EmbedPayload
-    from .file import FileMetadataPayload
+    from .file import FilePayload
 
 
 class ContentPayload(TypedDict):
@@ -28,7 +28,7 @@ class MessagePayload(TypedDict):
     channel: str
     author: str
     content: Union[str, ContentPayload]
-    attachments: NotRequired[List[FileMetadataPayload]]
+    attachments: NotRequired[List[FilePayload]]
     edited: NotRequired[EditedPayload]
     embeds: NotRequired[List[EmbedPayload]]
     mentions: NotRequired[List[str]]
