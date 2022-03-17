@@ -55,3 +55,15 @@ class PresenseType(enum.Enum):
     idle = "Idle"
     online = "Online"
     invisible = "Invisible"
+
+class RelationshipType(enum.Enum):
+    """
+    An enum which represents the type of a relationship between two users.
+    """
+    friend = "Friend"
+    blocked = "Blocked"
+    blocked_other = "BlockedOther"
+    incoming_request = "Incoming"
+    outgoing_request = "Outgoing"
+    user = "User"
+    none = "None"

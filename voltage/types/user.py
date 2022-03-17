@@ -37,6 +37,6 @@ class UserPayload(TypedDict):
     flags: NotRequired[int]
 
 
-class UserProfilePayload(UserPayload):
+class UserProfilePayload(TypedDict):
     content: NotRequired[str]
     background: NotRequired[FilePayload]
