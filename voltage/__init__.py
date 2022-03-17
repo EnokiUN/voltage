@@ -24,3 +24,4 @@ from .permissions import (
     channel_permissions,
     server_permissions,
 )
+from .roles import Role
