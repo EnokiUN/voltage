@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Literal, Tuple, TypedDict
 
-from typing_extensions import NotRequired
+from typing_extensions import NotRequired, Required
 
 from voltage.types.channel import CategoryPayload
 
@@ -28,10 +28,16 @@ class MemberPayload(_MemberBase):
 PermissionPayload = Tuple[int, int]
 
 
-class RolePayload(TypedDict):
+class PartialRolePayload(TypedDict):
     name: str
     permissions: PermissionPayload
 
+class RolePayload(TypedDict):
+    name: str
+    permissions: PermissionPayload
+    colour: NotRequired[str]
+    hoist: NotRequired[bool]
+    rank: int
 
 class InvitePayload(TypedDict):
     type: Literal["SERVER"]
