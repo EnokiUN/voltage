@@ -11,6 +11,7 @@ from .file import File, get_file_from_url
 if TYPE_CHECKING:
     from .internals import HTTPHandler
     from .types import (
+        EmbedPayload,
         ImageEmbedPayload,
         SendableEmbedPayload,
         TextEmbedPayload,
@@ -120,6 +121,32 @@ class NoneEmbed:
 
 
 Embed = Union[WebsiteEmbed, ImageEmbed, TextEmbed, NoneEmbed]
+
+def create_embed(data: EmbedPayload, http: HTTPHandler) -> Embed:
+    """
+    A function that creates an embed from a dict.
+    You shouldn't run this method yourself.
+
+    Parameters
+    ----------
+    data: EmbedPayload
+        The embed data.
+    http: HTTPHandler
+        The http handler.
+
+    Returns
+    -------
+    Embed
+        The embed.
+    """
+    if data["type"] == "Website":
+        return WebsiteEmbed(data)
+    elif data["type"] == "Image":
+        return ImageEmbed(data)
+    elif data["type"] == "Text":
+        return TextEmbed(data, http)
+    else:
+        return NoneEmbed()
 
 
 class SendableEmbed:  # It's Zoma's fault the name is this long.
