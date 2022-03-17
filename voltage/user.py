@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple, Optional
 
-from .asset import Asset
+from .asset import Asset, PartialAsset
 from .enums import PresenceType, RelationshipType
 from .internals import UserFlags
 from .messageable import Messageable
@@ -113,9 +113,9 @@ class User(Messageable):
         )
 
         self.masquerade_name: Optional[str] = None
-        self.masquerade_avatar: Optional[Asset] = None
+        self.masquerade_avatar: Optional[PartialAsset] = None
 
-    async def set_masquerade(self, name: str, avatar: Asset):
+    async def set_masquerade(self, name: str, avatar: PartialAsset):
         """
         A method which sets a user's masquerade.
 
@@ -123,7 +123,7 @@ class User(Messageable):
         ----------
         name: :class:`str`
             The masquerade name.
-        avatar: :class:`Asset`
+        avatar: :class:`PartialAsset`
             The masquerade avatar.
         """
         self.masquerade_name = name

@@ -81,6 +81,7 @@ class Messageable:  # Really missing rust traits rn :(
         """
         embeds = [embed] if embed else embeds
         replies = [reply] if reply else replies
+        attachments = [attachment] if attachment else attachments
 
         message = await self.cache.http.send_message(
             await self.get_id(), content, embeds=embeds, attachments=attachments, replies=replies, masquerade=masquerade
