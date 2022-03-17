@@ -6,7 +6,7 @@ from .asset import Asset
 
 # Internal imports
 from .enums import EmbedType
-from .file import File
+from .file import File, get_file_from_url
 
 if TYPE_CHECKING:
     from .internals import HTTPHandler
@@ -185,9 +185,5 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
             if isinstance(self.media, File):
                 embed["media"] = await self.media.get_id(http)
             else:
-                embed["media"] = (
-                    await http.upload_file(
-                        (await http.get_file_binary(self.media.split("?")[0])), "Embed Attachment", "attachments"
-                    )
-                )["id"]
+                embed["media"] = await get_file_from_url(http, self.media).get_id()
         return embed
