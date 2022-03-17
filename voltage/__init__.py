@@ -29,3 +29,4 @@ from .invites import Invite
 from .categories import Category
 from .messageable import Messageable
 from .user import User
+from .channels import SavedMessageChannel, DMChannel, GroupDMChannel, TextChannel, VoiceChannel, create_channel
