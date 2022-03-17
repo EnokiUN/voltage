@@ -6,7 +6,7 @@ from .permissions import ServerPermissions, ChannelPermissions
 from .internals import NotSupplied
 
 if TYPE_CHECKING:
-    from .types import RolePayload
+    from .types import RolePayload, OnServerRoleUpdatePayload
     from .internals import HTTPHandler
     from .server import Server
 
@@ -42,7 +42,7 @@ class Role:
     def __init__(self, data: RolePayload, id: str, server: Server, http: HTTPHandler):
         self.id = id
         self.name = data['name']
-        self.colour = data.get('colour', "0")
+        self.colour = data.get('colour')
         self.hoist = data.get('hoist', False)
         self.rank = data['rank']
         self.permissions = ServerPermissions.new_with_flags(data["permissions"][0])
@@ -85,6 +85,9 @@ class Role:
         if name is None:
             name = self.name
 
+        if name is None:
+            raise ValueError("You must provide a name") # god forgive me for I have sinned in the name of appeasing pyright.
+
         remove: Optional[Literal["Colour"]] = "Colour" if colour is None else None
         await self.http.edit_role(self.server_id, self.id, name, colour=colour, hoist=hoist, rank=rank, remove=remove)
 
@@ -100,10 +103,20 @@ class Role:
     def __ge__(self, other: Role):
         return self.rank >= other.rank
 
-    async def _update(self, data: RolePayload):
-        self.name = data['name']
-        self.colour = data.get('colour', "0")
-        self.hoist = data.get('hoist', False)
-        self.rank = data['rank']
-        self.permissions = ServerPermissions.new_with_flags(data["permissions"][0])
-        self.channel_permissions = ChannelPermissions.new_with_flags(data["permissions"][1])
+    async def _update(self, data: OnServerRoleUpdatePayload):
+        if clear := data.get('clear'):
+            if clear == "colour":
+                self.colour = None
+
+        if new := data.get('data'):
+            if name := new.get('name'):
+                self.name = name
+            
+            if colour := new.get('colour'):
+                self.colour = colour
+
+            if hoist := new.get('hoist'):
+                self.hoist = hoist
+
+            if rank := new.get('rank'):
+                self.rank = rank
