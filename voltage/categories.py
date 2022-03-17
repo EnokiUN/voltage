@@ -29,3 +29,9 @@ class Category:
     @property
     def channels(self) -> list[Channel]:
         return [self.cache.get_channel(id) for id in self.channel_ids]
+
+    def __repr__(self):
+        return f'<Category {self.name}>'
+
+    def __str__(self):
+        return self.name
