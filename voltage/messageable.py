@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .file import File
     from .internals import CacheHandler
     from .message import Message, MessageMasquerade, MessageReply
-    from .types import SendableEmbedPayload, MessageReplyPayload
+    from .types import MessageReplyPayload, SendableEmbedPayload
 
 
 class Messageable:  # Really missing rust traits rn :(

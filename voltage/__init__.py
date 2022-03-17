@@ -28,6 +28,7 @@ from .embed import Embed, SendableEmbed
 from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType
 from .file import File
 from .invites import Invite
+from .message import Message, MessageMasquerade, MessageReply
 from .messageable import Messageable
 from .permissions import (
     ChannelPermissions,
@@ -37,4 +38,3 @@ from .permissions import (
 )
 from .roles import Role
 from .user import User
-from .message import Message, MessageReply, MessageMasquerade

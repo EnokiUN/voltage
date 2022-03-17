@@ -15,8 +15,8 @@ from ..file import File
 
 if TYPE_CHECKING:
     from ..enums import *
+    from ..message import MessageMasquerade, MessageReply
     from ..types import *
-    from ..message import MessageReply, MessageMasquerade
 
 
 class HTTPHandler:
