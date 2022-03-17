@@ -6,7 +6,7 @@ from .embed import SendableEmbed, create_embed
 from datetime import datetime
 
 if TYPE_CHECKING:
-    from .types import MessageReplyPayload, MessagePayload, SendableEmbedPayload, OnMessageUpdatePayload
+    from .types import MessageReplyPayload, MessagePayload, SendableEmbedPayload, OnMessageUpdateDataPayload
     from .internals import CacheHandler
     from .file import File
 
@@ -152,11 +152,11 @@ class Message:
         replies = MessageReply(self, mention)
 
         message = await self.cache.http.send_message(
-            self.channel.id, content, embeds=embeds, attachments=attachments, replies=replies, masquerade=masquerade
+            self.channel.id, content, embeds=embeds, attachments=attachments, replies=[replies], masquerade=masquerade
         )
         return self.cache.add_messsage(message)
 
-    def _update(self, data: OnMessageUpdatePayload):
+    def _update(self, data: OnMessageUpdateDataPayload):
         if new := data.get('data'):
             if content := new.get('content'):
                 self.content = content

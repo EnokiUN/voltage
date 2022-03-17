@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from .embed import Embed, SendableEmbed
     from .file import File
     from .internals import CacheHandler
-    from .messages import Message, MessageMasquerade, MessageReply
-    from .types import SendableEmbedPayload
+    from .message import Message, MessageMasquerade, MessageReply
+    from .types import SendableEmbedPayload, MessageReplyPayload
 
 
 class Messageable:  # Really missing rust traits rn :(
@@ -49,7 +49,7 @@ class Messageable:  # Really missing rust traits rn :(
         attachment: Optional[Union[File, str]] = None,
         attachments: Optional[List[Union[File, str]]] = None,
         reply: Optional[MessageReply] = None,
-        replies: Optional[List[MessageReply]] = None,
+        replies: Optional[List[Union[MessageReply, MessageReplyPayload]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
     ) -> Message:  # YEAH BABY, THAT'S WHAT WE'VE BEEN WAITING FOR, THAT'S WHAT IT'S ALL ABOUT, WOOOOOOOOOOOOOOOO
         """
