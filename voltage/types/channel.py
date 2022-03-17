@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, TypedDict, Union
+from typing import TYPE_CHECKING, List, Literal, TypedDict, Union, Dict
 
 from typing_extensions import NotRequired
 
@@ -42,7 +42,7 @@ class TextChannelPayload(BaseChannelPayload):
     description: NotRequired[str]
     icon: NotRequired[FilePayload]
     default_permissions: NotRequired[int]
-    role_permissions: NotRequired[int]
+    role_permissions: NotRequired[Dict[str, int]]
     last_message: NotRequired[str]
     channel_type: Literal["TextChannel"]
 
