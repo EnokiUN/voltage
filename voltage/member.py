@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, Optional, Union, Any
 
 # Internal imports
 from .user import User
@@ -38,7 +38,7 @@ class Member(User):
         self.nickname = data.get('nickname')
 
         if av := data.get('avatar'):
-            self.server_avatar = Asset(av, cache.http)
+            self.server_avatar: Optional[Asset] = Asset(av, cache.http)
         else:
             self.server_avatar = None
 
@@ -91,7 +91,7 @@ class Member(User):
         """
         await self.cache.http.unban_member(self.server.id, self.id)
 
-    async def _update(self, data: OnServerMemberUpdatePayload):
+    async def _update(self, data: Union[Any, OnServerMemberUpdatePayload]): # god bless mypy
         if clear := data.get('clear'):
             if clear == "Nickname":
                 self.nickname = None

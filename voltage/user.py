@@ -80,8 +80,8 @@ class User(Messageable):
 
         self.bot, self.owner = (data.get('bot', False), cache.get_user(data.get('owner_id'), cache)) if data.get('bot') else (False, None)
 
-        self.masquerade_name = None
-        self.masquerade_avatar = None
+        self.masquerade_name: Optional[str] = None
+        self.masquerade_avatar: Optional[Asset] = None
 
     async def set_masquerade(self, name: str, avatar: Asset):
         """
@@ -169,3 +169,4 @@ class User(Messageable):
                 self.avatar = Asset(avatar, self.cache.http)
             if online := new.get('online'):
                 self.online = online
+
