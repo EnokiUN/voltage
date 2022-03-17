@@ -16,6 +16,7 @@ from ..file import File
 if TYPE_CHECKING:
     from ..enums import *
     from ..types import *
+    from ..message import MessageReply, MessageMasquerade
 
 
 class HTTPHandler:
@@ -333,8 +334,8 @@ class HTTPHandler:
         *,
         attachments: Optional[List[Union[str, File]]] = None,
         embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
-        replies: Optional[List[MessageReplyPayload]] = None,
-        masquerade: Optional[MasqueradePayload] = None,
+        replies: Optional[List[Union[MessageReplyPayload, MessageReply]]] = None,
+        masquerade: Optional[Union[MasqueradePayload, MessageMasquerade]] = None,
     ) -> MessagePayload:
         """
         Sends a message to a channel.
@@ -360,9 +361,15 @@ class HTTPHandler:
         if embeds:
             data["embeds"] = await gather(*[self.handle_embed(embed) for embed in embeds])
         if replies:
-            data["replies"] = replies
+            new_replies: List[MessageReplyPayload] = []
+            for i in replies:
+                if isinstance(i, MessageReply):
+                    new_replies.append(i.to_dict())
+                else:
+                    new_replies.append(i)
+            data["replies"] = new_replies
         if masquerade:
-            data["masquerade"] = masquerade
+            data["masquerade"] = masquerade.to_dict() if isinstance(masquerade, MessageMasquerade) else masquerade
         return await self.request("POST", f"channels/{channel_id}/messages", json=data)
 
     async def fetch_messages(
