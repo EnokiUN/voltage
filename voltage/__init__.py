@@ -27,3 +27,4 @@ from .permissions import (
 from .roles import Role
 from .invites import Invite
 from .categories import Category
+from .messageable import Messageable
