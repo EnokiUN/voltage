@@ -53,7 +53,7 @@ class VoiceChannelPayload(BaseChannelPayload):
     description: NotRequired[str]
     icon: NotRequired[FilePayload]
     default_permissions: NotRequired[int]
-    role_permissions: NotRequired[int]
+    role_permissions: NotRequired[Dict[str, int]]
     channel_type: Literal["VoiceChannel"]
 
 
