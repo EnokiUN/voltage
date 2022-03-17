@@ -30,7 +30,7 @@ class WebsiteEmbed:
         The description of the embed.
     url: Optional[str]
         The url of the embed.
-    colour: Optional[int]
+    colour: Optional[str]
         The colour of the embed.
     special: Optional[str]
         The special data of the embed.
@@ -95,7 +95,7 @@ class TextEmbed:
         The description of the embed.
     url: Optional[str]
         The url of the embed.
-    colour: Optional[int]
+    colour: Optional[str]
         The colour of the embed.
     icon_url: Optional[str]
         The icon url of the embed.
@@ -136,7 +136,7 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
         The description of the embed.
     url: Optional[str]
         The url of the embed.
-    colour: Optional[int]
+    colour: Optional[Union[str, int]]
         The colour of the embed.
     icon_url: Optional[str]
         The icon url of the embed.
@@ -149,7 +149,7 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
         title: Optional[str] = None,
         description: Optional[str] = None,
         url: Optional[str] = None,
-        colour: Optional[int] = None,
+        colour: Optional[Union[str, int]] = None,
         icon_url: Optional[str] = None,
         media: Optional[Union[str, File]] = None,
     ):
