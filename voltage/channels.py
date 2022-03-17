@@ -266,7 +266,7 @@ class TextChannel(Channel, Messageable):
         self.nsfw = data.get("nsfw", False)
 
         if last_message := data.get("last_message"):
-            self.last_message = Message(last_message, self.cache)
+            self.last_message = cache.get_message(last_message)
         else:
             self.last_message = None
 
