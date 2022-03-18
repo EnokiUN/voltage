@@ -110,7 +110,7 @@ class Server: # As of writing this this is the final major thing I have to imple
     categories: List[:class:`Category`]
         The server's categories.
     """
-    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'owner', 'nsfw', 'system_messages', 'icon', 'banner', 'members', 'channels', 'roles', 'categories', 'channel_ids', 'member_ids')
+    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'owner', 'nsfw', 'system_messages', 'icon', 'banner', 'members', 'channels', 'roles', 'categories', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
 
     def __init__(self, data: ServerPayload, cache: CacheHandler):
         self.data = data
