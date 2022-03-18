@@ -659,7 +659,7 @@ class HTTPHandler:
             data["nsfw"] = nsfw
         return await self.request("POST", f"servers/{server_id}/channels", json=data)
 
-    async def fetch_invites(self, server_id: str) -> List[InvitePayload]:
+    async def fetch_invites(self, server_id: str) -> List[PartialInvitePayload]:
         """
         Gets the invites of a server.
 

@@ -43,7 +43,7 @@ class RolePayload(TypedDict):
 
 class InvitePayload(TypedDict):
     type: Literal["Server"]
-    serer_id: str
+    server_id: str
     server_name: str
     server_icon: NotRequired[str]
     server_banner: NotRequired[str]
