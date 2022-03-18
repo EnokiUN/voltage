@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .types import (
         MessagePayload,
         MessageReplyPayload,
-        OnMessageUpdateDataPayload,
+        OnMessageUpdatePayload,
         SendableEmbedPayload,
     )
 
@@ -169,11 +169,9 @@ class Message:
         )
         return self.cache.add_messsage(message)
 
-    def _update(self, data: OnMessageUpdateDataPayload):
+    def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):
-            if content := new.get("content"):
-                self.content = content
-            if edited_at := new.get("edited"):
-                self.edited_at = datetime.strptime(edited_at["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
-            if embeds := new.get("embeds"):
-                self.embeds = [create_embed(e, self.cache.http) for e in embeds]
+            if new.get("edited"):
+                self.edited_at = datetime.strptime(new["data"]["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
+            if new.get('content'):
+                self.content = new['content']
