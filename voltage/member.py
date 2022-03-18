@@ -37,6 +37,7 @@ class Member(User):
     roles: List[:class:`Role`]
         The member's roles.
     """
+    __slots__ = ("nickname", "server_avatar", "roles", "server")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
         user = cache.get_user(data["_id"])
@@ -49,7 +50,13 @@ class Member(User):
         else:
             self.server_avatar = None
 
-        self.roles = sorted([server.get_role(i) for i in data.get("roles", [])], key=lambda r: r.rank, reverse=True)
+        roles = []
+        for i in data.get("roles", []):
+            role = server.get_role(i)
+            if role:
+                roles.append(role)
+
+        self.roles = sorted(roles, key=lambda r: r.rank, reverse=True)
 
         self.server = server
 
@@ -110,4 +117,10 @@ class Member(User):
             if new.get("avatar"):
                 self.server_avatar = Asset(new["avatar"], self.cache.http)
             if new.get("roles"):
-                self.roles = sorted([self.server.get_role(i) for i in new["roles"]], key=lambda r: r.rank, reverse=True)
+                roles = []
+                for i in new['roles']:
+                    role = self.server.get_role(i)
+                    if role:
+                        roles.append(role)
+
+                self.roles = sorted(roles, key=lambda r: r.rank, reverse=True)
