@@ -785,12 +785,14 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        role_id: str
+        role_id: :class:`str`
             The id of the role.
-        permissions: int
-            The permissions of the role.
+        server_permissions: :class:`int`
+            The server permissions.
+        channel_permissions: :class:`int`
+            The channel permissions.
         """
         return await self.request(
             "PUT",
@@ -798,7 +800,9 @@ class HTTPHandler:
             json={"permissions": {"server": server_permissions, "channel": channel_permissions}},
         )
 
-    async def set_default_permissions(self, server_id: str, permissions: int):
+    async def set_default_permissions(
+        self, server_id: str, server_permissions: int, channel_permissions: int
+    ):
         """
         Sets the default permissions of a server.
 
@@ -806,10 +810,12 @@ class HTTPHandler:
         ----------
         server_id: str
             The id of the server.
-        permissions: int
-            The permissions of the default role.
+        server_permissions: int
+            The server permissions.
+        channel_permissions: int
+            The channel permissions.
         """
-        return await self.request("PUT", f"servers/{server_id}/default_role", json={"permissions": permissions})
+        return await self.request("PUT", f"servers/{server_id}/default_role", json={"permissions": {"server": server_permissions, "channel": channel_permissions}})
 
     async def create_role(self, server_id: str, name: str) -> RolePayload:
         """
