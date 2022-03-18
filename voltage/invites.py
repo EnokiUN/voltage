@@ -57,7 +57,7 @@ class Invite:
         self.type = data["type"]
         self.payload: Union[InvitePayload, PartialInvitePayload] = data
 
-        self.server_id = data["serer_id"]
+        self.server_id = data["server_id"]
         self.server = cache.get_server(self.server_id)
 
         self.channel_id = data["channel_id"]
