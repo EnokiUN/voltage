@@ -44,7 +44,7 @@ class MessageUpdateDataPayload(BasePayload):
 class OnMessageUpdatePayload(BasePayload):
     id: str
     channel: str
-    message: MessageUpdateDataPayload
+    data: MessageUpdateDataPayload
 
 
 class OnMessageDeletePayload(BasePayload):
