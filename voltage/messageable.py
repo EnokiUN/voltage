@@ -102,7 +102,7 @@ class Messageable:  # Really missing rust traits rn :(
         :class:`Message`
             The message that got fetched.
         """
-        return await self.cache.fetch_message(message_id)
+        return await self.cache.fetch_message(await self.get_id(), message_id)
 
     async def history(
         self,

@@ -416,7 +416,7 @@ class HTTPHandler:
             data["include_users"] = include_users
         return await self.request("GET", f"channels/{channel_id}/messages", params=data)
 
-    async def fetch_message(self, channel_id: str, message_id: str) -> List[MessagePayload]:
+    async def fetch_message(self, channel_id: str, message_id: str) -> MessagePayload:
         """
         Gets a message from a channel.
 
