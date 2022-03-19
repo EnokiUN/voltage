@@ -30,7 +30,7 @@ An example payload bot:
 Installation
 ============
 
-Voltage is available on `pypi <https://pypi.org/project/voltage>`_! 
+Voltage is available on `PyPI <https://pypi.org/project/voltage>`_! 
 
 To install voltage just run:
 
@@ -44,4 +44,4 @@ If you want to install the main branch which may have more features but will be 
 
     $ pip install git+https://github.com/EnokiUN/voltage``
 
-note: installing from github requires the git cli to be available on your machine.
+note: installing from GitHub requires the git cli to be available on your machine.
