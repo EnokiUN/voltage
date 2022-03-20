@@ -44,4 +44,7 @@ If you want to install the main branch which may have more features but will be 
 
     $ pip install git+https://github.com/EnokiUN/voltage``
 
-note: installing from GitHub requires the git cli to be available on your machine.
+.. note::
+    Python 3.7 or higher is required to install voltage.
+
+    Installing from GitHub requires the git cli to be available on your machine.
