@@ -16,6 +16,7 @@ body:
       options:
         - The core library
         - The documentation
+        - Utilities
     validations:
       required: true
   - type: textarea
