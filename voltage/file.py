@@ -46,7 +46,7 @@ class File:
 
         f = voltage.File("image.png", filename="interesting file", spoiler=True)
 
-        await channel.send("Obligatory Message Content", file=f) # Uploads the file to autumn, gets the id and sends it.
+        await channel.send("Obligatory Message Content", attachment=f) # Uploads the file to autumn, gets the id and sends it.
 
     """
 
