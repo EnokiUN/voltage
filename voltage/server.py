@@ -376,7 +376,7 @@ class Server: # As of writing this this is the final major thing I have to imple
         :class:`Member`
             The member with the given ID.
         """
-        return self.cache.fetch_member(self.id, member_id)
+        return await self.cache.fetch_member(self.id, member_id)
 
     async def fetch_bans(self):
         """
