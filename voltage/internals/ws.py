@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 from asyncio import get_event_loop, sleep
+from copy import copy
 from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict
-from copy import copy
 
 from ..enums import RelationshipType
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession, ClientWebSocketResponse
-    from ..channels import GroupDMChannel
 
+    from ..channels import GroupDMChannel
     from ..types.ws import *
     from .cache import CacheHandler
     from .http import HTTPHandler
@@ -141,7 +141,7 @@ class WebSocketHandler:
             await self.dispatch("message_delete", message)
         except KeyError:
             return
-        
+
     async def handle_channelcreate(self, payload: OnChannelCreatePayload):
         """
         Handles the channel create event.
@@ -169,37 +169,37 @@ class WebSocketHandler:
         """
         Handles the group channel join event.
         """
-        channel = self.cache.get_channel(payload['id'])
-        user = self.cache.get_user(payload['user'])
+        channel = self.cache.get_channel(payload["id"])
+        user = self.cache.get_user(payload["user"])
         if isinstance(channel, GroupDMChannel):
             channel.add_recepient(user)
-            await self.dispatch('group_channel_join', channel, user)
+            await self.dispatch("group_channel_join", channel, user)
 
     async def handle_groupchannelleave(self, payload):
         """
         Handles the group channel leave event.
         """
-        channel = self.cache.get_channel(payload['id'])
-        user = self.cache.get_user(payload['user'])
+        channel = self.cache.get_channel(payload["id"])
+        user = self.cache.get_user(payload["user"])
         if isinstance(channel, GroupDMChannel):
             channel.remove_recepient(user)
-            await self.dispatch('group_channel_leave', channel, user)
+            await self.dispatch("group_channel_leave", channel, user)
 
     async def handle_channelstarttyping(self, payload: OnChannelStartTypingPayload):
         """
         Handles the channel start typing event.
         """
-        channel = self.cache.get_channel(payload['id'])
-        user = self.cache.get_user(payload['user'])
-        await self.dispatch('channel_start_typing', channel, user)
+        channel = self.cache.get_channel(payload["id"])
+        user = self.cache.get_user(payload["user"])
+        await self.dispatch("channel_start_typing", channel, user)
 
     async def handle_channelstoptyping(self, payload: OnChannelDeleteTypingPayload):
         """
         Handles the channel stop typing event.
         """
-        channel = self.cache.get_channel(payload['id'])
-        user = self.cache.get_user(payload['user'])
-        await self.dispatch('channel_stop_typing', channel, user)
+        channel = self.cache.get_channel(payload["id"])
+        user = self.cache.get_user(payload["user"])
+        await self.dispatch("channel_stop_typing", channel, user)
 
     async def handle_serverupdate(self, payload: OnServerUpdatePayload):
         """
@@ -256,7 +256,7 @@ class WebSocketHandler:
             old = copy(role)
             role._update(payload)
             await self.dispatch("server_role_update", old, role)
-            
+
     async def handle_serverroledelete(self, payload: OnServerRoleDeletePayload):
         """
         Handles the server role delete event.
@@ -275,4 +275,3 @@ class WebSocketHandler:
         old = copy(user)
         user._update(payload)
         await self.dispatch("user_update", old, user)
-
