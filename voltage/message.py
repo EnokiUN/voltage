@@ -62,6 +62,40 @@ class MessageMasquerade(NamedTuple):
 
 
 class Message:
+    """
+    A class that represents a Voltage message.
+
+    Attributes
+    ----------
+    id: :class:`str`
+        The id of the message.
+    channel: :class:`Channel`
+        The channel the message was sent in.
+    attachments: List[:class:`Asset`]]
+        The attachments of the message.
+    embeds: List[:class:`Embed`]
+        The embeds of the message.
+    content: :class:`str`
+        The content of the message.
+    author: Union[:class:`User`, :class:`Member`]
+        The author of the message.
+    self.replies: List[:class:`Message`]
+        The replies of the message.
+    """
+    __slots__ = (
+        "id",
+        "channel",
+        "attachments",
+        "server",
+        "embeds",
+        "content",
+        "author",
+        "edited_at",
+        "reply_ids",
+        "replies",
+        "cache",
+    )
+
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
@@ -89,7 +123,19 @@ class Message:
         else:
             self.edited_at = None
 
-        self.replies = [cache.get_message(r) for r in data.get("replies", [])]
+        self.reply_ids = data.get("replies", [])
+        self.replies = []
+        for i in self.reply_ids:
+            try:
+                self.replies.append(cache.get_message(i))
+            except KeyError:
+                pass
+
+    async def full_replies(self):
+        """
+        Returns the full list of replies of the message.
+        """
+        return [await self.cache.fetch_message(self.channel.id, i) for i in self.reply_ids]
 
     async def edit(
         self,
