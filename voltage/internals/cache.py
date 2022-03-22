@@ -58,7 +58,7 @@ class CacheHandler:
             for i in self.messages:
                 if getattr(self.messages[i], attr) == value:
                     return self.messages[i]
-            return self.messages[value]
+            raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_channel(self, value: Any, attr: str = "id") -> Channel:
         """
