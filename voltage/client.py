@@ -1,5 +1,7 @@
+from __future__ import annotations
 from asyncio import get_event_loop
 from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
+from re import search
 
 import aiohttp
 
@@ -8,7 +10,6 @@ from .internals import CacheHandler, HTTPHandler, WebSocketHandler
 
 if TYPE_CHECKING:
     from .user import User
-
 
 class Client:
     """
@@ -113,3 +114,25 @@ class Client:
         event = payload["type"].lower()  # Subject to change
         if func := self.raw_listeners.get(event):
             await func(payload)
+
+    async def get_user(self, user: str) -> Optional[User]:
+        """
+        Fetches a user from the cache.
+
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The user's ID, mention or name.
+
+        Returns
+        -------
+        Optional[:class:`User`]
+            The user.
+        """
+        if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", user):
+            return self.cache.get_user(match.group(0))
+        try:
+            return self.cache.get_user(user, "name")
+        except ValueError:
+            return None
+        
