@@ -30,12 +30,24 @@ class File:
 
     Parameters
     ----------
-    f: Union[str, bytes]
-        The file to send.
-    filename: Optional[str]
+    f: Union[:class:`str`, :class:`bytes`]
+        The file to send, can either be a local filename (str) or bytes.
+    filename: Optional[:class:`str`]
         The name of the file.
-    spoiler: Optional[bool]
+    spoiler: Optional[:class:`bool`]
         Whether or not the file is a spoiler.
+
+    Examples
+    --------
+
+    .. code-block:: python3
+
+        import voltage
+
+        f = voltage.File("image.png", filename="interesting file", spoiler=True)
+
+        await channel.send("Obligatory Message Content", attachment=f) # Uploads the file to autumn, gets the id and sends it.
+
     """
 
     __slots__ = ("file", "filename", "spoiler")
@@ -64,13 +76,13 @@ class File:
 
         Parameters
         ----------
-        http: voltage.HTTPHandler
+        http: :class:`HTTPHandler`
             The http handler.
 
         Returns
         -------
-        str
-            The id of the file.
+        :class:`str`
+            The autumn id of the file.
         """
         file = await http.upload_file(self.file, self.filename, "attachments")
         return file["id"]

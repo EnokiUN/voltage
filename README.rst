@@ -25,3 +25,26 @@ An example payload bot:
             await client.send_message(payload['channel'], content="Hi", embed=[embed]) # Adding content since it's required by revolt.
 
     client.run("TOKEN")
+
+============
+Installation
+============
+
+Voltage is available on `PyPI <https://pypi.org/project/voltage>`_! 
+
+To install voltage just run:
+
+.. code-block:: sh
+
+    $ pip install voltage
+
+If you want to install the main branch which may have more features but will be more unstable you run:
+
+.. code-block:: sh
+
+    $ pip install git+https://github.com/EnokiUN/voltage``
+
+.. note::
+    Python 3.8 or higher is required to install voltage.
+
+    Installing from GitHub requires the git cli to be available on your machine.
