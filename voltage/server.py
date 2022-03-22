@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+from re import search
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
 
-from re import search
+from .asset import Asset
+from .categories import Category
+from .invites import Invite
 
 # Internal imports
 from .permissions import ChannelPermissions, ServerPermissions
 from .roles import Role
-from .asset import Asset
-from .categories import Category
-from .invites import Invite
 
 if TYPE_CHECKING:
     from .channels import Channel

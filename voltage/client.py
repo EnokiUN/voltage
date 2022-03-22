@@ -1,7 +1,8 @@
 from __future__ import annotations
+
 from asyncio import get_event_loop
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 from re import search
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 
 import aiohttp
 
@@ -10,6 +11,7 @@ from .internals import CacheHandler, HTTPHandler, WebSocketHandler
 
 if TYPE_CHECKING:
     from .user import User
+
 
 class Client:
     """
@@ -135,4 +137,3 @@ class Client:
             return self.cache.get_user(user, "name")
         except ValueError:
             return None
-        

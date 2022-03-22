@@ -5,10 +5,12 @@ from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict
 
 if TYPE_CHECKING:
-    from ..types import OnReadyPayload, OnMessagePayload
-    from .http import HTTPHandler
-    from .cache import CacheHandler
     from aiohttp import ClientSession, ClientWebSocketResponse
+
+    from ..types import OnMessagePayload, OnReadyPayload
+    from .cache import CacheHandler
+    from .http import HTTPHandler
+
 
 class WebSocketHandler:
     """
