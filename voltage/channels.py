@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from .asset import Asset
 from .enums import ChannelType
-from .internals import CacheHandler, NotSupplied
 from .messageable import Messageable
 from .permissions import ChannelPermissions
 
@@ -22,6 +21,7 @@ if TYPE_CHECKING:
         TextChannelPayload,
         VoiceChannelPayload,
     )
+    from .internals import CacheHandler, NotSupplied
     from .user import User
 
 

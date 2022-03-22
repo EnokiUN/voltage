@@ -65,10 +65,27 @@ class SystemMessages:
     def __init__(self, data: SystemMessagesConfigPayload, cache: CacheHandler):
         self.data = data
         self.cache = cache
-        self.user_joined = cache.get_channel(data['user_joined']) if data.get('user_joined') else None # do this again for user_left, user_banned and user_kicked
-        self.user_left = cache.get_channel(data['user_left']) if data.get('user_left') else None
-        self.user_banned = cache.get_channel(data['user_banned']) if data.get('user_banned') else None
-        self.user_kicked = cache.get_channel(data['user_kicked']) if data.get('user_kicked') else None
+        self.user_joined: Optional[Channel]
+        self.user_left: Optional[Channel]
+        self.user_banned: Optional[Channel]
+        self.user_kicked: Optional[Channel]
+
+        if user_joined := data.get('user_joined'):
+            self.user_joined = cache.get_channel(user_joined)
+        else:
+            self.user_joined = None
+        if user_left := data.get('user_left'):
+            self.user_left = cache.get_channel(user_left)
+        else:
+            self.user_left = None
+        if user_banned := data.get('user_banned'):
+            self.user_banned = cache.get_channel(user_banned)
+        else:
+            self.user_banned = None
+        if user_kicked := data.get('user_kicked'):
+            self.user_kicked = cache.get_channel(user_kicked)
+        else:
+            self.user_kicked = None
         # Thank you copilot :^)
         for i in [self.user_joined, self.user_left, self.user_banned, self.user_kicked]:
             if i:
@@ -110,7 +127,7 @@ class Server: # As of writing this this is the final major thing I have to imple
     categories: List[:class:`Category`]
         The server's categories.
     """
-    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'owner', 'nsfw', 'system_messages', 'icon', 'banner', 'members', 'channels', 'roles', 'categories', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
+    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'owner', 'nsfw', 'system_messages', 'icon', 'banner', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
 
     def __init__(self, data: ServerPayload, cache: CacheHandler):
         self.data = data
@@ -146,8 +163,7 @@ class Server: # As of writing this this is the final major thing I have to imple
 
         self.channel_ids = {i: cache.get_channel(i) for i in data.get('channels', [])}
         self.role_ids = {id: Role(role_data, id, self, cache.http) for id, role_data in data.get('roles', {}).items()}
-        self.member_ids: Dict[str, Member]
-
+        self.member_ids: Dict[str, Member] = {}
 
     def _add_member(self, member: Member):
         """

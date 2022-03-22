@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Union
 
 # Internal imports
@@ -70,7 +71,7 @@ class File:
 
         self.filename = filename
 
-    async def get_id(self, http: "HTTPHandler") -> str:
+    async def get_id(self, http: HTTPHandler) -> str:
         """
         Uploads a file to autumn then returns its id for sending.
 
