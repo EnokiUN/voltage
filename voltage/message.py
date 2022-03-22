@@ -142,7 +142,7 @@ class Message:
         *,
         content: Optional[str] = None,
         embed: Optional[SendableEmbed] = None,
-        embeds: Optional[List[SendableEmbed]],
+        embeds: Optional[List[SendableEmbed]] = None,
     ):
         """
         Edits the message.
