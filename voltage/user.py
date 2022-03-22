@@ -183,7 +183,7 @@ class User(Messageable):
         self.profile = UserProfile(data.get("content"), background)
         return self.profile
 
-    async def _update(self, data: OnUserUpdatePayload):
+    def _update(self, data: OnUserUpdatePayload):
         if clear := data.get("clear"):
             if clear == "ProfileContent":
                 self.profile = UserProfile(None, self.profile.background)

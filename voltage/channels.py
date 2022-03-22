@@ -198,6 +198,26 @@ class GroupDMChannel(Channel, Messageable):
     async def set_role_permission(self):
         raise NotImplementedError
 
+    def add_recepient(self, user: User):
+        """Adds a user to the group direct messages channel.
+
+        Parameters
+        ----------
+        user: :class:`User`
+            The user to add to the group direct messages channel.
+        """
+        self.recipients.append(user)
+
+    def remove_recepient(self, user: User):
+        """Removes a user from the group direct messages channel.
+
+        Parameters
+        ----------
+        user: :class:`User`
+            The user to remove from the group direct messages channel.
+        """
+        self.recipients.remove(user)
+
     def _update(self, data: Any):  # Finally, inner peace.
         if clear := data.get("clear"):
             if clear == "Icon":

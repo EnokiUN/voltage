@@ -105,7 +105,7 @@ class Member(User):
         """
         await self.cache.http.unban_member(self.server.id, self.id)
 
-    async def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
+    def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
         if clear := data.get("clear"):
             if clear == "Nickname":
                 self.nickname = None

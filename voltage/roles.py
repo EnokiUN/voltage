@@ -134,7 +134,7 @@ class Role:
     def __ge__(self, other: Role):
         return self.rank >= other.rank
 
-    async def _update(self, data: OnServerRoleUpdatePayload):
+    def _update(self, data: OnServerRoleUpdatePayload):
         if clear := data.get("clear"):
             if clear == "colour":
                 self.colour = None
