@@ -167,7 +167,7 @@ class Message:
         message = await self.cache.http.send_message(
             self.channel.id, content, embeds=embeds, attachments=attachments, replies=[replies], masquerade=masquerade
         )
-        return self.cache.add_messsage(message)
+        return self.cache.add_message(message)
 
     def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):

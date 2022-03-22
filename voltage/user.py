@@ -96,7 +96,7 @@ class User(Messageable):
         relationships = []
         for i in data.get("relations", []):
             if user := cache.get_user(i["_id"]):
-                relationships.append(Relationship(RelationshipType(i["status"]), cache.get_user(i["_id"])))
+                relationships.append(Relationship(RelationshipType(i["status"]), user))
 
         self.relationships = relationships
 
@@ -109,13 +109,13 @@ class User(Messageable):
         self.profile = UserProfile(None, None)
 
         self.bot, self.owner = (
-            (data.get("bot", False), cache.get_user(data.get("owner_id"), cache)) if data.get("bot") else (False, None)
+            (data.get("bot", False), cache.get_user(data.get("owner_id"))) if data.get("bot") else (False, None)
         )
 
         self.masquerade_name: Optional[str] = None
         self.masquerade_avatar: Optional[PartialAsset] = None
 
-    async def set_masquerade(self, name: str, avatar: PartialAsset):
+    def set_masquerade(self, name: Optional[str], avatar: Optional[PartialAsset]):
         """
         A method which sets a user's masquerade.
 
