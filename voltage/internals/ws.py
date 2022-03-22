@@ -1,13 +1,16 @@
 from __future__ import annotations
+
 from asyncio import get_event_loop, sleep
 from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict
 
 if TYPE_CHECKING:
-    from ..types import OnReadyPayload
-    from .http import HTTPHandler
-    from .cache import CacheHandler
     from aiohttp import ClientSession, ClientWebSocketResponse
+
+    from ..types import OnReadyPayload
+    from .cache import CacheHandler
+    from .http import HTTPHandler
+
 
 class WebSocketHandler:
     """

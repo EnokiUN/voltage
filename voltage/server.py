@@ -14,13 +14,13 @@ if TYPE_CHECKING:
     from .channels import Channel
     from .internals import CacheHandler
     from .member import Member
-    from .user import User
     from .types import (
         BanPayload,
         OnServerUpdatePayload,
         ServerPayload,
         SystemMessagesConfigPayload,
     )
+    from .user import User
 
 
 class ServerBan:  # No idea why this exists tbh
@@ -82,19 +82,19 @@ class SystemMessages:
         self.user_banned: Optional[Channel]
         self.user_kicked: Optional[Channel]
 
-        if user_joined := data.get('user_joined'):
+        if user_joined := data.get("user_joined"):
             self.user_joined = cache.get_channel(user_joined)
         else:
             self.user_joined = None
-        if user_left := data.get('user_left'):
+        if user_left := data.get("user_left"):
             self.user_left = cache.get_channel(user_left)
         else:
             self.user_left = None
-        if user_banned := data.get('user_banned'):
+        if user_banned := data.get("user_banned"):
             self.user_banned = cache.get_channel(user_banned)
         else:
             self.user_banned = None
-        if user_kicked := data.get('user_kicked'):
+        if user_kicked := data.get("user_kicked"):
             self.user_kicked = cache.get_channel(user_kicked)
         else:
             self.user_kicked = None
@@ -140,7 +140,25 @@ class Server:  # As of writing this this is the final major thing I have to impl
     categories: List[:class:`Category`]
         The server's categories.
     """
-    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'nsfw', 'system_messages', 'icon', 'banner', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
+
+    __slots__ = (
+        "data",
+        "cache",
+        "id",
+        "name",
+        "description",
+        "owner_id",
+        "nsfw",
+        "system_messages",
+        "icon",
+        "banner",
+        "channel_ids",
+        "member_ids",
+        "default_channel_permissions",
+        "default_role_permissions",
+        "category_ids",
+        "role_ids",
+    )
 
     def __init__(self, data: ServerPayload, cache: CacheHandler):
         self.data = data
@@ -173,8 +191,8 @@ class Server:  # As of writing this this is the final major thing I have to impl
         else:
             self.banner = None
 
-        self.channel_ids = {i: cache.get_channel(i) for i in data.get('channels', [])}
-        self.role_ids = {id: Role(role_data, id, self, cache.http) for id, role_data in data.get('roles', {}).items()}
+        self.channel_ids = {i: cache.get_channel(i) for i in data.get("channels", [])}
+        self.role_ids = {id: Role(role_data, id, self, cache.http) for id, role_data in data.get("roles", {}).items()}
         self.member_ids: Dict[str, Member] = {}
 
     def _add_member(self, member: Member):
