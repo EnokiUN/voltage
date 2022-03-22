@@ -82,6 +82,7 @@ class Message:
     self.replies: List[:class:`Message`]
         The replies of the message.
     """
+
     __slots__ = (
         "id",
         "channel",
