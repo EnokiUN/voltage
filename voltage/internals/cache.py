@@ -306,6 +306,8 @@ class CacheHandler:
         :class:`Member`
             The member that was added.
         """
+        if server_id not in self.members:
+            self.members[server_id] = {}
         if member := self.members[server_id].get(data["_id"]["user"]):
             return member
         server = self.get_server(server_id)
