@@ -735,6 +735,17 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"servers/{server_id}/members/{member_id}")
 
+    async def fetch_members(self, server_id) -> GetServerMembersPayload:
+        """
+        Gets the members of a server.
+
+        Parameters
+        ----------
+        server_id: :class:`str`
+            The id of the server.
+        """
+        return await self.request("GET", f"servers/{server_id}/members")
+
     async def ban_member(self, server_id: str, member_id: str, *, reason: Optional[str] = None):
         """
         Bans a member.
