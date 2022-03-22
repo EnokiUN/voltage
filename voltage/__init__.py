@@ -31,6 +31,7 @@ from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType
 from .errors import HTTPError, VoltageException
 from .file import File
 from .invites import Invite
+from .member import Member
 from .message import Message, MessageMasquerade, MessageReply
 from .messageable import Messageable
 from .permissions import (
@@ -40,6 +41,5 @@ from .permissions import (
     server_permissions,
 )
 from .roles import Role
-from .user import User
-from .member import Member
 from .server import Server, ServerBan, SystemMessages
+from .user import User

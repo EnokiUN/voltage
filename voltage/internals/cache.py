@@ -374,9 +374,9 @@ class CacheHandler:
         """
         server = self.get_server(server_id)
         data = await self.http.fetch_members(server_id)
-        for member in data['members']:
+        for member in data["members"]:
             self.add_member(server_id, member)
-        for user in data['users']:
+        for user in data["users"]:
             self.add_user(user)
         return server
 
