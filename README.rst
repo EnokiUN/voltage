@@ -4,7 +4,7 @@ Voltage
 
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
-An example payload bot:
+An example bot:
 
 .. code-block:: python3
 
@@ -12,17 +12,17 @@ An example payload bot:
 
     client = voltage.Client()
 
-    @client.listen('ready', raw=True)
+    @client.listen('ready')
     async def on_ready(payload):
-        print("Started bot!")
+        print(f"Logged in as {client.user}")
 
-    @client.listen('message', raw=True)
-    async def on_message(payload):
-        if payload['content'] == 'ping':
-            await client.send_message(payload['channel'], 'pong')
-        if payload['content'] == 'embed':
-            embed = voltage.new_embed(title="Hello World", description="This is an embed")
-            await client.send_message(payload['channel'], content="Hi", embed=[embed]) # Adding content since it's required by revolt.
+    @client.listen('message')
+    async def on_message(message): # doesn't matter what you call the function.
+        if message.content == '-ping':
+            await message.channel.send('pong!')
+        if message.content == '-embed':
+            embed = voltage.SendableEmbed(title="Hello World", description="This is an embed")
+            await message.reply(content="embed", embed=embed) # Obligatory message content.
 
     client.run("TOKEN")
 
