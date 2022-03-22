@@ -74,7 +74,7 @@ class Client:
             if raw:
                 self.raw_listeners[event.lower()] = func
             else:
-                self.listeners[event.lower()] = func # Why would we have more than one listener for the same event?
+                self.listeners[event.lower()] = func  # Why would we have more than one listener for the same event?
             return func
 
         return inner  # Returns the function so the user can use it by itself

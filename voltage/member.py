@@ -41,7 +41,7 @@ class Member(User):
     __slots__ = ("nickname", "server_avatar", "roles", "server")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
-        user = cache.get_user(data["_id"]['user'])
+        user = cache.get_user(data["_id"]["user"])
         make_member_dot_zip(self, user)
 
         self.nickname = data.get("nickname")

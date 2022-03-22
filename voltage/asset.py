@@ -54,7 +54,7 @@ class Asset:
         self.content_type = data.get("content_type")
 
         if http.api_info:
-            url = http.api_info['features']['autumn']['url']
+            url = http.api_info["features"]["autumn"]["url"]
             self.url = f"{url}/{self.tag}/{self.id}"
         else:
             self.url = "" # this cannot happen lmfao

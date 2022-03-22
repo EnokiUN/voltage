@@ -1,18 +1,28 @@
 from __future__ import annotations
-from asyncio import gather, AbstractEventLoop
-from typing import TYPE_CHECKING, Dict, Optional, Any
+
+from asyncio import AbstractEventLoop, gather
+from typing import TYPE_CHECKING, Any, Dict, Optional
+
+from ..channels import Channel, DMChannel, create_channel
+from ..member import Member
+from ..message import Message
+from ..server import Server
+from ..user import User
 
 # Internal imports
 from .http import HTTPHandler
-from ..message import Message
-from ..channels import Channel, DMChannel, create_channel
-from ..user import User
-from ..member import Member
-from ..server import Server
-
 
 if TYPE_CHECKING:
-    from ..types import MessagePayload, ChannelPayload, MemberPayload, UserPayload, DMChannelPayload, ServerPayload, OnReadyPayload
+    from ..types import (
+        ChannelPayload,
+        DMChannelPayload,
+        MemberPayload,
+        MessagePayload,
+        OnReadyPayload,
+        ServerPayload,
+        UserPayload,
+    )
+
 
 class CacheHandler:
     """
@@ -24,6 +34,7 @@ class CacheHandler:
 
     It provides methods to get the object from the cache, or to add it to the cache.
     """
+
     def __init__(self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000):
         self.http = http
         self.message_limit = message_limit
@@ -247,7 +258,7 @@ class CacheHandler:
         :class:`Message`
             The message that was added.
         """
-        if message := self.messages.get(data['_id']):
+        if message := self.messages.get(data["_id"]):
             return message
         message = Message(data, self)
         self.messages[message.id] = message
@@ -269,7 +280,7 @@ class CacheHandler:
         :class:`Channel`
             The channel that was added.
         """
-        if channel := self.channels.get(data['_id']):
+        if channel := self.channels.get(data["_id"]):
             return channel
         channel = create_channel(data, self)
         self.channels[channel.id] = channel
@@ -291,7 +302,7 @@ class CacheHandler:
         :class:`Member`
             The member that was added.
         """
-        if member := self.members.get(data['_id']["user"]):
+        if member := self.members.get(data["_id"]["user"]):
             return member
         server = self.get_server(server_id)
         member = Member(data, server, self)
@@ -312,7 +323,7 @@ class CacheHandler:
         :class:`Server`
             The server that was added.
         """
-        if server := self.servers.get(data['_id']):
+        if server := self.servers.get(data["_id"]):
             return server
         server = Server(data, self)
         self.servers[server.id] = server

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from asyncio import get_event_loop, sleep
 from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict

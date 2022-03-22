@@ -116,7 +116,6 @@ class User(Messageable):
         self.masquerade_name: Optional[str] = None
         self.masquerade_avatar: Optional[PartialAsset] = None
 
-
     def set_masquerade(self, name: Optional[str], avatar: Optional[PartialAsset]):
         """
         A method which sets a user's masquerade.
