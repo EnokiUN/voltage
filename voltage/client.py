@@ -13,20 +13,10 @@ class Client:
 
     Attributes
     ----------
-    client: aiohttp.ClientSession
-        The aiohttp client session.
-    http: voltage.HTTPHandler
-        The http handler.
-    ws: voltage.WebSocketHandler
-        The websocket handler.
-    listeners: dict
-        A dictionary of listeners.
-    raw_listeners: dict
-        A dictionary of raw listeners.
-    loop: asyncio.AbstractEventLoop
-        The event loop.
-    cache: voltage.CacheHandler TODO
-        The cache handler.
+    cache_message_limit: :class:`int`
+        The maximum amount of messages to cache.
+    fancy_ready: :class:`bool`
+        Whether or not to print a fancy ready message.
 
     Methods
     -------
@@ -36,12 +26,14 @@ class Client:
         Runs the client.
     """
 
-    def __init__(self):
+    def __init__(self, *, cache_message_limit: int = 5000, fancy_ready: bool = True):
+        self.cache_message_limit = cache_message_limit
+        self.fancy_ready = fancy_ready
         self.client = aiohttp.ClientSession()
         self.http: HTTPHandler
         self.ws: WebSocketHandler
-        self.listeners = {}
-        self.raw_listeners = {}
+        self.listeners: Dict[str, Callable[..., Any]] = {}
+        self.raw_listeners: Dict[str, Callable[[Dict], Any]] = {}
         self.loop = get_event_loop()
         self.cache: CacheHandler
 
@@ -59,13 +51,11 @@ class Client:
             Whether or not to listen for raw events.
         """
 
-        def inner(func: Callable[[Dict[Any, Any]], Any]):
+        def inner(func: Callable[..., Any]):
             if raw:
-                self.raw_listeners[
-                    event.lower()
-                ] = func  # Only 1 raw listener per event because the raw listener dispatches the processed payload
+                self.raw_listeners[event.lower()] = func
             else:
-                self.listeners[event.lower()].append(func)  # Multiple listeners for the non-raw
+                self.listeners[event.lower()] = func # Why would we have more than one listener for the same event?
             return func
 
         return inner  # Returns the function so the user can use it by itself
@@ -80,14 +70,16 @@ class Client:
             The bot token.
         """
         self.http = HTTPHandler(self.client, token)
-        self.ws = WebSocketHandler(self.client, self.http, token, self.dispatch, self.raw_dispatch)
+        self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
+        self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
         self.loop.run_until_complete(self.ws.connect())
 
     async def dispatch(self, event: str, *args, **kwargs):
-        for func in self.listeners[event.lower()]:
-            await func(*args, **kwargs)
+        event = event.lower()
+        if func := self.listeners.get(event):
+            func(*args, **kwargs)
 
     async def raw_dispatch(self, payload: Dict[Any, Any]):
         event = payload["type"].lower()  # Subject to change
-        if event.lower() in self.raw_listeners:
-            await self.raw_listeners[event.lower()](payload)
+        if func := self.raw_listeners.get(event):
+            func(payload)
