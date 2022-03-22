@@ -95,7 +95,7 @@ class CacheHandler:
                     return self.channels[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_member(self, value: Any, attr: str = "id") -> Member:
+    def get_member(self, value: Any, attr: str = "id", server_id: Optional[str] = None) -> Member:
         """
         Gets a member from the cache.
 
@@ -105,6 +105,8 @@ class CacheHandler:
             The value of the attr of the desired member.
         attr: :class:`str`
             The attribute of the member to get.
+        server_id: Optional[:class:`str`]
+            The id of the server the member is in.
 
         Returns
         -------
@@ -114,9 +116,9 @@ class CacheHandler:
         if attr == "id":
             return self.members[value]
         else:
-            for i in self.members:
-                if getattr(self.members[i], attr) == value:
-                    return self.members[i]
+            for i in self.members.values():
+                if getattr(i, attr) == value and i.server.id == server_id:
+                    return i
             raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_server(self, value: Any, attr: str = "id") -> Server:
