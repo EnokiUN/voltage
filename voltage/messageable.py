@@ -86,7 +86,7 @@ class Messageable:  # Really missing rust traits rn :(
         message = await self.cache.http.send_message(
             await self.get_id(), content, embeds=embeds, attachments=attachments, replies=replies, masquerade=masquerade
         )
-        return self.cache.add_messsage(message)
+        return self.cache.add_message(message)
 
     async def fetch_message(self, message_id: str) -> Message:
         """
