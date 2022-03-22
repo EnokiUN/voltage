@@ -12,6 +12,7 @@ from ..embed import SendableEmbed
 # Internal imports
 from ..errors import HTTPError
 from ..file import File
+from ..message import MessageReply, MessageMasquerade
 
 if TYPE_CHECKING:
     from ..enums import *

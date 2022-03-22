@@ -4,7 +4,7 @@ from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict
 
 if TYPE_CHECKING:
-    from ..types import OnReadyPayload
+    from ..types import OnReadyPayload, OnMessagePayload
     from .http import HTTPHandler
     from .cache import CacheHandler
     from aiohttp import ClientSession, ClientWebSocketResponse
@@ -95,3 +95,9 @@ class WebSocketHandler:
         """
         await self.cache.handle_ready_caching(payload)
         await self.dispatch("ready")
+
+    async def handle_message(self, payload: OnMessagePayload):
+        """
+        Handles the message event.
+        """
+        await self.dispatch("message", self.cache.add_message(payload))
