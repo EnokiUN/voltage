@@ -1,13 +1,23 @@
 from __future__ import annotations
-from asyncio import get_running_loop, gather
-from typing import TYPE_CHECKING, Dict, Optional, Any
+
+from asyncio import gather, get_running_loop
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 # Internal imports
 from .http import HTTPHandler
 
 if TYPE_CHECKING:
-    from .. import (Message, Channel, Server, Member, User, DMChannel, create_channel)
-    from ..types import MessagePayload, ChannelPayload, MemberPayload, UserPayload, DMChannelPayload, ServerPayload, OnReadyPayload
+    from .. import Channel, DMChannel, Member, Message, Server, User, create_channel
+    from ..types import (
+        ChannelPayload,
+        DMChannelPayload,
+        MemberPayload,
+        MessagePayload,
+        OnReadyPayload,
+        ServerPayload,
+        UserPayload,
+    )
+
 
 class CacheHandler:
     """
@@ -19,6 +29,7 @@ class CacheHandler:
 
     It provides methods to get the object from the cache, or to add it to the cache.
     """
+
     def __init__(self, http: HTTPHandler, message_limit: int = 5000):
         self.http = http
         self.message_limit = message_limit
@@ -370,9 +381,9 @@ class CacheHandler:
         """
         server = self.get_server(server_id)
         data = await self.http.fetch_members(server_id)
-        for member in data['members']:
+        for member in data["members"]:
             self.add_member(server_id, member)
-        for user in data['users']:
+        for user in data["users"]:
             self.add_user(user)
         return server
 

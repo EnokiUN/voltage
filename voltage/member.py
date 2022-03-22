@@ -37,6 +37,7 @@ class Member(User):
     roles: List[:class:`Role`]
         The member's roles.
     """
+
     __slots__ = ("nickname", "server_avatar", "roles", "server")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
@@ -118,7 +119,7 @@ class Member(User):
                 self.server_avatar = Asset(new["avatar"], self.cache.http)
             if new.get("roles"):
                 roles = []
-                for i in new['roles']:
+                for i in new["roles"]:
                     role = self.server.get_role(i)
                     if role:
                         roles.append(role)

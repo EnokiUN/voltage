@@ -1,20 +1,28 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Dict, List, Optional, Literal
+
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional
+
+from .asset import Asset
+from .categories import Category
+from .invites import Invite
 
 # Internal imports
 from .permissions import ChannelPermissions, ServerPermissions
-from .categories import Category
-from .asset import Asset
 from .roles import Role
-from .invites import Invite
 
 if TYPE_CHECKING:
-    from .types import BanPayload, SystemMessagesConfigPayload, ServerPayload, OnServerUpdatePayload
+    from .channels import Channel
     from .internals import CacheHandler
     from .member import Member
-    from .channels import Channel
+    from .types import (
+        BanPayload,
+        OnServerUpdatePayload,
+        ServerPayload,
+        SystemMessagesConfigPayload,
+    )
 
-class ServerBan: # No idea why this exists tbh
+
+class ServerBan:  # No idea why this exists tbh
     """
     A class which represents a Voltage server ban.
 
@@ -27,20 +35,22 @@ class ServerBan: # No idea why this exists tbh
     reason: Optional[:class:`str`]
         The reason for the ban.
     """
-    __slots__ = ('data', 'cache', 'reason', 'user', 'server')
+
+    __slots__ = ("data", "cache", "reason", "user", "server")
 
     def __init__(self, data: BanPayload, cache: CacheHandler):
         self.data = data
         self.cache = cache
-        self.reason = data.get('reason')
-        self.user = cache.get_user(data['_id']['user'])
-        self.server = cache.get_server(data['_id']['server'])
+        self.reason = data.get("reason")
+        self.user = cache.get_user(data["_id"]["user"])
+        self.server = cache.get_server(data["_id"]["server"])
 
     async def unban(self):
         """
         Unbans the user from the server.
         """
         await self.cache.http.unban_member(self.server.id, self.user.id)
+
 
 class SystemMessages:
     """
@@ -60,15 +70,18 @@ class SystemMessages:
     user_kicked: Optional[:class:`Channel`]
         The channel the user kicked message is configured to.
     """
-    __slots__ = ('data', 'cache', 'server', 'user_joined', 'user_left', 'user_banned', 'user_kicked')
+
+    __slots__ = ("data", "cache", "server", "user_joined", "user_left", "user_banned", "user_kicked")
 
     def __init__(self, data: SystemMessagesConfigPayload, cache: CacheHandler):
         self.data = data
         self.cache = cache
-        self.user_joined = cache.get_channel(data['user_joined']) if data.get('user_joined') else None # do this again for user_left, user_banned and user_kicked
-        self.user_left = cache.get_channel(data['user_left']) if data.get('user_left') else None
-        self.user_banned = cache.get_channel(data['user_banned']) if data.get('user_banned') else None
-        self.user_kicked = cache.get_channel(data['user_kicked']) if data.get('user_kicked') else None
+        self.user_joined = (
+            cache.get_channel(data["user_joined"]) if data.get("user_joined") else None
+        )  # do this again for user_left, user_banned and user_kicked
+        self.user_left = cache.get_channel(data["user_left"]) if data.get("user_left") else None
+        self.user_banned = cache.get_channel(data["user_banned"]) if data.get("user_banned") else None
+        self.user_kicked = cache.get_channel(data["user_kicked"]) if data.get("user_kicked") else None
         # Thank you copilot :^)
         for i in [self.user_joined, self.user_left, self.user_banned, self.user_kicked]:
             if i:
@@ -77,7 +90,8 @@ class SystemMessages:
         else:
             self.server = None
 
-class Server: # As of writing this this is the final major thing I have to implement before the lib is usable and sadly I am traveling in less than 12 hours so it's a race with time.
+
+class Server:  # As of writing this this is the final major thing I have to implement before the lib is usable and sadly I am traveling in less than 12 hours so it's a race with time.
     """
     A class which represents a Voltage server.
 
@@ -110,44 +124,66 @@ class Server: # As of writing this this is the final major thing I have to imple
     categories: List[:class:`Category`]
         The server's categories.
     """
-    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'owner', 'nsfw', 'system_messages', 'icon', 'banner', 'members', 'channels', 'roles', 'categories', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
+
+    __slots__ = (
+        "data",
+        "cache",
+        "id",
+        "name",
+        "description",
+        "owner_id",
+        "owner",
+        "nsfw",
+        "system_messages",
+        "icon",
+        "banner",
+        "members",
+        "channels",
+        "roles",
+        "categories",
+        "channel_ids",
+        "member_ids",
+        "default_channel_permissions",
+        "default_role_permissions",
+        "category_ids",
+        "role_ids",
+    )
 
     def __init__(self, data: ServerPayload, cache: CacheHandler):
         self.data = data
         self.cache = cache
-        self.id = data['_id']
-        self.name = data['name']
-        self.description = data.get('description')
-        self.owner_id = data['owner']
+        self.id = data["_id"]
+        self.name = data["name"]
+        self.description = data.get("description")
+        self.owner_id = data["owner"]
         self.owner = cache.get_user(self.owner_id)
-        self.nsfw = data.get('nsfw', False)
+        self.nsfw = data.get("nsfw", False)
 
         self.system_messages: Optional[SystemMessages]
-        if system_messages := data.get('system_messages'):
+        if system_messages := data.get("system_messages"):
             self.system_messages = SystemMessages(system_messages, cache)
         else:
             self.system_messages = None
 
-        self.default_channel_permissions = ChannelPermissions.new_with_flags(data['default_permissions'][0])
-        self.default_role_permissions = ServerPermissions.new_with_flags(data['default_permissions'][1])
-        self.category_ids = {i['id']: Category(i, cache) for i in data.get('categories', [])}
+        self.default_channel_permissions = ChannelPermissions.new_with_flags(data["default_permissions"][0])
+        self.default_role_permissions = ServerPermissions.new_with_flags(data["default_permissions"][1])
+        self.category_ids = {i["id"]: Category(i, cache) for i in data.get("categories", [])}
 
         self.icon: Optional[Asset]
-        if icon := data.get('icon'):
+        if icon := data.get("icon"):
             self.icon = Asset(icon, cache.http)
         else:
             self.icon = None
 
         self.banner: Optional[Asset]
-        if banner := data.get('banner'):
+        if banner := data.get("banner"):
             self.banner = Asset(banner, cache.http)
         else:
             self.banner = None
 
-        self.channel_ids = {i: cache.get_channel(i) for i in data.get('channels', [])}
-        self.role_ids = {id: Role(role_data, id, self, cache.http) for id, role_data in data.get('roles', {}).items()}
+        self.channel_ids = {i: cache.get_channel(i) for i in data.get("channels", [])}
+        self.role_ids = {id: Role(role_data, id, self, cache.http) for id, role_data in data.get("roles", {}).items()}
         self.member_ids: Dict[str, Member]
-
 
     def _add_member(self, member: Member):
         """
@@ -158,7 +194,7 @@ class Server: # As of writing this this is the final major thing I have to imple
         self.member_ids[member.id] = member
 
     def _update(self, data: OnServerUpdatePayload):
-        if clear := data.get('clear'):
+        if clear := data.get("clear"):
             if clear == "Icon":
                 self.icon = None
             elif clear == "Banner":
@@ -166,27 +202,27 @@ class Server: # As of writing this this is the final major thing I have to imple
             elif clear == "Description":
                 self.description = None
 
-        if new := data.get('data'):
-            if owner := new.get('owner'):
+        if new := data.get("data"):
+            if owner := new.get("owner"):
                 self.owner_id = owner
                 self.owner = self.cache.get_user(owner)
-            if name := new.get('name'):
+            if name := new.get("name"):
                 self.name = name
-            if description := new.get('description'):
+            if description := new.get("description"):
                 self.description = description
-            if nsfw := new.get('nsfw'):
+            if nsfw := new.get("nsfw"):
                 self.nsfw = nsfw
-            if icon := new.get('icon'):
+            if icon := new.get("icon"):
                 self.icon = Asset(icon, self.cache.http)
-            if banner := new.get('banner'):
+            if banner := new.get("banner"):
                 self.banner = Asset(banner, self.cache.http)
-            if system_messages := new.get('system_messages'):
+            if system_messages := new.get("system_messages"):
                 self.system_messages = SystemMessages(system_messages, self.cache)
-            if default_permissions := new.get('default_permissions'):
+            if default_permissions := new.get("default_permissions"):
                 self.default_channel_permissions = ChannelPermissions.new_with_flags(default_permissions[0])
                 self.default_role_permissions = ServerPermissions.new_with_flags(default_permissions[1])
-            if categories := new.get('categories'):
-                self.category_ids = {i['id']: Category(i, self.cache) for i in categories}
+            if categories := new.get("categories"):
+                self.category_ids = {i["id"]: Category(i, self.cache) for i in categories}
 
     # do the same for members, roles, and categories
     @property
@@ -221,7 +257,7 @@ class Server: # As of writing this this is the final major thing I have to imple
         return self.name
 
     def __repr__(self):
-        return f'<Server id={self.id} name={self.name}>'
+        return f"<Server id={self.id} name={self.name}>"
 
     def get_channel(self, channel_id: str) -> Optional[Channel]:
         """
@@ -287,7 +323,9 @@ class Server: # As of writing this this is the final major thing I have to imple
         """
         return self.category_ids.get(category_id)
 
-    async def set_default_permissions(self, channel_permissions: ChannelPermissions, role_permissions: ServerPermissions):
+    async def set_default_permissions(
+        self, channel_permissions: ChannelPermissions, role_permissions: ServerPermissions
+    ):
         """
         Sets the default permissions for the server.
 
@@ -300,7 +338,9 @@ class Server: # As of writing this this is the final major thing I have to imple
         """
         await self.cache.http.set_default_permissions(self.id, channel_permissions.flags, role_permissions.flags)
 
-    async def create_channel(self, name: str, description: Optional[str] = None, nsfw: bool = False, type: Literal['Text', 'Voice'] = 'Text'):
+    async def create_channel(
+        self, name: str, description: Optional[str] = None, nsfw: bool = False, type: Literal["Text", "Voice"] = "Text"
+    ):
         """
         Creates a channel in this server.
 
@@ -360,7 +400,7 @@ class Server: # As of writing this this is the final major thing I have to imple
             A list of all the invites for this server.
         """
         data = await self.cache.http.fetch_invites(self.id)
-        return [Invite.from_partial(i['_id'], i, self.cache) for i in data]
+        return [Invite.from_partial(i["_id"], i, self.cache) for i in data]
 
     async def fetch_member(self, member_id: str) -> Member:
         """
