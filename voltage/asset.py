@@ -58,7 +58,7 @@ class Asset:
             url = http.api_info['features']['autumn']['url']
             self.url = f"{url}/{self.tag}/{self.id}"
         else:
-            self.url = None
+            self.url = "" # this cannot happen lmfao
 
     async def get_binary(self) -> bytes:
         """
