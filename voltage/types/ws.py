@@ -130,7 +130,7 @@ class OnServerRoleUpdatePayload(BasePayload):
     clear: Literal["Color"]
 
 
-class OnServerRoleDeleteEventPayload(BasePayload):
+class OnServerRoleDeletePayload(BasePayload):
     id: str
     role_id: str
 
