@@ -27,7 +27,7 @@ class MessagePayload(TypedDict):
     _id: str
     channel: str
     author: str
-    content: Union[str, ContentPayload]
+    content: str
     attachments: NotRequired[List[FilePayload]]
     edited: NotRequired[EditedPayload]
     embeds: NotRequired[List[EmbedPayload]]
