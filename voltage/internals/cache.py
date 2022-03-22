@@ -3,6 +3,8 @@ from __future__ import annotations
 from asyncio import AbstractEventLoop, gather
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
+from attr import s
+
 from ..channels import Channel, DMChannel, create_channel
 from ..member import Member
 from ..message import Message
@@ -42,7 +44,7 @@ class CacheHandler:
 
         self.messages: Dict[str, Message] = {}
         self.channels: Dict[str, Channel] = {}
-        self.members: Dict[str, Member] = {}
+        self.members: Dict[str, Dict[str, Member]] = {}
         self.servers: Dict[str, Server] = {}
         self.users: Dict[str, User] = {}
         self.dm_channels: Dict[str, DMChannel] = {}
@@ -95,18 +97,18 @@ class CacheHandler:
                     return self.channels[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_member(self, value: Any, attr: str = "id", server_id: Optional[str] = None) -> Member:
+    def get_member(self, server_id: str, value: Any, attr: str = "id") -> Member:
         """
         Gets a member from the cache.
 
         Parameters
         ----------
+        server_id: :class:`str`
+            The id of the server the member is in.
         value: Any
             The value of the attr of the desired member.
         attr: :class:`str`
             The attribute of the member to get.
-        server_id: Optional[:class:`str`]
-            The id of the server the member is in.
 
         Returns
         -------
@@ -114,10 +116,10 @@ class CacheHandler:
             The member object from the cache.
         """
         if attr == "id":
-            return self.members[value]
+            return self.members[server_id][value]
         else:
-            for i in self.members.values():
-                if getattr(i, attr) == value and i.server.id == server_id:
+            for i in self.members[server_id].values():
+                if getattr(i, attr) == value:
                     return i
             raise ValueError(f"No channel with {attr} {value} found.")
 
@@ -224,7 +226,7 @@ class CacheHandler:
         :class:`Member`
             The member with the given id.
         """
-        if member := self.members.get(member_id):
+        if member := self.members[server_id].get(member_id):
             return member
         return self.add_member(server_id, await self.http.fetch_member(server_id, member_id))
 
@@ -304,10 +306,11 @@ class CacheHandler:
         :class:`Member`
             The member that was added.
         """
-        if member := self.members.get(data["_id"]["user"]):
+        if member := self.members[server_id].get(data["_id"]["user"]):
             return member
         server = self.get_server(server_id)
         member = Member(data, server, self)
+        self.members[server_id][member.id] = member
         server._add_member(member)
         return member
 

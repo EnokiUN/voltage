@@ -307,12 +307,12 @@ class Server:  # As of writing this this is the final major thing I have to impl
             The member with the given ID, or None if it doesn't exist.
         """
         if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", member):
-            return self.cache.get_member(match.group(0))
+            return self.cache.get_member(self.id, match.group(0))
         try:
-            return self.cache.get_member(member, "name", self.id)
+            return self.cache.get_member(self.id, member, "name")
         except ValueError:
             try:
-                return self.cache.get_member(member, "nickname", self.id)
+                return self.cache.get_member(self.id, member, "nickname")
             except ValueError:
                 return None
 
