@@ -6,6 +6,7 @@ from .asset import Asset
 from .enums import ChannelType
 from .messageable import Messageable
 from .permissions import ChannelPermissions
+from .notsuplied import NotSupplied
 
 if TYPE_CHECKING:
     from .file import File
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
         TextChannelPayload,
         VoiceChannelPayload,
     )
-    from .internals import CacheHandler, NotSupplied
+    from .internals import CacheHandler
     from .user import User
 
 
@@ -368,9 +369,9 @@ def create_channel(
         The created channel.
     """
     type = data["channel_type"]
-    if type == "Text":
+    if type == "TextChannel":
         return TextChannel(data, cache)
-    elif type == "Voice":
+    elif type == "VoiceChannel":
         return VoiceChannel(data, cache)
     elif type == "Group":
         return GroupDMChannel(data, cache)

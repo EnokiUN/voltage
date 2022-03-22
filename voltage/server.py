@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from .channels import Channel
     from .internals import CacheHandler
     from .member import Member
+    from .user import User
     from .types import (
         BanPayload,
         OnServerUpdatePayload,
@@ -139,7 +140,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
     categories: List[:class:`Category`]
         The server's categories.
     """
-    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'owner', 'nsfw', 'system_messages', 'icon', 'banner', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
+    __slots__ = ('data', 'cache', 'id', 'name', 'description', 'owner_id', 'nsfw', 'system_messages', 'icon', 'banner', 'channel_ids', 'member_ids', 'default_channel_permissions', 'default_role_permissions', 'category_ids', 'role_ids')
 
     def __init__(self, data: ServerPayload, cache: CacheHandler):
         self.data = data
@@ -148,7 +149,6 @@ class Server:  # As of writing this this is the final major thing I have to impl
         self.name = data["name"]
         self.description = data.get("description")
         self.owner_id = data["owner"]
-        self.owner = cache.get_user(self.owner_id)
         self.nsfw = data.get("nsfw", False)
 
         self.system_messages: Optional[SystemMessages]
@@ -197,7 +197,6 @@ class Server:  # As of writing this this is the final major thing I have to impl
         if new := data.get("data"):
             if owner := new.get("owner"):
                 self.owner_id = owner
-                self.owner = self.cache.get_user(owner)
             if name := new.get("name"):
                 self.name = name
             if description := new.get("description"):
@@ -244,6 +243,13 @@ class Server:  # As of writing this this is the final major thing I have to impl
         A list of all the categories this server has.
         """
         return list(self.category_ids.values())
+
+    @property
+    def owner(self) -> User:
+        """
+        The server's owner.
+        """
+        return self.cache.get_user(self.owner_id)
 
     def __str__(self):
         return self.name

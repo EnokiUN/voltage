@@ -374,10 +374,10 @@ class CacheHandler:
         """
         server = self.get_server(server_id)
         data = await self.http.fetch_members(server_id)
-        for member in data["members"]:
-            self.add_member(server_id, member)
         for user in data["users"]:
             self.add_user(user)
+        for member in data["members"]:
+            self.add_member(server_id, member)
         return server
 
     async def populate_all_servers(self):

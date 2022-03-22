@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, NamedTuple, Optional
 
 from .asset import Asset, PartialAsset
 from .enums import PresenceType, RelationshipType
-from .internals import UserFlags
+from .flag import UserFlags
 from .messageable import Messageable
 
 if TYPE_CHECKING:
@@ -74,7 +74,7 @@ class User(Messageable):
         "avatar",
         "profile",
         "bot",
-        "owner",
+        "owner_id",
         "cache",
         "masquerade_name",
         "masquerade_avatar",
@@ -100,20 +100,22 @@ class User(Messageable):
 
         self.relationships = relationships
 
-        self.status = (
-            Status(data.get("status", {}).get("text"), PresenceType(data.get("status", {}).get("presence")))
-            if data.get("status")
-            else Status(None, PresenceType.invisible)
-        )
+        if status := data.get("status"):
+            if presence := status.get("presence"):
+                self.status = Status(status.get("text"), PresenceType(presence))
+            else:
+                self.status = Status(status.get("text"), PresenceType.invisible)
+        else:
+            self.status = Status(None, PresenceType.invisible)
 
         self.profile = UserProfile(None, None)
 
-        self.bot, self.owner = (
-            (data.get("bot", False), cache.get_user(data.get("owner_id"))) if data.get("bot") else (False, None)
-        )
+        self.bot = data.get("bot", False)
+        self.owner_id = data.get("owner_id")
 
         self.masquerade_name: Optional[str] = None
         self.masquerade_avatar: Optional[PartialAsset] = None
+
 
     def set_masquerade(self, name: Optional[str], avatar: Optional[PartialAsset]):
         """
@@ -151,6 +153,10 @@ class User(Messageable):
     @property
     def display_avatar(self):
         return self.masquerade_avatar or self.avatar
+
+    @property
+    def owner(self):
+        return self.cache.get_user(self.owner_id) if self.bot else None
 
     async def default_avatar(self):
         """

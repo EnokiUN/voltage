@@ -1,10 +1,13 @@
 from asyncio import get_event_loop
-from typing import Any, Callable, Dict, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 
 import aiohttp
 
 # Internal imports
 from .internals import CacheHandler, HTTPHandler, WebSocketHandler
+
+if TYPE_CHECKING:
+    from .user import User
 
 
 class Client:
@@ -15,8 +18,6 @@ class Client:
     ----------
     cache_message_limit: :class:`int`
         The maximum amount of messages to cache.
-    fancy_ready: :class:`bool`
-        Whether or not to print a fancy ready message.
 
     Methods
     -------
@@ -26,9 +27,8 @@ class Client:
         Runs the client.
     """
 
-    def __init__(self, *, cache_message_limit: int = 5000, fancy_ready: bool = True):
+    def __init__(self, *, cache_message_limit: int = 5000):
         self.cache_message_limit = cache_message_limit
-        self.fancy_ready = fancy_ready
         self.client = aiohttp.ClientSession()
         self.http: HTTPHandler
         self.ws: WebSocketHandler
@@ -36,6 +36,7 @@ class Client:
         self.raw_listeners: Dict[str, Callable[[Dict], Any]] = {}
         self.loop = get_event_loop()
         self.cache: CacheHandler
+        self.user: User
 
     def listen(self, event: str, *, raw: Optional[bool] = False):
         """
@@ -49,6 +50,23 @@ class Client:
             The event to listen for.
         raw: bool
             Whether or not to listen for raw events.
+
+        Examples
+        --------
+
+        .. code-block:: python3
+
+            @client.listen("message")
+            async def any_name_you_want(message):
+                if message.content == "ping":
+                    await message.channel.send("pong")
+
+            # example of a raw event
+            @client.listen("message", raw=True)
+            async def raw(payload):
+                if payload["content"] == "ping":
+                    await client.http.send_message(payload["channel"], "pong")
+
         """
 
         def inner(func: Callable[..., Any]):
@@ -66,20 +84,32 @@ class Client:
 
         Parameters
         ----------
-        token: str
+        token: :class:`str`
+            The bot token.
+        """
+        self.loop.run_until_complete(self.start(token))
+
+    async def start(self, token: str):
+        """
+        Start the client.
+
+        Parameters
+        ----------
+        token: :class:`str`
             The bot token.
         """
         self.http = HTTPHandler(self.client, token)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
         self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
-        self.loop.run_until_complete(self.ws.connect())
+        self.user = self.cache.add_user(await self.http.fetch_self())
+        await self.ws.connect()
 
     async def dispatch(self, event: str, *args, **kwargs):
         event = event.lower()
         if func := self.listeners.get(event):
-            func(*args, **kwargs)
+            await func(*args, **kwargs)
 
     async def raw_dispatch(self, payload: Dict[Any, Any]):
         event = payload["type"].lower()  # Subject to change
         if func := self.raw_listeners.get(event):
-            func(payload)
+            await func(payload)

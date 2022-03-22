@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from asyncio import get_running_loop
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 # Internal imports
 from .enums import AssetType
@@ -54,9 +53,12 @@ class Asset:
 
         self.content_type = data.get("content_type")
 
-        loop = get_running_loop()
-        url = loop.run_until_complete(http.get_api_info())["features"]["autumn"]["url"]
-        self.url = f"{url}/{self.tag}/{self.id}"
+        self.url: Optional[str]
+        if http.api_info:
+            url = http.api_info['features']['autumn']['url']
+            self.url = f"{url}/{self.tag}/{self.id}"
+        else:
+            self.url = None
 
     async def get_binary(self) -> bytes:
         """

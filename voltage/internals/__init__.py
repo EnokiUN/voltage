@@ -5,7 +5,5 @@ You probably shouldn't be using this directly, but rather through the client unl
 """
 
 from .cache import CacheHandler
-from .flag import FlagBase, FlagValue, UserFlags
 from .http import HTTPHandler
-from .utils import NotSupplied
 from .ws import WebSocketHandler

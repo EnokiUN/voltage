@@ -71,7 +71,7 @@ class WebSocketHandler:
         """
         Starts the websocket.
         """
-        info = await self.http.query_node()
+        info = await self.http.get_api_info()
         ws_url = info["ws"]
         self.ws = await self.client.ws_connect(ws_url)
         await self.authorize()
@@ -94,4 +94,4 @@ class WebSocketHandler:
         Handles the ready event.
         """
         await self.cache.handle_ready_caching(payload)
-        self.dispatch("ready")
+        await self.dispatch("ready")

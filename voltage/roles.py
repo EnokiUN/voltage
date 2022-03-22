@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, Optional
 
-from .internals import NotSupplied
+from .notsuplied import NotSupplied
 
 # Internal imports
 from .permissions import ChannelPermissions, ServerPermissions
