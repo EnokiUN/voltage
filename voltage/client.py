@@ -115,14 +115,14 @@ class Client:
         if func := self.raw_listeners.get(event):
             await func(payload)
 
-    async def get_user(self, user: str) -> Optional[User]:
+    def get_user(self, user: str) -> Optional[User]:
         """
-        Fetches a user from the cache.
+        Gets a user from the cache by ID, mention or name.
 
         Parameters
         ----------
-        user_id: :class:`int`
-            The user's ID, mention or name.
+        user: :class:`str`
+            The ID, mention or name of the user.
 
         Returns
         -------

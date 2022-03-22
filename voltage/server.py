@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
 
-from .asset import Asset
-from .categories import Category
-from .invites import Invite
+from re import search
 
 # Internal imports
 from .permissions import ChannelPermissions, ServerPermissions
 from .roles import Role
+from .asset import Asset
+from .categories import Category
+from .invites import Invite
 
 if TYPE_CHECKING:
     from .channels import Channel
@@ -273,21 +274,29 @@ class Server:  # As of writing this this is the final major thing I have to impl
         """
         return self.channel_ids.get(channel_id)
 
-    def get_member(self, member_id: str) -> Optional[Member]:
+    def get_member(self, member: str) -> Optional[Member]:
         """
-        Gets a member by its ID.
+        Gets a member by their ID, a mention, their name or nickname.
 
         Parameters
         ----------
-        member_id: str
-            The ID of the member to get.
+        member: :class:`str`
+            The ID, mention, name or nickname of the member to get.
 
         Returns
         -------
         Optional[:class:`Member`]
             The member with the given ID, or None if it doesn't exist.
         """
-        return self.member_ids.get(member_id)
+        if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", member):
+            return self.cache.get_member(match.group(0))
+        try:
+            return self.cache.get_member(member, "name")
+        except ValueError:
+            try:
+                return self.cache.get_member(member, "nickname")
+            except ValueError:
+                return None
 
     def get_role(self, role_id: str) -> Optional[Role]:
         """
