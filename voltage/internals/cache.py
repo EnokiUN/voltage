@@ -1,12 +1,17 @@
 from __future__ import annotations
-from asyncio import get_running_loop, gather
+from asyncio import gather, AbstractEventLoop
 from typing import TYPE_CHECKING, Dict, Optional, Any
 
 # Internal imports
 from .http import HTTPHandler
+from ..message import Message
+from ..channels import Channel, DMChannel, create_channel
+from ..user import User
+from ..member import Member
+from ..server import Server
+
 
 if TYPE_CHECKING:
-    from .. import (Message, Channel, Server, Member, User, DMChannel, create_channel)
     from ..types import MessagePayload, ChannelPayload, MemberPayload, UserPayload, DMChannelPayload, ServerPayload, OnReadyPayload
 
 class CacheHandler:
@@ -19,10 +24,10 @@ class CacheHandler:
 
     It provides methods to get the object from the cache, or to add it to the cache.
     """
-    def __init__(self, http: HTTPHandler, message_limit: int = 5000):
+    def __init__(self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000):
         self.http = http
         self.message_limit = message_limit
-        self.loop = get_running_loop()
+        self.loop = loop
 
         self.messages: Dict[str, Message] = {}
         self.channels: Dict[str, Channel] = {}
@@ -242,7 +247,7 @@ class CacheHandler:
         :class:`Message`
             The message that was added.
         """
-        if message := self.get_message(data["_id"]):
+        if message := self.messages.get(data['_id']):
             return message
         message = Message(data, self)
         self.messages[message.id] = message
@@ -264,7 +269,7 @@ class CacheHandler:
         :class:`Channel`
             The channel that was added.
         """
-        if channel := self.get_channel(data["_id"]):
+        if channel := self.channels.get(data['_id']):
             return channel
         channel = create_channel(data, self)
         self.channels[channel.id] = channel
@@ -286,12 +291,11 @@ class CacheHandler:
         :class:`Member`
             The member that was added.
         """
-        if member := self.get_member(data["_id"]):
+        if member := self.members.get(data['_id']["user"]):
             return member
-        if server := self.get_server(server_id):
-            member = Member(data, server, self)
-            self.members[member.id] = member
-            return member
+        server = self.get_server(server_id)
+        member = Member(data, server, self)
+        server._add_member(member)
         return member
 
     def add_server(self, data: ServerPayload) -> Server:
@@ -308,7 +312,7 @@ class CacheHandler:
         :class:`Server`
             The server that was added.
         """
-        if server := self.get_server(data["_id"]):
+        if server := self.servers.get(data['_id']):
             return server
         server = Server(data, self)
         self.servers[server.id] = server
@@ -328,7 +332,7 @@ class CacheHandler:
         :class:`User`
             The user that was added.
         """
-        if user := self.get_user(data["_id"]):
+        if user := self.users.get(data["_id"]):
             return user
         user = User(data, self)
         self.users[user.id] = user
@@ -426,7 +430,7 @@ class CacheHandler:
         """
         self.add_member(data["_id"]["server"], data)
 
-    async def hancle_ready_caching(self, data: OnReadyPayload):
+    async def handle_ready_caching(self, data: OnReadyPayload):
         """
         Handles the caching of the ready event.
         """

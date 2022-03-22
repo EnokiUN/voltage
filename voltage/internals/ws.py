@@ -1,14 +1,13 @@
+from __future__ import annotations
 from asyncio import get_event_loop, sleep
 from json import loads
-from typing import Any, Callable, Dict
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
-from aiohttp import ClientSession, ClientWebSocketResponse
-
-from .cache import CacheHandler
-
-# Internal imports
-from .http import HTTPHandler
-
+if TYPE_CHECKING:
+    from ..types import OnReadyPayload
+    from .http import HTTPHandler
+    from .cache import CacheHandler
+    from aiohttp import ClientSession, ClientWebSocketResponse
 
 class WebSocketHandler:
     """
@@ -16,28 +15,31 @@ class WebSocketHandler:
 
     Attributes
     ----------
-    client: aiohttp.ClientSession
+    client: :class:`aiohttp.ClientSession`
         The aiohttp client session.
-    http: voltage.HTTPHandler
+    http: :class:`voltage.internals.HTTPHandler`
         The http handler.
-    ws: aiohttp.ClientWebSocketResponse
+    cache: :class:`voltage.internals.CacheHandler`
+        The cache handler.
+    ws: :class:`aiohttp.ClientWebSocketResponse`
         The websocket.
-    token: str
+    token: :class:`str`
         The bot token.
     dispatch: Callable[..., Any]
         The dispatch function.
     raw_dispatch: Callable[[Dict[Any, Any]], Any]
         The raw dispatch function.
-    loop: asyncio.AbstractEventLoop
+    loop: :class:`asyncio.AbstractEventLoop`
         The event loop.
     """
 
-    __slots__ = ("client", "http", "ws", "token", "dispatch", "raw_dispatch", "loop")
+    __slots__ = ("client", "http", "cache", "ws", "token", "dispatch", "raw_dispatch", "loop")
 
     def __init__(
         self,
         client: ClientSession,
         http: HTTPHandler,
+        cache: CacheHandler,
         token: str,
         dispatch: Callable[..., Any],
         raw_dispatch: Callable[[Dict[Any, Any]], Any],
@@ -45,6 +47,7 @@ class WebSocketHandler:
         self.loop = get_event_loop()
         self.client = client
         self.http = http
+        self.cache = cache
         self.ws: ClientWebSocketResponse
         self.token = token
         self.dispatch = dispatch
@@ -86,7 +89,9 @@ class WebSocketHandler:
         if func := getattr(self, f"handle_{event}", None):
             await func(payload)
 
-    async def handle_ready(self, payload: Dict[Any, Any]):
+    async def handle_ready(self, payload: OnReadyPayload):
         """
         Handles the ready event.
         """
+        await self.cache.handle_ready_caching(payload)
+        self.dispatch("ready")
