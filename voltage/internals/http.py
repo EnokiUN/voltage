@@ -71,7 +71,9 @@ class HTTPHandler:
         if auth:
             header["x-bot-token"] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
-            if 200 >= request.status <= 300:
+            if request.status >= 200 and request.status <= 300:
+                if (await request.read()) == b"":
+                    return {}
                 return await request.json()
             raise HTTPError(request)
 
