@@ -111,7 +111,7 @@ class WebSocketHandler:
         self.ws = await self.client.ws_connect(ws_url)
         await self.authorize()
         self.loop.create_task(self.heartbeat())
-        print("\033[1;31m[Voltage]    Connected to {ws_url}!\033[0m")
+        print(f"\033[1;31m[Voltage]    Connected to {ws_url}!\033[0m")
         async for message in self.ws:
             payload = loads(message.data)
             self.loop.create_task(self.handle_event(payload))
