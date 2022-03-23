@@ -3,7 +3,7 @@ from __future__ import annotations
 from asyncio import AbstractEventLoop, gather
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
-from attr import s
+from time import time
 
 from ..channels import Channel, DMChannel, create_channel
 from ..member import Member
@@ -452,8 +452,15 @@ class CacheHandler:
         """
         Handles the caching of the ready event.
         """
+        start = time()
+        print("\033[1;34m[CACHE]      Started caching users.\033[0m")
         await gather(*[self.handle_ready_user(user) for user in data["users"]])
+        print("\033[1;34m[CACHE]      Started caching channels.\033[0m")
         await gather(*[self.handle_ready_channel(channel) for channel in data["channels"]])
+        print("\033[1;34m[CACHE]      Started caching servers.\033[0m")
         await gather(*[self.handle_ready_server(server) for server in data["servers"]])
+        print("\033[1;34m[CACHE]      Started caching members.\033[0m")
         await gather(*[self.handle_ready_member(member) for member in data["members"]])
+        print("\033[1;34m[CACHE]      Populating servers.\033[0m")
         await self.populate_all_servers()
+        print(f"\033[1;32m[CACHE]      Finished caching {len(self.servers)} servers, {len(self.channels)} channels, {len(self.users)} users and {(len([i for i in self.members.values()]))} members in {time() - start:.2f} seconds.\033[0m")

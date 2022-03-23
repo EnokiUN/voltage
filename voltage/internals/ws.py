@@ -40,7 +40,7 @@ class WebSocketHandler:
         The event loop.
     """
 
-    __slots__ = ("client", "http", "cache", "ws", "token", "dispatch", "raw_dispatch", "loop")
+    __slots__ = ("client", "http", "cache", "ws", "token", "dispatch", "raw_dispatch", "loop", "ready")
 
     def __init__(
         self,
@@ -59,6 +59,7 @@ class WebSocketHandler:
         self.token = token
         self.dispatch = dispatch
         self.raw_dispatch = raw_dispatch
+        self.ready = False
 
     async def authorize(self):
         """
@@ -78,11 +79,37 @@ class WebSocketHandler:
         """
         Starts the websocket.
         """
+        user = self.cache.add_user(await self.http.fetch_self())
+        print(f"""\033[1;31m                                                  
+\033[1;31m                  **************                  \033[1;34mLibrary: Voltage
+\033[1;31m               ***  ***************               \033[1;35mVersion: 0.0.1a2
+\033[1;31m               ***   **************               \033[1;36mBot: {user}
+\033[1;31m               ********************               \033[1;37mBot ID: {user.id}
+\033[1;31m                         **********               \033[1;30mAPI endpoint: {self.http.api_url}
+\033[1;31m          *************************  *****        
+\033[1;31m      *****************************  ********     \033[1;32mGitHub: https://github.com/EnokiUN/voltage
+\033[1;31m     ******************************  *********    \033[1;33mSupport server: https://rvlt.gg/bwtscg1F
+\033[1;31m    *******************************  *********    
+\033[1;31m    *****************************   **********    
+\033[1;31m    ************                  ************    
+\033[1;31m    **********   *****************************    
+\033[1;31m    ********** *******************************    
+\033[1;31m     ********  ******************************     
+\033[1;31m      *******  *****************************      
+\033[1;31m               **********                         
+\033[1;31m               ********************               
+\033[1;31m               ***************  ***               
+\033[1;31m               **************    **               
+\033[1;31m                *******************               
+\033[1;31m                    ***********                   
+\033[1;31m                                                  \033[0m""")
         info = await self.http.get_api_info()
         ws_url = info["ws"]
+        print(f"\033[1;31m[Voltage]    Connecting to the websocket...\033[0m")
         self.ws = await self.client.ws_connect(ws_url)
         await self.authorize()
         self.loop.create_task(self.heartbeat())
+        print("\033[1;31m[Voltage]    Connected to {ws_url}!\033[0m")
         async for message in self.ws:
             payload = loads(message.data)
             self.loop.create_task(self.handle_event(payload))
@@ -93,6 +120,8 @@ class WebSocketHandler:
         Handles an event.
         """
         event = payload["type"].lower()
+        if event != "ready" and not self.ready:
+            return
         if func := getattr(self, f"handle_{event}", None):
             await func(payload)
 
@@ -106,7 +135,11 @@ class WebSocketHandler:
         """
         Handles the ready event.
         """
+        print("\033[1;31m[Voltage]    Started caching data...\033[0m")
         await self.cache.handle_ready_caching(payload)
+        print("\033[1;31m[Voltage]    Finished caching data.\033[0m")
+        print("\033[1;32m[Voltage]    Bot is running!\033[0m")
+        self.ready = True
         await self.dispatch("ready")
 
     async def handle_message(self, payload: OnMessagePayload):
@@ -119,7 +152,7 @@ class WebSocketHandler:
         """
         Handles the message update event.
         """
-        self.dispatch("raw_message_update", payload)
+        await self.dispatch("raw_message_update", payload)
 
         try:
             message = self.cache.get_message(payload["id"])
@@ -133,7 +166,7 @@ class WebSocketHandler:
         """
         Handles the message delete event.
         """
-        self.dispatch("raw_message_delete", payload)
+        await self.dispatch("raw_message_delete", payload)
 
         try:
             message = self.cache.get_message(payload["id"])
@@ -233,6 +266,10 @@ class WebSocketHandler:
         """
         Handles the server member join event.
         """
+        try:
+            self.cache.get_user(payload["user"])
+        except KeyError:
+            self.cache.add_user(await self.http.fetch_user(payload["user"]))
         member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
         await self.dispatch("server_member_join", member)
 
