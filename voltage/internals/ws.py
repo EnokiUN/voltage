@@ -80,7 +80,8 @@ class WebSocketHandler:
         Starts the websocket.
         """
         user = self.cache.add_user(await self.http.fetch_self())
-        print(f"""\033[1;31m                                                  
+        print(
+            f"""\033[1;31m                                                  
 \033[1;31m                  **************                  \033[1;34mLibrary: Voltage
 \033[1;31m               ***  ***************               \033[1;35mVersion: 0.0.1a2
 \033[1;31m               ***   **************               \033[1;36mBot: {user}
@@ -102,7 +103,8 @@ class WebSocketHandler:
 \033[1;31m               **************    **               
 \033[1;31m                *******************               
 \033[1;31m                    ***********                   
-\033[1;31m                                                  \033[0m""")
+\033[1;31m                                                  \033[0m"""
+        )
         info = await self.http.get_api_info()
         ws_url = info["ws"]
         print(f"\033[1;31m[Voltage]    Connecting to the websocket...\033[0m")
