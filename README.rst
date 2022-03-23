@@ -7,6 +7,9 @@ Voltage
     :alt: Revolt Support Server
 .. image:: https://img.shields.io/github/checks-status/EnokiUN/voltage/main?labelColor=111823&logo=github&style=for-the-badge
     :alt: GitHub branch checks state
+.. image:: https://img.shields.io/pypi/v/voltage.svg?labelColor=111823&logo=pypi&logoColor=white&style=for-the-badge
+    :target: https://pypi.org/project/voltage
+    :alt: PyPi Page.
 
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
