@@ -52,3 +52,17 @@ If you want to install the main branch which may have more features but will be 
     Python 3.8 or higher is required to install voltage.
 
     Installing from GitHub requires the git cli to be available on your machine.
+
+=======
+Credits
+=======
+
+    - **Contributers**, thank you :)
+
+    - **`Revolt.py** <https://github.com/revoltchat/revolt.py>`_, When shit broke, that's where I went.
+
+    - **`Revolt.js** <https://github.com/revoltchat/revolt.js>_`, When the docs fail you.
+
+    - **`Discord.py** <https://github.com/Rapptz/discord.py>`_, Also a really great help while making this.
+
+    - **Revolt development team**, Absolute chads.
