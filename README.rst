@@ -59,10 +59,10 @@ Credits
 
     - **Contributers**, thank you :)
 
-    - **`Revolt.py** <https://github.com/revoltchat/revolt.py>`_, When shit broke, that's where I went.
+    - `**Revolt.py** <https://github.com/revoltchat/revolt.py>`_, When shit broke, that's where I went.
 
-    - **`Revolt.js** <https://github.com/revoltchat/revolt.js>_`, When the docs fail you.
+    - `**Revolt.js** <https://github.com/revoltchat/revolt.js>_`, When the docs fail you.
 
-    - **`Discord.py** <https://github.com/Rapptz/discord.py>`_, Also a really great help while making this.
+    - `**Discord.py** <https://github.com/Rapptz/discord.py>`_, Also a really great help while making this.
 
     - **Revolt development team**, Absolute chads.
