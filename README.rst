@@ -2,6 +2,10 @@
 Voltage
 -------
 
+.. image:: https://img.shields.io/badge/dynamic/json?labelColor=ff4655&color=111823&label=Support%20Server&query=member_count&suffix=%20Members&url=https%3A%2F%2Fapi.revolt.chat%2Finvites%2Fbwtscg1F&style=for-the-badge&logo=python&logoColor=white
+   :target: https://api.revolt.chat/invites/bwtscg1F
+   :alt: Revolt Support Server
+
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
 An example bot:
