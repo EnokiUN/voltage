@@ -134,6 +134,7 @@ class Client:
         self.http = HTTPHandler(self.client, token)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
         self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
+        await self.http.get_api_info()
         self.user = self.cache.add_user(await self.http.fetch_self())
         await self.ws.connect()
 
