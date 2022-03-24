@@ -104,6 +104,7 @@ class SystemMessages:
         """
         return self.cache.get_channel(self.data.get("user_banned"))
 
+
 class Server:  # As of writing this this is the final major thing I have to implement before the lib is usable and sadly I am traveling in less than 12 hours so it's a race with time.
     """
     A class which represents a Voltage server.

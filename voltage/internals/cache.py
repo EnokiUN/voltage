@@ -335,7 +335,7 @@ class CacheHandler:
         """
         if channel := self.channels.get(data["_id"]):
             return channel
-        channel = create_channel(data, self, data.get('server'))
+        channel = create_channel(data, self, data.get("server"))
         self.channels[channel.id] = channel
         return channel
 
@@ -444,8 +444,8 @@ class CacheHandler:
         for user in data["users"]:
             self.add_user(user)
         for member in data["members"]:
-            if member['_id']['user'] not in self.users:
-                continue # Ignore deleted accounts.
+            if member["_id"]["user"] not in self.users:
+                continue  # Ignore deleted accounts.
             self.add_member(server_id, member)
         return server
 
