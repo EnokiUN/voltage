@@ -286,7 +286,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         Optional[:class:`Channel`]
             The channel with the given ID, or None if it doesn't exist.
         """
-        return self.channel_ids.get(channel_id)
+        return self.cache.get_channel(channel_id)
 
     def get_member(self, member: str) -> Optional[Member]:
         """
