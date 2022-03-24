@@ -234,7 +234,7 @@ class HTTPHandler:
         user_id: :class:`str`
             The id of the user.
         """
-        return await self.request("POST", f"users/{user_id}/dm")
+        return await self.request("GET", f"users/{user_id}/dm")
 
     async def fetch_channel(self, channel_id: str) -> ChannelPayload:
         """
