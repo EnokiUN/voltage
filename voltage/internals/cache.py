@@ -34,6 +34,11 @@ class CacheHandler:
     It stores the data in id-object pairs of dicts.
 
     It provides methods to get the object from the cache, or to add it to the cache.
+
+    Atributes
+    ---------
+    message_limit: :class:`int`
+        The maximum amount of messages to cache.
     """
 
     def __init__(self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000):

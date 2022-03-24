@@ -52,9 +52,9 @@ class HTTPHandler:
         ----------
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"]
             The method to use for the request.
-        url: str
+        url: :class:`str`
             The url to send the request to.
-        auth: Optional[bool]
+        auth: Optional[:class:`bool`]
             Whether or not to use authentication. Defaults to True.
         kwargs: dict
             The kwargs to pass to the request.
@@ -78,6 +78,18 @@ class HTTPHandler:
             raise HTTPError(request)
 
     async def upload_file(self, file: bytes, name: str, tag: str) -> AutumnPayload:
+        """
+        Uploads a file to autumn.
+
+        Parameters
+        ----------
+        file: :class:`bytes`
+            The file to upload.
+        name: :class:`str`
+            The name of the file.
+        tag: :class:`str`
+            The tag of the file.
+        """
         api_info = await self.get_api_info()
 
         headers = {
@@ -100,7 +112,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        url: str
+        url: :class:`str`
             The url of the file.
         """
         async with self.client.get(url) as request:
@@ -128,7 +140,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        user_id: str
+        user_id: :class:`str`
             The id of the user.
         """
         return await self.request("GET", f"users/{user_id}")
@@ -148,11 +160,11 @@ class HTTPHandler:
 
         Parameters
         ----------
-        status: Optional[Dict[Literal["text", "presence"], Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]]
+        status: Optional[Dict[Literal["text", "presence"], Union[:class:`str`, Literal["Busy", "Idle", "Invisible", "Online"]]]]
             The new status of the bot.
-        profile: Optional[Dict[Literal["content", "background"], str]]
+        profile: Optional[Dict[Literal["content", "background"], :class:`str`]]
             The new profile of the bot.
-        avatar: Optional[str]
+        avatar: Optional[:class:`str`]
             The new avatar of the bot.
         remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]]
             The thing to remove from the bot.
@@ -180,7 +192,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        user_id: str
+        user_id: :class:`str`
             The id of the user.
         """
         return await self.request("GET", f"users/{user_id}/profile")
@@ -191,7 +203,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        user_id: str
+        user_id: :class:`str`
             The id of the user.
         """
         return await self.get_file_binary(f"users/{user_id}/default_avatar")
@@ -219,7 +231,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        user_id: str
+        user_id: :class:`str`
             The id of the user.
         """
         return await self.request("POST", f"users/{user_id}/dm")
@@ -230,7 +242,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
         """
         return await self.request("GET", f"channels/{channel_id}")
@@ -250,15 +262,15 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        name: Optional[str]
+        name: Optional[:class:`str`]
             The new name of the channel.
-        description: Optional[str]
+        description: Optional[:class:`str`]
             The new description of the channel.
-        icon: Optional[str]
+        icon: Optional[:class:`str`]
             The new icon of the channel.
-        nsfw: Optional[bool]
+        nsfw: Optional[:class:`bool`]
             Whether the channel is nsfw or not.
         remove: Optional[Literal["Description", "Icon"]]
             The thing to remove from the channel.
@@ -282,7 +294,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
         """
         return await self.request("DELETE", f"channels/{channel_id}")
@@ -293,7 +305,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
         """
         return await self.request("POST", f"channels/{channel_id}/invites")
@@ -304,11 +316,11 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        role_id: str
+        role_id: :class:`str`
             The id of the role.
-        permissions: int
+        permissions: :class:`int`
             The permissions to set.
         """
         return await self.request(
@@ -321,9 +333,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        permissions: int
+        permissions: :class:`int`
             The permission to set.
         """
         return await self.request(
@@ -345,17 +357,17 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        content: str
+        content: :class:`str`
             The content of the message.
-        attachments: Optional[List[str]]
+        attachments: Optional[List[Union[:class:`str`, :class:`File`]]]
             The attachments of the message.
-        embeds: Optional[List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]]
+        embeds: Optional[List[Union[:class:`SendableEmbedPayload`, :class:`SendableEmbed`]]]
             The embeds of the message.
-        replies: Optional[List[Dict[Literal["id", "mention"], Union[str, bool]]]]
+        replies: Optional[List[Union[:class:`MessageReplyPayload`, :class:`MessageReply`]]]
             The replies of the message.
-        masquerade: Optional[Dict[Literal["name", "avatar"], str]]
+        masquerade: Optional[Union[:class:`MasqueradePayload`, :class:`MessageMasquerade`]]
             The masquerade of the message.
         """
         data: Dict[str, Any] = {"content": content}
@@ -425,9 +437,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        message_id: str
+        message_id: :class:`str`
             The id of the message.
         """
         return await self.request("GET", f"channels/{channel_id}/messages/{message_id}")
@@ -445,13 +457,13 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        message_id: str
+        message_id: :class:`str`
             The id of the message.
-        content: str
+        content: :class:`str`
             The content of the message.
-        embeds: Optional[List[Dict[Literal["type", "icon_url", "url", "title", "description", "media", "colour"], str]]]
+        embeds: Optional[List[Union[:class:`SendableEmbedPayload`, :class:`SendableEmbed`]]]
             The embeds of the message.
         """
         data: Dict[str, Any] = {"content": content}
@@ -465,9 +477,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        message_id: str
+        message_id: :class:`str`
             The id of the message.
         """
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}")
@@ -480,9 +492,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        ids: List[str]
+        ids: List[:class:`str`]
             The ids of the messages.
         """
         return await self.request("GET", f"channels/{channel_id}/messages/changed", params={"ids": ",".join(ids)})
@@ -503,19 +515,19 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
-        query: str
+        query: :class:`str`
             The query of the message.
-        limit: Optional[int]
+        limit: Optional[:class:`int`]
             The limit of the messages.
-        before: Optional[str]
+        before: Optional[:class:`str`]
             The id of the message to fetch before.
-        after: Optional[str]
+        after: Optional[:class:`str`]
             The id of the message to be fetched after.
         sort: Optional[Literal["Latest", "Oldest", "Relevance"]]
             The way of sorting the messages.
-        include_users: Optional[bool]
+        include_users: Optional[:class:`bool`]
             Whether to include the users in the messages.
         """
         data: Dict[str, Any] = {"query": query}
@@ -537,7 +549,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
         """
         return await self.request("GET", f"channels/{channel_id}/members")
@@ -548,7 +560,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        channel_id: str
+        channel_id: :class:`str`
             The id of the channel.
         """
         return await self.request("POST", f"channels/{channel_id}/join_call")
@@ -559,7 +571,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
         """
         return await self.request("GET", f"servers/{server_id}")
@@ -581,21 +593,21 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        name: Optional[str]
+        name: Optional[:class:`str`]
             The name of the server.
-        description: Optional[str]
+        description: Optional[:class:`str`]
             The description of the server.
-        icon: Optional[str]
+        icon: Optional[:class:`str`]
             The icon of the server.
-        banner: Optional[str]
+        banner: Optional[:class:`str`]
             The banner of the server.
-        categories: Optional[List[Dict[Literal["id", "title", "channels"], str]]]
+        categories: Optional[List[Dict[Literal["id", "title", "channels"], :class:`str`]]]
             The categories of the server.
-        system_messages: Optional[Dict[Literal["user_joined", "user_left", "user_kicked", "user_banned"], str]]
+        system_messages: Optional[Dict[Literal["user_joined", "user_left", "user_kicked", "user_banned"], :class:`str`]]
             The system messages of the server.
-        nsfw: Optional[bool]
+        nsfw: Optional[:class:`bool`]
             Whether the server is nsfw.
         remove: Optional[Literal["Banner", "Description", "Icon"]]
             The field to remove.
@@ -625,7 +637,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
         """
         return await self.request("DELETE", f"servers/{server_id}")
@@ -644,15 +656,15 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
         type: Literal["Text", "Voice"]
             The type of the channel.
-        name: str
+        name: :class:`str`
             The name of the channel.
-        description: Optional[str]
+        description: Optional[:class:`str`]
             The description of the channel.
-        nsfw: Optional[bool]
+        nsfw: Optional[:class:`bool`]
             Whether the channel is nsfw.
         """
         data: Dict[str, Any] = {"type": type, "name": name}
@@ -668,7 +680,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
         """
         return await self.request("GET", f"servers/{server_id}/invites")
@@ -679,9 +691,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        member_id: str
+        member_id: :class:`str`
             The id of the member.
         """
         return await self.request("GET", f"servers/{server_id}/members/{member_id}")
@@ -701,15 +713,15 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        member_id: str
+        member_id: :class:`str`
             The id of the member.
-        nickname: Optional[str]
+        nickname: Optional[:class:`str`]
             The nickname of the member.
-        avatar: Optional[str]
+        avatar: Optional[:class:`str`]
             The avatar of the member.
-        roles: Optional[List[str]]
+        roles: Optional[List[:class:`str`]]
             The roles of the member.
         remove: Optional[Literal["Avatar", "Nickname"]]
             The field to remove.
@@ -731,9 +743,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        member_id: str
+        member_id: :class:`str`
             The id of the member.
         """
         return await self.request("DELETE", f"servers/{server_id}/members/{member_id}")
@@ -755,11 +767,11 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        member_id: str
+        member_id: :class:`str`
             The id of the member.
-        reason: Optional[str]
+        reason: Optional[:class:`str`]
             The reason of the ban.
         """
         data = {}
@@ -773,9 +785,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        member_id: str
+        member_id: :class:`str`
             The id of the member.
         """
         return await self.request("DELETE", f"servers/{server_id}/bans/{member_id}")
@@ -786,7 +798,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
         """
         return await self.request("GET", f"servers/{server_id}/bans")
@@ -820,11 +832,11 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        server_permissions: int
+        server_permissions: :class:`int`
             The server permissions.
-        channel_permissions: int
+        channel_permissions: :class:`int`
             The channel permissions.
         """
         return await self.request(
@@ -839,9 +851,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        name: str
+        name: :class:`str`
             The name of the role.
         """
         return await self.request("POST", f"servers/{server_id}/roles", json={"name": name})
@@ -862,17 +874,17 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        role_id: str
+        role_id: :class:`str`
             The id of the role.
-        name: str
+        name: :class:`str`
             The name of the role.
-        colour: Optional[str]
+        colour: Optional[:class:`str`]
             The colour of the role.
-        hoist: Optional[bool]
+        hoist: Optional[:class:`bool`]
             Whether the role is hoisted.
-        rank: Optional[int]
+        rank: Optional[:class:`int`]
             The rank of the role.
         remove: Optional[Literal["Colour"]]
             The field to remove.
@@ -894,9 +906,9 @@ class HTTPHandler:
 
         Parameters
         ----------
-        server_id: str
+        server_id: :class:`str`
             The id of the server.
-        role_id: str
+        role_id: :class:`str`
             The id of the role.
         """
         return await self.request("DELETE", f"servers/{server_id}/roles/{role_id}")
@@ -907,7 +919,7 @@ class HTTPHandler:
 
         Parameters
         ----------
-        invite_code: str
+        invite_code: :class:`str`
             The code of the invite.
         """
         return await self.request("GET", f"invites/{invite_code}")
@@ -918,18 +930,44 @@ class HTTPHandler:
 
         Parameters
         ----------
-        invite_code: str
+        invite_code: :class:`str`
             The code of the invite.
         """
         return await self.request("DELETE", f"invites/{invite_code}")
 
     async def handle_attachment(self, attachment_data: Union[str, File]) -> str:
+        """
+        Handles an attachment.
+
+        Parameters
+        ----------
+        attachment_data: Union[:class:`str`, :class:`File`]
+            The attachment data.
+
+        Returns
+        -------
+        :class:`str`
+            The attachment's id.
+        """
         if isinstance(attachment_data, File):
             return await attachment_data.get_id(self)
         else:
             return attachment_data
 
     async def handle_embed(self, embed_data: Union[SendableEmbedPayload, SendableEmbed]) -> SendableEmbedPayload:
+        """
+        Handles an embed.
+
+        Parameters
+        ----------
+        embed_data: Union[:class:`SendableEmbedPayload`, :class:`SendableEmbed`]
+            The embed data.
+
+        Returns
+        -------
+        :class:`SendableEmbedPayload`
+            The embed as a dict.
+        """
         if isinstance(embed_data, SendableEmbed):
             return await embed_data.to_dict(self)
         else:
