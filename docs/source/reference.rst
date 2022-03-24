@@ -2,9 +2,9 @@ Reference
 =========
 
 .. automodule:: voltage.client
-    :members:
     :show-inheritance:
+    :members:
 
 .. automodule:: voltage.server
-    :members:
     :show-inheritance:
+    :members:

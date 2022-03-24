@@ -3,14 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Voltage's documentation!
-===================================
+Voltage, A Revolt API wrapper.
+==============================
 
 .. toctree::
     :maxdepth: 1
 
     reference
-
 
 
 Indices and tables
