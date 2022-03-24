@@ -15,5 +15,5 @@ async def on_message(message): # Doesn't matter what you call the function.
         # Reply to a message.
         await message.reply(content="embed", embed=embed) # Obligatory message content.
 
-# Run the client which is an abstraction calling the start coroutine.
+# Run the client which is an abstraction of calling the start coroutine.
 client.run("TOKEN") # Replace with your token.

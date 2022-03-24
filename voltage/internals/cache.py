@@ -523,5 +523,5 @@ class CacheHandler:
         print("\033[1;34m[CACHE]      Populating servers.\033[0m")
         await self.populate_all_servers()
         print(
-            f"\033[1;32m[CACHE]      Finished caching {len(self.servers)} servers, {len(self.channels)} channels, {len(self.users)} users and {(len([i for i in self.members.values()]))} members in {time() - start:.2f} seconds.\033[0m"
+            f"\033[1;32m[CACHE]      Finished caching {len(self.servers)} servers, {len(self.channels)} channels, {len(self.users)} users and {(sum([len(i) for i in self.members.values()]))} members in {time() - start:.2f} seconds.\033[0m"
         )
