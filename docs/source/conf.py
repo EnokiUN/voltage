@@ -53,6 +53,8 @@ exclude_patterns = []
 #
 html_theme = "furo"
 
+html_theme_options = {}
+
 navigation_with_keys = True
 
 # Add any paths that contain custom static files (such as style sheets) here,
