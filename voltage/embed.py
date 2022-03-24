@@ -25,25 +25,36 @@ class WebsiteEmbed:
 
     Attributes
     ----------
-    title: Optional[str]
+    title: Optional[:class:`str`]
         The title of the embed.
-    description: Optional[str]
+    description: Optional[:class:`str`]
         The description of the embed.
-    url: Optional[str]
+    url: Optional[:class:`str`]
         The url of the embed.
-    colour: Optional[str]
+    colour: Optional[:class:`int`]
         The colour of the embed.
-    special: Optional[str]
+    special: Optional[:class:`str`]
         The special data of the embed.
-    image: Optional[str]
+    image: Optional[:class:`str`]
         The image of the embed.
-    video: Optional[str]
+    video: Optional[:class:`str`]
         The video of the embed.
-    icon_url: Optional[str]
+    icon_url: Optional[:class:`str`]
         The icon url of the embed.
-    site_name: Optional[str]
+    site_name: Optional[:class:`str`]
         The site name of the embed.
     """
+    __slots__ = (
+        "title",
+        "description",
+        "url",
+        "colour",
+        "special",
+        "image",
+        "video",
+        "icon_url",
+        "site_name",
+    )
 
     type = EmbedType.website
 
@@ -65,15 +76,16 @@ class ImageEmbed:
 
     Attributes
     ----------
-    url: Optional[str]
+    url: Optional[:class:`str`]
         The url of the embed.
-    size: Optional[int]
+    size: Optional[:class:`int`]
         The size of the embed.
-    height: Optional[int]
+    height: Optional[:class:`int`]
         The height of the embed.
-    width: Optional[int]
+    width: Optional[:class:`int`]
         The width of the embed.
     """
+    __slots__ = ("url", "size", "height", "width")
 
     type = EmbedType.image
 
@@ -90,19 +102,20 @@ class TextEmbed:
 
     Attributes
     ----------
-    title: Optional[str]
+    title: Optional[:class:`str`]
         The title of the embed.
-    description: Optional[str]
+    description: Optional[:class:`str`]
         The description of the embed.
-    url: Optional[str]
+    url: Optional[:class:`str`]
         The url of the embed.
-    colour: Optional[str]
+    colour: Optional[:class:`str`]
         The colour of the embed.
-    icon_url: Optional[str]
+    icon_url: Optional[:class:`str`]
         The icon url of the embed.
-    media: Optional[Asset]
+    media: Optional[:class:`Asset`]
         The media of the embed.
     """
+    __slots__ = ("title", "description", "url", "colour", "icon_url", "media")
 
     type = EmbedType.text
 
@@ -130,14 +143,14 @@ def create_embed(data: EmbedPayload, http: HTTPHandler) -> Embed:
 
     Parameters
     ----------
-    data: EmbedPayload
+    data: :class:`EmbedPayload`
         The embed data.
-    http: HTTPHandler
+    http: :class:`HTTPHandler`
         The http handler.
 
     Returns
     -------
-    Embed
+    :class:`Embed`
         The embed.
     """
     if data["type"] == "Website":
@@ -158,19 +171,27 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
 
     Attributes
     ----------
-    title: Optional[str]
+    title: Optional[:class:`str`]
         The title of the embed.
-    description: Optional[str]
+    description: Optional[:class:`str`]
         The description of the embed.
-    url: Optional[str]
+    url: Optional[:class:`str`]
         The url of the embed.
-    colour: Optional[Union[str, int]]
+    colour: Optional[Union[:class:`str`, :class:`int`]]
         The colour of the embed.
-    icon_url: Optional[str]
+    icon_url: Optional[:class:`str`]
         The icon url of the embed.
-    media: Optional[str]
+    media: Optional[:class:`str`]
         The media of the embed.
     """
+    __slots__ = (
+        "title",
+        "description",
+        "url",
+        "colour",
+        "icon_url",
+        "media",
+    )
 
     def __init__(
         self,
@@ -195,7 +216,7 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
 
         Returns
         -------
-        SendableEmbedPayload
+        :class:`SendableEmbedPayload`
             The embed as a dict.
         """
         embed: SendableEmbedPayload = {"type": "Text"}

@@ -16,25 +16,38 @@ class Asset:
 
     Attributes
     ----------
-    id: str
+    id: :class:`str`
         The id of the asset.
-    tag: str
+    tag: :class:`str`
         The tag of the asset.
-    size: int
+    size: :class:`int`
         The size of the asset.
-    name: str
+    name: :class:`str`
         The name of the asset.
-    width: Optional[int]
+    width: Optional[:class:`int`]
         The width of the asset.
-    height: Optional[int]
+    height: Optional[:class:`int`]
         The height of the asset.
-    type: Optional[voltage.AssetType]
+    type: Optional[:class:`AssetType`]
         The type of the asset.
-    content_type: str
+    content_type: :class:`str`
         The content type of the asset.
-    url: str
+    url: :class:`str`
         The url of the asset.
     """
+    __slots__ = (
+        'id',
+        'tag',
+        'size',
+        'name',
+        'width',
+        'height',
+        'type',
+        'content_type',
+        'url',
+        'http',
+        'data'
+    )
 
     def __init__(self, data: FilePayload, http: HTTPHandler):
         self.data = data
@@ -65,7 +78,7 @@ class Asset:
 
         Returns
         -------
-        bytes
+        :class:`bytes`
             The binary data of the asset.
         """
         return await self.http.get_file_binary(self.url)
@@ -77,25 +90,24 @@ class PartialAsset(Asset):
 
     Attributes
     ----------
-    url: str
+    url: :class:`str`
         The url of the asset.
-    http: HTTPHandler
-        The http handler of the request.
-    id: str
+    id: :class:`str`
         The id of the asset.
-    tag: Optional[str]
+    tag: Optional[:class:`str`]
         The tag of the asset.
-    size: int
+    size: :class:`int`
         The size of the asset.
-    name: str
+    name: :class:`str`
         The name of the asset.
-    width: Optional[int]
+    width: Optional[:class:`int`]
         The width of the asset.
-    height: Optional[int]
+    height: Optional[:class:`int`]
         The height of the asset.
-    type: Optional[voltage.AssetType]
+    type: Optional[:class:`AssetType`]
         The type of the asset.
     """
+    __slots__ = ("url", "http", "id", "tag", "size", "name", "width", "height", "type", "content_type")
 
     def __init__(self, url: str, http: HTTPHandler):
         self.url = url

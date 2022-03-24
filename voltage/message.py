@@ -79,7 +79,7 @@ class Message:
         The content of the message.
     author: Union[:class:`User`, :class:`Member`]
         The author of the message.
-    self.replies: List[:class:`Message`]
+    replies: List[:class:`Message`]
         The replies of the message.
     """
 

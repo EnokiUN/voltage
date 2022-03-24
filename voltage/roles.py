@@ -37,8 +37,6 @@ class Role:
         The server the role belongs to.
     server_id: :class:`str`
         The ID of the server the role belongs to.
-    http: :class:`HTTPHandler`
-        The HTTP handler to use for requests.
     """
 
     __slots__ = (

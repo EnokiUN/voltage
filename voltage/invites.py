@@ -19,8 +19,6 @@ class Invite:
         The invite code.
     type: :class:`str`
         The invite type.
-    payload: :class:`InvitePayload`
-        The invite payload.
     server_id: :class:`str`
         The server ID.
     server: :class:`Server`

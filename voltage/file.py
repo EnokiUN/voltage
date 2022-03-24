@@ -44,11 +44,14 @@ class File:
 
     .. code-block:: python3
 
-        import voltage
-
         f = voltage.File("image.png", filename="interesting file", spoiler=True)
 
         await channel.send("Obligatory Message Content", attachment=f) # Uploads the file to autumn, gets the id and sends it.
+
+        # You can also send files in embeds.
+
+        embed = voltage.SendableEmbed(media=f)
+        await channel.send("Obligatory Message Content", embed=embed)
 
     """
 
@@ -75,6 +78,7 @@ class File:
     async def get_id(self, http: HTTPHandler) -> str:
         """
         Uploads a file to autumn then returns its id for sending.
+        You won't need to run this method yourself.
 
         Parameters
         ----------

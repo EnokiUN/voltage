@@ -13,21 +13,48 @@ if TYPE_CHECKING:
 
 
 class Relationship(NamedTuple):
-    """A tuple that represents the relationship between two users."""
+    """
+    A tuple that represents the relationship between two users.
+
+    Attributes
+    ----------
+    type: :class:`RelationshipType`
+        The type of relationship between the two users.
+    user: :class:`User`
+        The user that is the target of the relationship.
+    """
 
     type: RelationshipType
     user: User
 
 
 class Status(NamedTuple):
-    """A tuple that represents the status of a user."""
+    """
+    A tuple that represents the status of a user.
+
+    Attributes
+    ----------
+    text: Optional[:class:`str`]
+        The status message of the user.
+    presence: :class:`PresenceType`
+        The presence of the user.
+    """
 
     text: Optional[str]
     presence: PresenceType
 
 
 class UserProfile(NamedTuple):
-    """A tuple that represent's a user's profile."""
+    """
+    A tuple that represent's a user's profile.
+
+    Attributes
+    ----------
+    content: Optional[:class:`str`]
+        The content of the user's profile.
+    background: Optional[:class:`PartialAsset`]
+        The background of the user's profile.
+    """
 
     content: Optional[str]
     background: Optional[Asset]

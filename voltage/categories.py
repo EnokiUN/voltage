@@ -14,18 +14,21 @@ class Category:
 
     Attributes
     ----------
+    id: :class:`str`
+        The category's ID.
     name: :class:`str`
         The name of the category.
-    description: :class:`str`
+    description: Optional[:class:`str`]
         The name of the category.
     channels: List[:class:`Channel`]
         A list of all channels in the category.
     """
 
-    __slots__ = ("name", "id", "channel_ids", "cache")
+    __slots__ = ("name", "id", "channel_ids", "cache", "description")
 
     def __init__(self, data: CategoryPayload, cache: CacheHandler):
         self.name = data["title"]
+        self.description = data.get('description')
         self.id = data["id"]
         self.channel_ids = data["channels"]
         self.cache = cache

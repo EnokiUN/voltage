@@ -21,6 +21,8 @@ class Client:
     ----------
     cache_message_limit: :class:`int`
         The maximum amount of messages to cache.
+    user: :class:`User`
+        The user of the client.
 
     Methods
     -------
@@ -40,18 +42,19 @@ class Client:
         self.loop = get_event_loop()
         self.cache: CacheHandler
         self.user: User
+        self.error_handlers: Dict[str, Callable[..., Any]] = {}
 
-    def listen(self, event: str, *, raw: Optional[bool] = False):
+    def listen(self, event: str, *, raw: bool = False):
         """
         Registers a function to listen for an event.
 
         Parameters
         ----------
-        func: Callable
+        func: Callable[..., Any]
             The function to call when the event is triggered.
-        event: str
+        event: :class:`str`
             The event to listen for.
-        raw: bool
+        raw: :class:`bool`
             Whether or not to listen for raw events.
 
         Examples
@@ -71,7 +74,6 @@ class Client:
                     await client.http.send_message(payload["channel"], "pong")
 
         """
-
         def inner(func: Callable[..., Any]):
             if raw:
                 self.raw_listeners[event.lower()] = func
@@ -80,6 +82,32 @@ class Client:
             return func
 
         return inner  # Returns the function so the user can use it by itself
+
+    def error(self, event: str):
+        """
+        Registers a function to handle errors for a specific **non-raw** event.
+
+        Parameters
+        ----------
+        event: :class:`str`
+            The event to handle errors for.
+
+        Examples
+        --------
+
+        .. code-block:: python3
+
+            @client.error("message")
+            async def message_error(error, message):
+                if isinstance(error, IndexError): # You probably don't want to handle all the index errors like this but this is just an example.
+                    await message.reply("Not enough arguments.")
+
+        """
+        def inner(func: Callable[..., Any]):
+            self.error_handlers[event.lower()] = func
+            return func
+
+        return inner
 
     def run(self, token: str):
         """
@@ -110,7 +138,13 @@ class Client:
     async def dispatch(self, event: str, *args, **kwargs):
         event = event.lower()
         if func := self.listeners.get(event):
-            await func(*args, **kwargs)
+            if self.error_handlers[event]:
+                try:
+                    await func(*args, **kwargs)
+                except Exception as e:
+                    await self.error_handlers[event](e, *args, **kwargs)
+            else:
+                await func(*args, **kwargs)
 
     async def raw_dispatch(self, payload: Dict[Any, Any]):
         event = payload["type"].lower()  # Subject to change
