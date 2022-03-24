@@ -1,10 +1,14 @@
 Reference
 =========
 
-.. automodule:: voltage.client
-    :show-inheritance:
+Client
+------
+
+.. autoclass:: voltage.Client
     :members:
 
-.. automodule:: voltage.server
-    :show-inheritance:
+Server
+------
+
+.. autoclass:: voltage.Server
     :members:
