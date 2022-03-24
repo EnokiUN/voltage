@@ -2,7 +2,7 @@
 Voltage
 -------
 
-|Support Server| |PyPi| |Checks|
+|Support Server| |PyPi| |Checks| |Docs|
 
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
@@ -78,3 +78,4 @@ Credits
 .. |Logo| image:: https://github.com/EnokiUN/EnokiUN/blob/main/assets/voltage.png
     :alt: Voltage Logo
     :width: 80
+.. |Docs| image:: https://img.shields.io/readthedocs/revolt-voltage/latest?labelColor=111823&style=for-the-badge&logo=readthedocs&logoColor=white
