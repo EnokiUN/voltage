@@ -399,6 +399,8 @@ class CacheHandler:
         for user in data["users"]:
             self.add_user(user)
         for member in data["members"]:
+            if member['_id']['user'] not in self.users:
+                continue # Ignore deleted accounts.
             self.add_member(server_id, member)
         return server
 
