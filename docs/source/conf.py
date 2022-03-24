@@ -23,7 +23,7 @@ copyright = "2022-present EnokiUN"
 author = "EnokiUN"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.4a3"
+release = "0.1.4a4"
 
 
 # -- General configuration ---------------------------------------------------

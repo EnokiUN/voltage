@@ -17,7 +17,7 @@ Usage
     client = voltage.Client()
 
     @client.listen('ready')
-    async def on_ready(payload):
+    async def on_ready():
         print(f"Logged in as {client.user}")
 
     @client.listen('message')
