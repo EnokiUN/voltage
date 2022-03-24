@@ -106,6 +106,20 @@ class Role:
         hoist: Optional[bool] = None,
         rank: Optional[int] = None,
     ):
+        """
+        Edits the role.
+
+        Parameters
+        ----------
+        name: Optional[:class:`str`]
+            The new name of the role.
+        colour: Optional[:class:`str`]
+            The new colour of the role.
+        hoist: Optional[:class:`bool`]
+            Whether the role is hoisted.
+        rank: Optional[:class:`int`]
+            The new rank of the role.
+        """
         if name is None and colour is NotSupplied and hoist is None and rank is None:
             raise ValueError("You must provide at least one of the following: name, colour, hoist, rank")
 
