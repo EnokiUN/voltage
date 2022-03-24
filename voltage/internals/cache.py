@@ -335,7 +335,15 @@ class CacheHandler:
         """
         if channel := self.channels.get(data["_id"]):
             return channel
-        channel = create_channel(data, self, str(data.get('server', ))) # blame mypy
+        channel = create_channel(
+            data,
+            self,
+            str(
+                data.get(
+                    "server",
+                )
+            ),
+        )  # blame mypy
         self.channels[channel.id] = channel
         return channel
 
