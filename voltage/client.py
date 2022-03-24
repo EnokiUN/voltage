@@ -138,7 +138,7 @@ class Client:
     async def dispatch(self, event: str, *args, **kwargs):
         event = event.lower()
         if func := self.listeners.get(event):
-            if self.error_handlers[event]:
+            if self.error_handlers.get(event):
                 try:
                     await func(*args, **kwargs)
                 except Exception as e:
