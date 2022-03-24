@@ -9,8 +9,6 @@ Voltage, A Revolt API wrapper.
 .. toctree::
     :maxdepth: 1
 
-    reference
-
 
 Indices and tables
 ==================
