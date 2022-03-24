@@ -53,7 +53,7 @@ class CacheHandler:
         self.users: Dict[str, User] = {}
         self.dm_channels: Dict[str, DMChannel] = {}
 
-    def get_message(self, value: Any, attr: str = "id") -> Message:
+    def get_message(self, value: Any, attr: str = "id", case: bool = True) -> Message:
         """
         Gets a message from the cache.
 
@@ -63,6 +63,8 @@ class CacheHandler:
             The value of the attr of the desired message.
         attr: :class:`str`
             The attribute of the message to get.
+        case: :class:`bool`
+            Whether to ignore case when getting the message from an attr that isn't the ID and is a string.
 
         Returns
         -------
@@ -73,11 +75,16 @@ class CacheHandler:
             return self.messages[value]
         else:
             for i in self.messages:
-                if getattr(self.messages[i], attr) == value:
-                    return self.messages[i]
+                if got := getattr(self.messages[i], attr, None):
+                    if isinstance(value, str) and not case:
+                        if got.lower() == value.lower():
+                            return self.messages[i]
+                else:
+                    if getattr(self.messages[i], attr) == value:
+                        return self.messages[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_channel(self, value: Any, attr: str = "id") -> Channel:
+    def get_channel(self, value: Any, attr: str = "id", case: bool = True) -> Channel:
         """
         Gets a channel from the cache.
 
@@ -87,6 +94,8 @@ class CacheHandler:
             The value of the attr of the desired channel.
         attr: :class:`str`
             The attribute of the channel to get.
+        case: :class:`bool`
+            Whether to ignore case when getting the channel from an attr that isn't the ID and is a string.
 
         Returns
         -------
@@ -97,11 +106,16 @@ class CacheHandler:
             return self.channels[value]
         else:
             for i in self.channels:
-                if getattr(self.channels[i], attr) == value:
-                    return self.channels[i]
+                if got := getattr(self.channels[i], attr, None):
+                    if isinstance(value, str) and not case:
+                        if got.lower() == value.lower():
+                            return self.channels[i]
+                else:
+                    if getattr(self.channels[i], attr) == value:
+                        return self.channels[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_member(self, server_id: str, value: Any, attr: str = "id") -> Member:
+    def get_member(self, server_id: str, value: Any, attr: str = "id", case: bool = False) -> Member:
         """
         Gets a member from the cache.
 
@@ -113,6 +127,8 @@ class CacheHandler:
             The value of the attr of the desired member.
         attr: :class:`str`
             The attribute of the member to get.
+        case: :class:`bool`
+            Whether to ignore case when getting the member from an attr that isn't the ID and is a string.
 
         Returns
         -------
@@ -122,12 +138,17 @@ class CacheHandler:
         if attr == "id":
             return self.members[server_id][value]
         else:
-            for i in self.members[server_id].values():
-                if getattr(i, attr) == value:
-                    return i
+            for i in self.members[server_id]:
+                if isinstance(value, str) and not case:
+                    if got := getattr(self.members[server_id][i], attr, None):
+                        if got.lower() == value.lower():
+                            return self.members[server_id][i]
+                else:
+                    if getattr(self.members[server_id][i], attr) == value:
+                        return self.members[server_id][i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_server(self, value: Any, attr: str = "id") -> Server:
+    def get_server(self, value: Any, attr: str = "id", case: bool = False) -> Server:
         """
         Gets a server from the cache.
 
@@ -147,11 +168,16 @@ class CacheHandler:
             return self.servers[value]
         else:
             for i in self.servers:
-                if getattr(self.servers[i], attr) == value:
-                    return self.servers[i]
+                if got := getattr(self.servers[i], attr, None):
+                    if isinstance(value, str) and not case:
+                        if got.lower() == value.lower():
+                            return self.servers[i]
+                else:
+                    if getattr(self.servers[i], attr) == value:
+                        return self.servers[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_user(self, value: Any, attr: str = "id") -> User:
+    def get_user(self, value: Any, attr: str = "id", case: bool = False) -> User:
         """
         Gets a user from the cache.
 
@@ -161,6 +187,8 @@ class CacheHandler:
             The value of the attr of the desired user.
         attr: :class:`str`
             The attribute of the user to get.
+        case: :class:`bool`
+            Whether to ignore case when getting the user from an attr that isn't the ID and is a string.
 
         Returns
         -------
@@ -171,11 +199,16 @@ class CacheHandler:
             return self.users[value]
         else:
             for i in self.users:
-                if getattr(self.users[i], attr) == value:
-                    return self.users[i]
+                if got := getattr(self.users[i], attr, None):
+                    if isinstance(value, str) and not case:
+                        if got.lower() == value.lower():
+                            return self.users[i]
+                else:
+                    if getattr(self.users[i], attr) == value:
+                        return self.users[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
-    def get_dm_channel(self, value: Any, attr: str = "id") -> Optional[DMChannel]:
+    def get_dm_channel(self, value: Any, attr: str = "id", case: bool = False) -> Optional[DMChannel]:
         """
         Gets a dm channel from the cache.
 
@@ -185,13 +218,25 @@ class CacheHandler:
             The value of the attr of the desired dm channel.
         attr: :class:`str`
             The attribute of the dm channel to get.
+        case: :class:`bool`
+            Whether to ignore case when getting the dm channel from an attr that isn't the ID and is a string.
+
+        Returns
+        -------
+        :class:`DMChannel`
+            The dm channel object from the cache.
         """
         if attr == "id":
             return self.dm_channels.get(str(value))
         else:
             for i in self.dm_channels:
-                if getattr(self.dm_channels[i], attr) == value:
-                    return self.dm_channels[i]
+                if got := getattr(self.dm_channels[i], attr, None):
+                    if isinstance(value, str) and not case:
+                        if got.lower() == value.lower():
+                            return self.dm_channels[i]
+                else:
+                    if getattr(self.dm_channels[i], attr) == value:
+                        return self.dm_channels[i]
             raise ValueError(f"No channel with {attr} {value} found.")
 
     async def fetch_message(self, server_id: str, message_id: str) -> Message:
@@ -290,7 +335,7 @@ class CacheHandler:
         """
         if channel := self.channels.get(data["_id"]):
             return channel
-        channel = create_channel(data, self)
+        channel = create_channel(data, self, data.get('server'))
         self.channels[channel.id] = channel
         return channel
 
@@ -461,10 +506,10 @@ class CacheHandler:
         start = time()
         print("\033[1;34m[CACHE]      Started caching users.\033[0m")
         await gather(*[self.handle_ready_user(user) for user in data["users"]])
-        print("\033[1;34m[CACHE]      Started caching channels.\033[0m")
-        await gather(*[self.handle_ready_channel(channel) for channel in data["channels"]])
         print("\033[1;34m[CACHE]      Started caching servers.\033[0m")
         await gather(*[self.handle_ready_server(server) for server in data["servers"]])
+        print("\033[1;34m[CACHE]      Started caching channels.\033[0m")
+        await gather(*[self.handle_ready_channel(channel) for channel in data["channels"]])
         print("\033[1;34m[CACHE]      Started caching members.\033[0m")
         await gather(*[self.handle_ready_member(member) for member in data["members"]])
         print("\033[1;34m[CACHE]      Populating servers.\033[0m")

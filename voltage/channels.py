@@ -45,7 +45,7 @@ class Channel:
     def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         self.id = data["_id"]
         self.type = ChannelType(data["channel_type"])
-        self.server = cache.get_channel(server_id) if server_id else None
+        self.server = cache.get_server(server_id) if server_id else None
         self.cache = cache
 
     def __repr__(self):
@@ -280,8 +280,8 @@ class TextChannel(Channel, Messageable):
 
     __slots__ = ("name", "description", "last_message", "nsfw", "default_permissions", "role_permissions", "icon")
 
-    def __init__(self, data: TextChannelPayload, cache: CacheHandler):
-        super().__init__(data, cache)
+    def __init__(self, data: TextChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
+        super().__init__(data, cache, server_id)
         self.name = data["name"]
         self.description = data.get("description")
         self.nsfw = data.get("nsfw", False)
@@ -338,8 +338,8 @@ class VoiceChannel(Channel):
 
     __slots__ = ("name", "description", "default_permissions", "role_permissions", "icon")
 
-    def __init__(self, data: VoiceChannelPayload, cache: CacheHandler):
-        super().__init__(data, cache)
+    def __init__(self, data: VoiceChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
+        super().__init__(data, cache, server_id)
         self.name = data["name"]
         self.description = data.get("description")
 
@@ -371,7 +371,7 @@ class VoiceChannel(Channel):
 
 # no fuck you not again
 def create_channel(
-    data: Any, cache: CacheHandler
+        data: Any, cache: CacheHandler, server_id: Optional[str] = None,
 ) -> Union[TextChannel, VoiceChannel, GroupDMChannel, SavedMessageChannel, DMChannel]:
     """
     Creates a channel based on the data provided.
@@ -382,6 +382,8 @@ def create_channel(
         The data to create the channel with.
     cache: :class:`CacheHandler`
         The cache to use.
+    server_id: Optional[:class:`str`]
+        The ID of the channel's server.
 
     Returns
     -------
@@ -390,9 +392,9 @@ def create_channel(
     """
     type = data["channel_type"]
     if type == "TextChannel":
-        return TextChannel(data, cache)
+        return TextChannel(data, cache, server_id)
     elif type == "VoiceChannel":
-        return VoiceChannel(data, cache)
+        return VoiceChannel(data, cache, server_id)
     elif type == "Group":
         return GroupDMChannel(data, cache)
     elif type == "SavedMessage":

@@ -168,6 +168,6 @@ class Client:
         if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", user):
             return self.cache.get_user(match.group(0))
         try:
-            return self.cache.get_user(user, "name")
+            return self.cache.get_user(user.replace("@", ""), "name", case=False)
         except ValueError:
             return None

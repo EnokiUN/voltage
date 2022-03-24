@@ -60,9 +60,6 @@ class SystemMessages:
 
     Attributes
     ----------
-    server: Optional[:class:`Server`]
-        The server the system messages are configured for.
-        I wouldn't recommend relying on this tho as it may be removed in the future as it's implementaion is honesly half-baked.
     user_joined: Optional[:class:`Channel`]
         The channel the user joined message is configured to.
     user_left: Optional[:class:`Channel`]
@@ -73,40 +70,39 @@ class SystemMessages:
         The channel the user kicked message is configured to.
     """
 
-    __slots__ = ("data", "cache", "server", "user_joined", "user_left", "user_banned", "user_kicked")
+    __slots__ = ("data", "cache", "server")
 
     def __init__(self, data: SystemMessagesConfigPayload, cache: CacheHandler):
         self.data = data
         self.cache = cache
-        self.user_joined: Optional[Channel]
-        self.user_left: Optional[Channel]
-        self.user_banned: Optional[Channel]
-        self.user_kicked: Optional[Channel]
 
-        if user_joined := data.get("user_joined"):
-            self.user_joined = cache.get_channel(user_joined)
-        else:
-            self.user_joined = None
-        if user_left := data.get("user_left"):
-            self.user_left = cache.get_channel(user_left)
-        else:
-            self.user_left = None
-        if user_banned := data.get("user_banned"):
-            self.user_banned = cache.get_channel(user_banned)
-        else:
-            self.user_banned = None
-        if user_kicked := data.get("user_kicked"):
-            self.user_kicked = cache.get_channel(user_kicked)
-        else:
-            self.user_kicked = None
-        # Thank you copilot :^)
-        for i in [self.user_joined, self.user_left, self.user_banned, self.user_kicked]:
-            if i:
-                self.server = i.server
-                break
-        else:
-            self.server = None
+    @property
+    def user_joined(self) -> Optional[Channel]:
+        """
+        The channel the user joined message is configured to.
+        """
+        return self.cache.get_channel(self.data.get("user_joined"))
 
+    @property
+    def user_left(self) -> Optional[Channel]:
+        """
+        The channel the user left message is configured to.
+        """
+        return self.cache.get_channel(self.data.get("user_left"))
+
+    @property
+    def user_kicked(self) -> Optional[Channel]:
+        """
+        The channel the user kicked message is configured to.
+        """
+        return self.cache.get_channel(self.data.get("user_kicked"))
+
+    @property
+    def user_banned(self) -> Optional[Channel]:
+        """
+        The channel the user banned message is configured to.
+        """
+        return self.cache.get_channel(self.data.get("user_banned"))
 
 class Server:  # As of writing this this is the final major thing I have to implement before the lib is usable and sadly I am traveling in less than 12 hours so it's a race with time.
     """
@@ -192,8 +188,8 @@ class Server:  # As of writing this this is the final major thing I have to impl
         else:
             self.banner = None
 
-        self.channel_ids = {i: cache.get_channel(i) for i in data.get("channels", [])}
-        self.role_ids = {id: Role(role_data, id, self, cache.http) for id, role_data in data.get("roles", {}).items()}
+        self.channel_ids = [i for i in data.get("channels", [])]
+        self.role_ids = {i: Role(data, i, self, cache.http) for i, data in data.get("roles", {}).items()}
         self.member_ids: Dict[str, Member] = {}
 
     def _add_member(self, member: Member):
@@ -240,7 +236,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         """
         A list of all the channels this server has.
         """
-        return list(self.channel_ids.values())
+        return [self.cache.get_channel(i) for i in self.channel_ids]
 
     @property
     def members(self) -> List[Member]:
@@ -309,10 +305,10 @@ class Server:  # As of writing this this is the final major thing I have to impl
         if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", member):
             return self.cache.get_member(self.id, match.group(0))
         try:
-            return self.cache.get_member(self.id, member, "name")
+            return self.cache.get_member(self.id, member.replace("@", ""), "name", case=False)
         except ValueError:
             try:
-                return self.cache.get_member(self.id, member, "nickname")
+                return self.cache.get_member(self.id, member.replace("@", ""), "nickname", case=False)
             except ValueError:
                 return None
 

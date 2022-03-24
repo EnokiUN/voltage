@@ -106,7 +106,7 @@ class Message:
 
         self.channel = cache.get_channel(data["channel"])
 
-        self.server = self.channel and self.channel.server
+        self.server = self.channel.server
         self.author = (
             cache.get_member(self.server.id, data["author"]) if self.server else cache.get_user(data["author"])
         )
