@@ -6,7 +6,9 @@ Voltage
 
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
-An example bot:
+=====
+Usage
+=====
 
 .. code-block:: python3
 
