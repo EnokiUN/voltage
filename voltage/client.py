@@ -47,7 +47,7 @@ class Client:
     def listen(self, event: str, *, raw: bool = False):
         """
         Registers a function to listen for an event.
-        
+
         This function is meant to be used as a decorator.
 
         Parameters
