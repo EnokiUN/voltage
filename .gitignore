@@ -137,3 +137,6 @@ dmypy.json
 # le tests
 test.py
 tests/
+
+# venv
+.voltage/
