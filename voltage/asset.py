@@ -35,19 +35,8 @@ class Asset:
     url: :class:`str`
         The url of the asset.
     """
-    __slots__ = (
-        'id',
-        'tag',
-        'size',
-        'name',
-        'width',
-        'height',
-        'type',
-        'content_type',
-        'url',
-        'http',
-        'data'
-    )
+
+    __slots__ = ("id", "tag", "size", "name", "width", "height", "type", "content_type", "url", "http", "data")
 
     def __init__(self, data: FilePayload, http: HTTPHandler):
         self.data = data
@@ -107,6 +96,7 @@ class PartialAsset(Asset):
     type: Optional[:class:`AssetType`]
         The type of the asset.
     """
+
     __slots__ = ("url", "http", "id", "tag", "size", "name", "width", "height", "type", "content_type")
 
     def __init__(self, url: str, http: HTTPHandler):

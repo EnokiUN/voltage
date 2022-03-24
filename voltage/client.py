@@ -74,6 +74,7 @@ class Client:
                     await client.http.send_message(payload["channel"], "pong")
 
         """
+
         def inner(func: Callable[..., Any]):
             if raw:
                 self.raw_listeners[event.lower()] = func
@@ -103,6 +104,7 @@ class Client:
                     await message.reply("Not enough arguments.")
 
         """
+
         def inner(func: Callable[..., Any]):
             self.error_handlers[event.lower()] = func
             return func

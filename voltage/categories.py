@@ -28,7 +28,7 @@ class Category:
 
     def __init__(self, data: CategoryPayload, cache: CacheHandler):
         self.name = data["title"]
-        self.description = data.get('description')
+        self.description = data.get("description")
         self.id = data["id"]
         self.channel_ids = data["channels"]
         self.cache = cache

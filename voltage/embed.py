@@ -44,6 +44,7 @@ class WebsiteEmbed:
     site_name: Optional[:class:`str`]
         The site name of the embed.
     """
+
     __slots__ = (
         "title",
         "description",
@@ -85,6 +86,7 @@ class ImageEmbed:
     width: Optional[:class:`int`]
         The width of the embed.
     """
+
     __slots__ = ("url", "size", "height", "width")
 
     type = EmbedType.image
@@ -115,6 +117,7 @@ class TextEmbed:
     media: Optional[:class:`Asset`]
         The media of the embed.
     """
+
     __slots__ = ("title", "description", "url", "colour", "icon_url", "media")
 
     type = EmbedType.text
@@ -184,6 +187,7 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
     media: Optional[:class:`str`]
         The media of the embed.
     """
+
     __slots__ = (
         "title",
         "description",
