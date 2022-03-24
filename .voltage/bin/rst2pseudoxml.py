@@ -14,8 +14,7 @@ try:
 except:
     pass
 
-from docutils.core import publish_cmdline, default_description
-
+from docutils.core import default_description, publish_cmdline
 
 description = ('Generates pseudo-XML from standalone reStructuredText '
                'sources (for testing purposes).  ' + default_description)

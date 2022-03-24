@@ -13,12 +13,13 @@ specifications from styles.xml in STYLE_FILE.odt.
 
 from __future__ import print_function
 
-from lxml import etree
+import os
+import shutil
 import sys
 import zipfile
 from tempfile import mkstemp
-import shutil
-import os
+
+from lxml import etree
 
 NAMESPACES = {
     "style": "urn:oasis:names:tc:opendocument:xmlns:style:1.0",
@@ -57,7 +58,7 @@ def main():
     args = sys.argv[1:]
     if len(args) != 1:
         print(__doc__, file=sys.stderr)
-        print("Usage: %s STYLE_FILE.odt\n" % sys.argv[0], file=sys.stderr)
+        print(f"Usage: {sys.argv[0]} STYLE_FILE.odt\n", file=sys.stderr)
         sys.exit(1)
     filename = args[0]
     prepstyle(filename)
