@@ -6,6 +6,8 @@ Voltage
 
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
+|Screenshot|
+
 =====
 Usage
 =====
@@ -29,6 +31,8 @@ Usage
             await message.reply(content="embed", embed=embed) # Obligatory message content.
 
     client.run("TOKEN")
+
+For more examples check the `examples <https://github.com/EnokiUN/voltage/tree/main/examples>`_ folder which has alot of useful, ready to go, explained examples.
 
 ============
 Installation
@@ -78,6 +82,8 @@ Credits
     :target: https://revolt-voltage.readthedocs.io/
 .. |Checks| image:: https://img.shields.io/github/workflow/status/EnokiUN/Voltage/mypy?label=checks&labelColor=111823&logo=github&style=for-the-badge
     :alt: GitHub Workflow Status
-.. |Logo| image:: https://github.com/EnokiUN/EnokiUN/blob/main/assets/voltage.png
+.. |Logo| image:: https://github.com/EnokiUN/voltage/blob/main/assets/voltage.png
     :alt: Voltage Logo
     :width: 80
+.. |Screenshot| image:: https://github.com/EnokiUN/voltage/blob/main/assets/ss.jpg
+    :alt: Screenshot Of Starting A Bot.
