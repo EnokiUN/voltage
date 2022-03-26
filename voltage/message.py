@@ -212,7 +212,12 @@ class Message:
         replies = MessageReply(self, mention)
 
         message = await self.cache.http.send_message(
-            self.channel.id, str(content), embeds=embeds, attachments=attachments, replies=[replies], masquerade=masquerade
+            self.channel.id,
+            str(content),
+            embeds=embeds,
+            attachments=attachments,
+            replies=[replies],
+            masquerade=masquerade,
         )
         return self.cache.add_message(message)
 
