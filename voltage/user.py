@@ -137,8 +137,9 @@ class User(Messageable):
 
         self.profile = UserProfile(None, None)
 
-        self.bot = data.get("bot", False)
-        self.owner_id = data.get("owner_id")
+        bot = data.get("bot", {})
+        self.bot = True if bot else False
+        self.owner_id = bot.get("owner")
 
         self.masquerade_name: Optional[str] = None
         self.masquerade_avatar: Optional[PartialAsset] = None
