@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from asyncio import get_event_loop
+from asyncio import get_event_loop, Future, wait_for
 from re import search
 from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 
@@ -39,6 +39,7 @@ class Client:
         self.ws: WebSocketHandler
         self.listeners: Dict[str, Callable[..., Any]] = {}
         self.raw_listeners: Dict[str, Callable[[Dict], Any]] = {}
+        self.waits: Dict[str, list[tuple[Callable[..., bool], Future[Any]]]] = {}
         self.loop = get_event_loop()
         self.cache: CacheHandler
         self.user: User
@@ -126,6 +127,56 @@ class Client:
         """
         self.loop.run_until_complete(self.start(token))
 
+    async def wait_for(self, event: str, *, timeout: Optional[float] = None, check: Optional[Callable[..., bool]] = None) -> Any:
+        """
+        Waits for an event to be triggered.
+
+        .. note:: 
+
+            The event can be *anything*, be it a message, userupdate or whatever. :trol:
+
+        Parameters
+        ----------
+        event: :class:`str`
+            The event to wait for.
+        timeout: Optional[:class:`float`]
+            The amount of time to wait for the event to be triggered.
+        check: Optional[Callable[..., bool]]
+            A function to filter events to a matching predicate, ***must*** return a boolean for it to work properly.
+
+        Raises
+        ------
+        :class:`asyncio.TimeoutError`
+            If the event wasn't triggered within the timeout.
+
+        Examples
+        --------
+
+        .. code-block:: python3
+
+            import voltage
+
+            client = voltage.Client()
+
+            @client.listen("message")
+            async def message(message):
+                if message.content == "-wait":
+                    await message.reply("Okay, send something")
+                    await client.wait_for("message", check=lambda message: message.author == client.user)
+                    await message.reply("You sent: " + message.content)
+
+            client.run("token")
+
+        """
+        if check is None:
+            check = lambda *_, **__: True
+
+        future = self.loop.create_future()
+        self.waits[event] = self.waits.get(event, []) + [(check, future)]
+
+        return await wait_for(future, timeout)
+
+
     async def start(self, token: str):
         """
         Start the client.
@@ -144,6 +195,12 @@ class Client:
 
     async def dispatch(self, event: str, *args, **kwargs):
         event = event.lower()
+
+        for i in self.waits.get(event, []):
+            if i[0](*args, **kwargs):
+                i[1].set_result(*args, **kwargs)
+                self.waits[event].remove(i)
+
         if func := self.listeners.get(event):
             if self.error_handlers.get(event):
                 try:

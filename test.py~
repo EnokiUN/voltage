@@ -1,0 +1,156 @@
+import os
+import dotenv
+import voltage
+import time
+import random
+import PIL # type: ignore
+from PIL import Image
+from io import BytesIO
+import json
+import asyncio
+import pymediasoup
+from voltage.utils import eval
+from voltage.internals import HTTPHandler
+
+# Initialize a voltage client.
+client = voltage.Client()
+
+# @client.error("message")
+async def error(error: Exception, message):
+    await message.reply(f"An error occured: {error}")
+
+# Listen for raw message events.
+@client.listen("message", raw=True)
+async def on_message(payload):
+    await eval(client, payload, ["01FNJV46KJ3K09CQ5EPG9HWHBD"], "-eval")
+
+@client.listen("message")
+async def message(message: voltage.Message):
+    if message.content.startswith("/shrug"):
+        text = message.content.replace("/shrug", "")
+        await message.delete()
+        await message.channel.send(f"{text} ¯\\\\\_(ツ)_/¯", masquerade=voltage.MessageMasquerade(name=message.author.display_name, avatar=message.author.display_avatar.url))
+    if message.content.startswith("-"):
+        message.content = message.content[1:]
+    else:
+        return
+    parts = message.content.split(" ", 1)
+    if len(parts) < 2:
+        command, args = parts[0], None
+    else:
+        command, args = parts
+    if command == "ping":
+        start = time.time()
+        msg = await message.reply("Pong! :ping_pong:")
+        await msg.edit(content=f"Pong! :ping_pong: ({time.time() - start:.2f}s)")
+    elif command == "howsus":
+        if args:
+            if message.server:
+                user = message.server.get_member(args)
+            else:
+                user = client.get_user(args)
+            if user:
+                if user.id == client.user.id:
+                    return await message.reply(f"{user.name} is **0%** sus :amogus:... I'm a crewmate yk")
+                return await message.reply(f"{user.name} is **{random.randrange(101)}%** sus :amogus:")
+            else:
+                return await message.reply(f"Could not find that user")
+        return await message.reply(f"{message.author.name} is **{random.randrange(101)}%** sus :amogus:")
+    elif command == "test":
+        await message.reply(str(message.author.display_name))
+    elif command == "sus":
+        base = Image.open("tests/sus.jpg")
+        if args:
+            if message.server:
+                user = message.server.get_member(args)
+            else:
+                user = client.get_user(args)
+            if user is None:
+                return await message.reply("Could not find that user")
+        else:
+            user = message.author
+        if user.display_avatar:
+            pfp = Image.open(BytesIO(await user.display_avatar.get_binary())).resize((175, 175))
+            base.paste(pfp, (115, 90))
+            with BytesIO() as data:
+                base.save(data, "PNG")
+                data.seek(0)
+                return await message.reply("sus", attachment=voltage.File(data.read(), filename="sus.png"))
+        await message.reply(f"Couldn't get {user.name}'s avatar.")
+    elif command == "imposter":
+        if args:
+            new_args = args.split(" ", 1)
+            if len(new_args) < 2:
+                return await message.reply("You need to specify a user to impersonate and add a message")
+            userdata, msg = new_args
+            if user := message.server.get_member(userdata):
+                return await message.channel.send(msg, masquerade=voltage.MessageMasquerade(name=user.display_name, avatar=user.display_avatar.url))
+            return await message.reply("Could not find that user")
+        await message.reply("provide args smh")
+    elif command == "googleit":
+        await message.channel.send(r"# :sparkles: $\color{#4A84E5}\textsf{G}$$\color{#E54537}\textsf{o}$$\color{#F1BC1E}\textsf{o}$$\color{#4A84E5}\textsf{g}$$\color{#3AA557}\textsf{l}$$\color{#E54537}\textsf{e}$ $\color{#4A84E5}\textsf{i}$$\color{#E54537}\textsf{t}$ :sparkles:")
+    elif command == "69":
+        await message.channel.send(69)
+        await message.reply(69)
+    elif command == "vc":
+        token = (await client.http.join_call(args))['token']
+        http = HTTPHandler(client.client, token, api_url=client.http.api_info['features']['voso']['url']+"/")
+        ws = await http.get_api_info()
+        print(ws)
+        ws = await client.client.ws_connect(ws['ws'])
+        device = pymediasoup.Device(pymediasoup.AiortcHandler.createFactory([]))
+        await ws.send_json({"id": 1, "type": "Authenticate", "data": {"token": token, "roomId": args}})
+        client.loop.create_task(keep_alive(ws))
+        await ws.send_json({"id": 2, "type": "RoomInfo"})
+        idthing = 2
+        inittransportsid = 0
+        startconsumeid = 0
+        async for i in ws:
+            data = json.loads(i.data)
+            print(data)
+            if data.get('id') == 1:
+                idthing += 1
+                inittransportsid = idthing
+                await device.load(data['data']['rtpCapabilities'])
+                await ws.send_json({"id": idthing, "type": "InitializeTransports", "data": {"rtpCapabilities": device.rtpCapabilities.dict(), "mode": "SplitWebRTC"}})
+            elif data.get('id') == inittransportsid:
+                idthing += 1
+                send_transport = device.createSendTransport(**data['data']['sendTransport'])
+                async def send_connect(params):
+                    await ws.send_json({"id": idthing, "type": "ConnectTransport", "data": {"id": send_transport.id, "dtlsParameters": params.dict()}})
+                send_transport.on('connect', send_connect)
+                idthing += 1
+                recv_transport = device.createRecvTransport(**data['data']['recvTransport'])
+                async def recv_connect(params):
+                    await ws.send_json({"id": idthing, "type": "ConnectTransport", "data": {"id": recv_transport.id, "dtlsParameters": params.dict()}})
+                recv_transport.on('connect', recv_connect)
+                await send_transport.produce(, appData={"audio"})
+            # if data['type'] == "UserStartProduce":
+                # idthing += 1
+                # startconsumeid = idthing
+                # await ws.send_json({"id": idthing, "type": "StartConsume", "data": {"userId": data['data']['id'], "type": data['data']['type']}})
+            # if data['type'] == "UserStopProduce":
+                # idthing += 1
+                # await ws.send_json({"id": idthing, "type": "StopConsume", "data": {"id": data['data']['id']}})
+            # if data.get('id') == startconsumeid:
+                # idthing += 1
+                # consumer = await recv_transport.consume(**data['data'])
+                # client.loop.create_task(recv(consumer))
+                # await ws.send_json({"id": idthing, "type": "SetConsumerPause", "data": {"id": data['data']['id'], "paused": False}})
+
+async def recv(consumer):
+    while True:
+        data = await consumer.track.recv()
+        print(data)
+
+async def keep_alive(ws):
+    while True:
+        await ws.ping()
+        await asyncio.sleep(10)
+
+@client.listen("ready")
+async def on_ready():
+    print(f"Logged in as {client.user}")
+
+dotenv.load_dotenv()
+client.run(os.getenv("TOKEN")) # type: ignore
