@@ -11,6 +11,8 @@ from .internals import CacheHandler, HTTPHandler, WebSocketHandler
 
 if TYPE_CHECKING:
     from .user import User
+    from .server import Server
+    from .member import Member
 
 
 class Client:
@@ -23,6 +25,14 @@ class Client:
         The maximum amount of messages to cache.
     user: :class:`User`
         The user of the client.
+    members: List[:class:`Member`]
+        The members the client has cached.
+    servers: List[:class:`Server`]
+        The servers the client is in.
+    users: List[:class:`User`]
+        The users the client has cached.
+    channels: List[:class:`Channel`]
+        The channels the client has cached.
 
     Methods
     -------
@@ -179,6 +189,29 @@ class Client:
         self.waits[event] = self.waits.get(event, []) + [(check, future)]
 
         return await wait_for(future, timeout)
+
+    @property
+    def servers(self) -> list[Server]:
+        """The list of servers the client is in."""
+        return list(self.cache.servers.values())
+
+    @property
+    def users(self) -> list[User]:
+        """The list of users the client has cached."""
+        return list(self.cache.users.values())
+
+    @property
+    def channels(self) -> list[Any]:
+        """The list of channels the client has cached."""
+        return list(self.cache.channels.values())
+
+    @property
+    def members(self) -> list[Member]:
+        """The list of members the client has cached."""
+        members: list[Member] = list()
+        for (server, servermembers) in self.cache.members.items():
+            members += list(servermembers.values())
+        return members
 
     async def start(self, token: str, *, bot: bool = True):
         """
