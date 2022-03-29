@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from .asset import Asset
-
 # Internal imports
 from .user import User
+from .asset import Asset
+from .permissions import ServerPermissions
 
 if TYPE_CHECKING:
     from .internals import CacheHandler
@@ -36,9 +36,11 @@ class Member(User):
         The member's avatar.
     roles: List[:class:`Role`]
         The member's roles.
+    permissions: :class:`ServerPermissions`
+        The member's permissions.
     """
 
-    __slots__ = ("nickname", "server_avatar", "roles", "server")
+    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
         user = cache.get_user(data["_id"]["user"])
@@ -52,12 +54,15 @@ class Member(User):
             self.server_avatar = None
 
         roles = []
+        permint = 0
         for i in data.get("roles", []):
             role = server.get_role(i)
             if role:
                 roles.append(role)
+                permint |= role.permissions.flags
 
         self.roles = sorted(roles, key=lambda r: r.rank, reverse=True)
+        self.permissions = ServerPermissions.new_with_flags(permint)
 
         self.server = server
 
