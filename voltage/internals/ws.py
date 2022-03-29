@@ -260,7 +260,7 @@ class WebSocketHandler:
         Handles the server member update event.
         """
         server = self.cache.get_server(payload["id"]["server"])
-        member = server.get_member(server.id)
+        member = server.get_member(payload["id"]["user"])
         if member:
             old = copy(member)
             member._update(payload)
