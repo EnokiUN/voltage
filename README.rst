@@ -39,6 +39,8 @@ Usage
 
 For more examples check the `examples <https://github.com/EnokiUN/voltage/tree/main/examples>`_ folder which has a lot of useful, ready to go, and explained examples.
 
+You can also check the `RedCrewmate <https://github.com/EnokiUN/RedCrewmatw>`_ repository which has alot of code that can be re used (also the unofficial commands framework).
+
 ============
 Installation
 ============
