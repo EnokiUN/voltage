@@ -10,9 +10,9 @@ import aiohttp
 from .internals import CacheHandler, HTTPHandler, WebSocketHandler
 
 if TYPE_CHECKING:
-    from .user import User
-    from .server import Server
     from .member import Member
+    from .server import Server
+    from .user import User
 
 
 class Client:
