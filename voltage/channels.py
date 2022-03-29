@@ -399,7 +399,7 @@ def create_channel(
         return VoiceChannel(data, cache, server_id)
     elif type == "Group":
         return GroupDMChannel(data, cache)
-    elif type == "SavedMessage":
+    elif type == "SavedMessages":
         return SavedMessageChannel(data, cache)
     elif type == "DirectMessage":
         return DMChannel(data, cache)

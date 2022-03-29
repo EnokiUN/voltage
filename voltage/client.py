@@ -116,7 +116,7 @@ class Client:
 
         return inner
 
-    def run(self, token: str):
+    def run(self, token: str, *, bot: bool = True):
         """
         Run the client.
 
@@ -124,8 +124,10 @@ class Client:
         ----------
         token: :class:`str`
             The bot token.
+        bot: :class:`bool`
+            Whether or not the client is a bot.
         """
-        self.loop.run_until_complete(self.start(token))
+        self.loop.run_until_complete(self.start(token, bot=bot))
 
     async def wait_for(self, event: str, *, timeout: Optional[float] = None, check: Optional[Callable[..., bool]] = None) -> Any:
         """
@@ -177,7 +179,7 @@ class Client:
         return await wait_for(future, timeout)
 
 
-    async def start(self, token: str):
+    async def start(self, token: str, *, bot: bool = True):
         """
         Start the client.
 
@@ -185,8 +187,10 @@ class Client:
         ----------
         token: :class:`str`
             The bot token.
+        bot: :class:`bool`
+            Whether or not the client is a bot.
         """
-        self.http = HTTPHandler(self.client, token)
+        self.http = HTTPHandler(self.client, token, bot=bot)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
         self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
         await self.http.get_api_info()

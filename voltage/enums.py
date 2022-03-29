@@ -31,7 +31,7 @@ class ChannelType(enum.Enum):
     voice_channel = "VoiceChannel"
     group = "Group"
     direct_message = "DirectMessage"
-    saved_message = "SavedMessage"
+    saved_message = "SavedMessages"
 
 
 class AssetType(enum.Enum):

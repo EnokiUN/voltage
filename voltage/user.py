@@ -122,8 +122,11 @@ class User(Messageable):
 
         relationships = []
         for i in data.get("relations", []):
-            if user := cache.get_user(i["_id"]):
-                relationships.append(Relationship(RelationshipType(i["status"]), user))
+            try:
+                if user := cache.get_user(i["_id"]):
+                    relationships.append(Relationship(RelationshipType(i["status"]), user))
+            except KeyError:
+                continue
 
         self.relationships = relationships
 

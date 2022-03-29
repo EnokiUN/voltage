@@ -26,21 +26,24 @@ class HTTPHandler:
 
     Parameters
     ----------
-    client: aiohttp.ClientSession
+    client: :class:`aiohttp.ClientSession`
         The client to use for the http requests.
-    token: str
+    token: :class:`str`
         The bot token to use for authentication.
-    api_url: Optional[str]
+    api_url: Optional[:class:`str`]
         The url of the api. Defaults to "https://api.revolt.chat/".
+    bot: :class:`bool`
+        Whether or not the token is a bot token.
     """
 
-    __slots__ = ("client", "token", "api_url", "api_info")
+    __slots__ = ("client", "token", "api_url", "api_info", "bot")
 
-    def __init__(self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/"):
+    def __init__(self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/", bot: bool = True):
         self.client = client
         self.token = token
         self.api_url = api_url
         self.api_info: Optional[ApiInfoPayload] = None
+        self.bot = bot
 
     async def request(
         self, method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"], url: str, auth: Optional[bool] = True, **kwargs
@@ -68,8 +71,9 @@ class HTTPHandler:
         The response of the request.
         """
         header = {"User-Agent": "Voltage (beta)", "Content-Type": "application/json"}
+        token_header = "x-bot-token" if self.bot else "x-session-token"
         if auth:
-            header["x-bot-token"] = self.token
+            header[token_header] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
             if request.status >= 200 and request.status <= 300:
                 if (await request.read()) == b"":
