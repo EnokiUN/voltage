@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from asyncio import get_event_loop, Future, wait_for
+from asyncio import Future, get_event_loop, wait_for
 from re import search
 from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
 
@@ -129,11 +129,13 @@ class Client:
         """
         self.loop.run_until_complete(self.start(token, bot=bot))
 
-    async def wait_for(self, event: str, *, timeout: Optional[float] = None, check: Optional[Callable[..., bool]] = None) -> Any:
+    async def wait_for(
+        self, event: str, *, timeout: Optional[float] = None, check: Optional[Callable[..., bool]] = None
+    ) -> Any:
         """
         Waits for an event to be triggered.
 
-        .. note:: 
+        .. note::
 
             The event can be *anything*, be it a message, userupdate or whatever. :trol:
 
@@ -177,7 +179,6 @@ class Client:
         self.waits[event] = self.waits.get(event, []) + [(check, future)]
 
         return await wait_for(future, timeout)
-
 
     async def start(self, token: str, *, bot: bool = True):
         """

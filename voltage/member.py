@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-# Internal imports
-from .user import User
 from .asset import Asset
 from .permissions import ServerPermissions
+
+# Internal imports
+from .user import User
 
 if TYPE_CHECKING:
     from .internals import CacheHandler
