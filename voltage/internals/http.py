@@ -38,7 +38,9 @@ class HTTPHandler:
 
     __slots__ = ("client", "token", "api_url", "api_info", "bot")
 
-    def __init__(self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/", bot: bool = True):
+    def __init__(
+        self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/", bot: bool = True
+    ):
         self.client = client
         self.token = token
         self.api_url = api_url

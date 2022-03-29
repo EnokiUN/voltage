@@ -28,7 +28,7 @@ Usage
     async def on_message(message):  # Doesn't matter what you call the function.
         if message.content == "-ping":
             await message.channel.send("pong!")  # Send a message.
-        if message.content == "-embed":
+        elif message.content == "-embed":
             embed = voltage.SendableEmbed(title="Hello World", description="This is an embed")  # Create an embed.
             # Reply to a message.
             await message.reply(content="embed", embed=embed)  # Obligatory message content.
@@ -39,7 +39,7 @@ Usage
 
 For more examples check the `examples <https://github.com/EnokiUN/voltage/tree/main/examples>`_ folder which has a lot of useful, ready to go, and explained examples.
 
-You can also check the `RedCrewmate <https://github.com/EnokiUN/RedCrewmatw>`_ repository which has alot of code that can be re used (also the unofficial commands framework).
+You can also read the code of `RedCrewmate <https://github.com/EnokiUN/redcrewmatw>`_. RedCrewmate also contains a framework for commands and cogs.
 
 ============
 Installation
