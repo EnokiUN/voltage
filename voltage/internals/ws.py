@@ -148,6 +148,8 @@ class WebSocketHandler:
         """
         Handles the message event.
         """
+        if payload["author"] == "00000000000000000000000000": # system message
+            return
         await self.dispatch("message", self.cache.add_message(payload))
 
     async def handle_messageupdate(self, payload: OnMessageUpdatePayload):
