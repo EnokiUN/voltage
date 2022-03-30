@@ -100,7 +100,7 @@ class Message:
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.content = data["content"]
+        self.content = data.get("content")
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
 
@@ -140,8 +140,8 @@ class Message:
 
     async def edit(
         self,
-        *,
         content: Optional[str] = None,
+        *,
         embed: Optional[SendableEmbed] = None,
         embeds: Optional[List[SendableEmbed]] = None,
     ):
@@ -163,6 +163,8 @@ class Message:
         if embed:
             embeds = [embed]
 
+        content = str(content) if content else None
+
         await self.cache.http.edit_message(self.channel.id, self.id, content, embeds=embeds)  # type: ignore
 
     async def delete(self):
@@ -173,7 +175,7 @@ class Message:
 
     async def reply(
         self,
-        content: str,
+        content: Optional[str] = None,
         *,
         embed: Optional[Union[SendableEmbed, SendableEmbedPayload]] = None,
         embeds: Optional[List[Union[SendableEmbed, SendableEmbedPayload]]] = None,
@@ -187,7 +189,7 @@ class Message:
 
         Parameters
         ----------
-        content: :class:`str`
+        content: Optional[:class:`str`]
             The content of the message.
         embed: Optional[:class:`Embed`]
             The embed of the message.
@@ -211,9 +213,11 @@ class Message:
         attachments = [attachment] if attachment else attachments
         replies = MessageReply(self, mention)
 
+        content = str(content) if content else None
+
         message = await self.cache.http.send_message(
             self.channel.id,
-            str(content),
+            content=content,
             embeds=embeds,
             attachments=attachments,
             replies=[replies],

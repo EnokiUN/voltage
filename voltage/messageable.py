@@ -42,7 +42,7 @@ class Messageable:  # Really missing rust traits rn :(
 
     async def send(
         self,
-        content: str,
+        content: Optional[str] = None,
         *,
         embed: Optional[Union[SendableEmbed, SendableEmbedPayload]] = None,
         embeds: Optional[List[Union[SendableEmbed, SendableEmbedPayload]]] = None,
@@ -57,7 +57,7 @@ class Messageable:  # Really missing rust traits rn :(
 
         Parameters
         ----------
-        content: :class:`str`
+        content: Optional[:class:`str`]
             The content of the message.
         embed: Optional[:class:`Embed`]
             The embed of the message.
@@ -83,9 +83,11 @@ class Messageable:  # Really missing rust traits rn :(
         replies = [reply] if reply else replies
         attachments = [attachment] if attachment else attachments
 
+        content = str(content) if content else None
+
         message = await self.cache.http.send_message(
             await self.get_id(),
-            str(content),
+            content=content,
             embeds=embeds,
             attachments=attachments,
             replies=replies,
