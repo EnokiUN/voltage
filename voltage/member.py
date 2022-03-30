@@ -10,9 +10,9 @@ from .user import User
 
 if TYPE_CHECKING:
     from .internals import CacheHandler
+    from .roles import Role
     from .server import Server
     from .types import MemberPayload, OnServerMemberUpdatePayload
-    from .roles import Role
 
 
 def make_member_dot_zip(
@@ -121,7 +121,9 @@ class Member(User):
         *roles: :class:`Role`
             The roles to add to the member.
         """
-        await self.cache.http.edit_member(self.server.id, self.id, roles=[r.id for r in roles]+[r.id for r in self.roles])
+        await self.cache.http.edit_member(
+            self.server.id, self.id, roles=[r.id for r in roles] + [r.id for r in self.roles]
+        )
 
     def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
         if clear := data.get("clear"):
