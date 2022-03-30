@@ -204,19 +204,23 @@ class WebSocketHandler:
         self.cache.channels.pop(channel.id)
         await self.dispatch("channel_delete", channel)
 
-    async def handle_groupchanneljoin(self, payload):
+    async def handle_channelgroupjoin(self, payload):
         """
         Handles the group channel join event.
         """
-        channel = self.cache.get_channel(payload["id"])
-        user = self.cache.get_user(payload["user"])
+        try:
+            user = self.cache.get_user(payload["user"])
+        except KeyError:
+            user = self.cache.add_user(await self.http.fetch_user(payload["user"]))
         if user.id == self.user.id:
-            self.cache.add_channel(payload)
+            channel = self.cache.add_channel(await self.http.fetch_channel(payload["id"]))
+            return await self.dispatch("group_channel_added", channel, user)
+        channel = self.cache.get_channel(payload["id"])
         if isinstance(channel, GroupDMChannel):
             channel.add_recepient(user)
             await self.dispatch("group_channel_join", channel, user)
 
-    async def handle_groupchannelleave(self, payload):
+    async def handle_channelgroupleave(self, payload):
         """
         Handles the group channel leave event.
         """

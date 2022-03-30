@@ -221,6 +221,14 @@ class Message:
         )
         return self.cache.add_message(message)
 
+    @property
+    def url(self) -> str:
+        """
+        Returns the url of the message.
+        """
+        server_segment = "" if self.server is None else f"/server/{self.server.id}"
+        return f"https://app.revolt.chat/{server_segment}channel/{self.channel.id}/{self.id}"
+
     def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):
             if new.get("edited"):
