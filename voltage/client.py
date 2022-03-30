@@ -10,11 +10,12 @@ import aiohttp
 from .internals import CacheHandler, HTTPHandler, WebSocketHandler
 
 if TYPE_CHECKING:
+    from .channels import Channel
+    from .enums import PresenceType
     from .member import Member
     from .server import Server
     from .user import User
-    from .channels import Channel
-    from .enums import PresenceType
+
 
 class Client:
     """
