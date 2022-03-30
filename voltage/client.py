@@ -13,7 +13,8 @@ if TYPE_CHECKING:
     from .member import Member
     from .server import Server
     from .user import User
-
+    from .channels import Channel
+    from .enums import PresenceType
 
 class Client:
     """
@@ -273,3 +274,59 @@ class Client:
             return self.cache.get_user(user.replace("@", ""), "name", case=False)
         except ValueError:
             return None
+
+    def get_channel(self, channel_id: str) -> Optional[Channel]:
+        """
+        Gets a channel from the cache by ID.
+
+        Parameters
+        ----------
+        channel_id: :class:`str`
+            The ID of the channel.
+
+        Returns
+        -------
+        Optional[:class:`Channel`]
+            The channel.
+        """
+        try:
+            return self.cache.get_channel(channel_id)
+        except ValueError:
+            return None
+
+    def get_server(self, server_id: str) -> Optional[Server]:
+        """
+        Gets a server from the cache by ID.
+
+        Parameters
+        ----------
+        server_id: :class:`str`
+            The ID of the server.
+
+        Returns
+        -------
+        Optional[:class:`Server`]
+            The server.
+        """
+        try:
+            return self.cache.get_server(server_id)
+        except ValueError:
+            return None
+
+    async def set_status(self, text: Optional[str] = None, presence: Optional[PresenceType] = None):
+        """
+        Sets the client's status.
+
+        Parameters
+        ----------
+        text: Optional[:class:`str`]
+            The text to set the status to.
+        presence: Optional[:class:`str`]
+            The presence to set the status to.
+        """
+        data = {}
+        if text:
+            data["text"] = text
+        if presence:
+            data["presence"] = presence.value
+        await self.http.edit_self(status=data)

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .asset import Asset
-from .permissions import ServerPermissions
+from .permissions import ServerPermissions, ChannelPermissions
 
 # Internal imports
 from .user import User
@@ -40,9 +40,11 @@ class Member(User):
         The member's roles.
     permissions: :class:`ServerPermissions`
         The member's permissions.
+    channel_permissions: :class:`ChannelPermissions`
+        The member's channel permissions.
     """
 
-    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions")
+    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions", "channel_permissions")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
         user = cache.get_user(data["_id"]["user"])
@@ -57,14 +59,17 @@ class Member(User):
 
         roles = []
         permint = 0
+        chpermint = 0
         for i in data.get("roles", []):
             role = server.get_role(i)
             if role:
                 roles.append(role)
                 permint |= role.permissions.flags
+                chpermint |= role.channel_permissions.flags
 
         self.roles: list[Role] = sorted(roles, key=lambda r: r.rank, reverse=True)
         self.permissions = ServerPermissions.new_with_flags(permint)
+        self.channel_permissions = ChannelPermissions.new_with_flags(chpermint)
 
         self.server = server
 
@@ -124,6 +129,25 @@ class Member(User):
         await self.cache.http.edit_member(
             self.server.id, self.id, roles=[r.id for r in roles] + [r.id for r in self.roles]
         )
+
+    async def set_nickname(self, nickname: Optional[str]):
+        """
+        A method that sets the member's nickname.
+
+        Parameters
+        ----------
+        nickname: Optional[:class:`str`]
+            The nickname to set.
+        """
+        if nickname:
+            return await self.cache.http.edit_member(self.server.id, self.id, nickname=nickname)
+        await self.cache.http.edit_member(self.server.id, self.id, remove="Nickname")
+
+    async def remove_avatar(self):
+        """
+        A method that removes the member's avatar.
+        """
+        await self.cache.http.edit_member(self.server.id, self.id, remove="Avatar")
 
     def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
         if clear := data.get("clear"):

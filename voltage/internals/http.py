@@ -738,7 +738,7 @@ class HTTPHandler:
         """
         data: Dict[str, Any] = {}
         if nickname:
-            data["nick"] = nickname
+            data["nickname"] = nickname
         if avatar:
             data["avatar"] = avatar
         if roles:
