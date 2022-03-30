@@ -21,7 +21,7 @@ setup(
     author="EnokiUN",
     url="https://github.com/EnokiUN/voltage",
     project_urls={
-        "Documentation": "https://voltage.readthedocs.io/en/latest",
+        "Documentation": "https://revolt-voltage.readthedocs.io/en/latest",
         "Issue tracker": "https://github.com/enokiun/voltage/issues",
     },
     version=version,
