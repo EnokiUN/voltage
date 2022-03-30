@@ -32,11 +32,11 @@ async def eval(client: Client, message: MessagePayload, superuser_ids: list[str]
         return
     if message["content"].startswith(message_start):
         if message["author"] not in superuser_ids:
-            return await client.http.send_message(message["channel"], "You don't have access to this command.")
+            return await client.http.send_message(message["channel"], content="You don't have access to this command.")
         if not (parts := message["content"].split(" ", 1)) or not (len(parts) > 1):
             return await client.http.send_message(
                 message["channel"],
-                f"Usage: {message_start} <code>\nYou also have to be a superuser to use this command.",
+                content=f"Usage: {message_start} <code>\nYou also have to be a superuser to use this command.",
             )
         content = parts[1]
         content = sub("```python|```py|```", "", content)
@@ -50,7 +50,7 @@ async def eval(client: Client, message: MessagePayload, superuser_ids: list[str]
             res = await locals()["__eval__func"](client, message, client.http)
             if res:
                 await client.http.send_message(
-                    message["channel"], str(res).replace(client.http.token, "[TOKEN REDACTED]")
+                    message["channel"], content=str(res).replace(client.http.token, "[TOKEN REDACTED]")
                 )
         except Exception as e:
-            await client.http.send_message(message["channel"], f"Error: {e}")
+            await client.http.send_message(message["channel"], content=f"Error: {e}")
