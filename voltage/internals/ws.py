@@ -9,7 +9,8 @@ from ..enums import RelationshipType
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession, ClientWebSocketResponse
-
+    
+    from ..user import User
     from ..channels import GroupDMChannel
     from ..types.ws import *
     from .cache import CacheHandler
@@ -40,7 +41,7 @@ class WebSocketHandler:
         The event loop.
     """
 
-    __slots__ = ("client", "http", "cache", "ws", "token", "dispatch", "raw_dispatch", "loop", "ready")
+    __slots__ = ("client", "http", "cache", "ws", "token", "dispatch", "raw_dispatch", "loop", "ready", "user")
 
     def __init__(
         self,
@@ -60,6 +61,7 @@ class WebSocketHandler:
         self.dispatch = dispatch
         self.raw_dispatch = raw_dispatch
         self.ready = False
+        self.user: User
 
     async def authorize(self):
         """
@@ -79,13 +81,13 @@ class WebSocketHandler:
         """
         Starts the websocket.
         """
-        user = self.cache.add_user(await self.http.fetch_self())
+        self.user = self.cache.add_user(await self.http.fetch_self())
         print(
             f"""\033[1;31m                                                  
 \033[1;31m                  **************                  \033[1;34mLibrary: Voltage
 \033[1;31m               ***  ***************               \033[1;35mVersion: 0.1.4a4
-\033[1;31m               ***   **************               \033[1;36mBot: {user}
-\033[1;31m               ********************               \033[1;37mBot ID: {user.id}
+\033[1;31m               ***   **************               \033[1;36mBot: {self.user}
+\033[1;31m               ********************               \033[1;37mBot ID: {self.user.id}
 \033[1;31m                         **********               \033[1;30mAPI endpoint: {self.http.api_url}
 \033[1;31m          *************************  *****        
 \033[1;31m      *****************************  ********     \033[1;32mGitHub: https://github.com/EnokiUN/voltage
@@ -208,6 +210,8 @@ class WebSocketHandler:
         """
         channel = self.cache.get_channel(payload["id"])
         user = self.cache.get_user(payload["user"])
+        if user.id == self.user.id:
+            self.cache.add_channel(payload)
         if isinstance(channel, GroupDMChannel):
             channel.add_recepient(user)
             await self.dispatch("group_channel_join", channel, user)
@@ -274,6 +278,11 @@ class WebSocketHandler:
             self.cache.get_user(payload["user"])
         except KeyError:
             self.cache.add_user(await self.http.fetch_user(payload["user"]))
+        if payload['user'] == self.user.id:
+            self.cache.add_server(await self.http.fetch_server(payload["id"]))
+            member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
+            await self.cache.populate_server(payload["id"])
+            return await self.dispatch("server_added", member)
         member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
         await self.dispatch("server_member_join", member)
 
@@ -284,6 +293,10 @@ class WebSocketHandler:
         server = self.cache.get_server(payload["id"])
         member = server.get_member(payload["user"])
         if member:
+            if member.id == self.user.id:
+                self.cache.servers.pop(server.id)
+                self.cache.members.pop(server.id)
+                return await self.dispatch("server_left", server)
             server.members.remove(member)
             await self.dispatch("member_leave", member)
 
