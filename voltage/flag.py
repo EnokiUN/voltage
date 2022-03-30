@@ -23,9 +23,7 @@ class FlagValue:
         self.__doc__ = func.__doc__  # DOCUMENTATION GO BRRRRRRR
 
     def __get__(self: FV, instance: Optional[FB], owner: Type[FB]) -> Union[bool, FV]:
-        if instance:
-            return instance._has_flag(self.value)
-        return self
+        return instance._has_flag(self.value) if instance else self
 
     def __set__(self, instance: FB, value: bool):
         instance._set_flag(self.value, value)
@@ -73,9 +71,11 @@ class FlagBase:
         return inst
 
     def __eq__(self: FB, other: object) -> bool:
-        if not isinstance(other, self.__class__):
-            return NotImplemented
-        return self.flags == other.flags
+        return (
+            self.flags == other.flags
+            if isinstance(other, self.__class__)
+            else NotImplemented
+        )
 
     def __ne__(self: FB, other: object) -> bool:
         return not self.__eq__(other)

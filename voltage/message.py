@@ -58,7 +58,7 @@ class MessageMasquerade(NamedTuple):
         """
         Returns a dictionary representation of the message masquerade.
         """
-        return {"name": self.name if self.name else None, "avatar": self.avatar if self.avatar else None}
+        return {"name": self.name or None, "avatar": self.avatar or None}
 
 
 class Message:

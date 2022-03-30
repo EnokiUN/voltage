@@ -68,7 +68,7 @@ class File:
         else:
             raise TypeError("f must be a string or bytes")
 
-        filename = filename if not filename is None else "file"
+        filename = filename if filename is not None else "file"
 
         if spoiler and not filename.startswith("SPOILER_"):
             filename = f"SPOILER_{filename}"

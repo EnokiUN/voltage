@@ -5,7 +5,7 @@ from setuptools import setup  # type: ignore
 with open("voltage/__init__.py") as f:
     match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
     if match is not None:
-        version = match.group(1)
+        version = match[1]
     else:
         raise RuntimeError("version is not set")
 
