@@ -33,6 +33,8 @@ class WebsiteEmbed:
         The url of the embed.
     colour: Optional[:class:`int`]
         The colour of the embed.
+    color: Optional[:class:`int`]
+        Alias for :attr:`colour`.
     special: Optional[:class:`str`]
         The special data of the embed.
     image: Optional[:class:`str`]
@@ -50,6 +52,7 @@ class WebsiteEmbed:
         "description",
         "url",
         "colour",
+        "color",
         "special",
         "image",
         "video",
@@ -64,6 +67,7 @@ class WebsiteEmbed:
         self.description = embed.get("description")
         self.url = embed.get("url")
         self.colour = embed.get("colour")
+        self.color = self.colour
         self.special = embed.get("special")
         self.image = embed.get("image")
         self.video = embed.get("video")
@@ -112,13 +116,15 @@ class TextEmbed:
         The url of the embed.
     colour: Optional[:class:`str`]
         The colour of the embed.
+    color: Optional[:class:`str`]
+        Alias for :attr:`colour`.
     icon_url: Optional[:class:`str`]
         The icon url of the embed.
     media: Optional[:class:`Asset`]
         The media of the embed.
     """
 
-    __slots__ = ("title", "description", "url", "colour", "icon_url", "media")
+    __slots__ = ("title", "description", "url", "colour", "color", "icon_url", "media")
 
     type = EmbedType.text
 
@@ -127,6 +133,7 @@ class TextEmbed:
         self.description = embed.get("description")
         self.url = embed.get("url")
         self.colour = embed.get("colour")
+        self.color = self.colour
         self.icon_url = embed.get("icon_url")
         media = embed.get("media")
         self.media = Asset(media, http) if media else None
@@ -169,8 +176,6 @@ def create_embed(data: EmbedPayload, http: HTTPHandler) -> Embed:
 class SendableEmbed:  # It's Zoma's fault the name is this long.
     """
     A class that represents a sendable TextEmbed.
-    This type of embed can be constructed using the new_embed function then sent.
-    You should not need to construct this class yourself instead use the new_embed function.
 
     Attributes
     ----------
@@ -180,8 +185,10 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
         The description of the embed.
     url: Optional[:class:`str`]
         The url of the embed.
-    colour: Optional[Union[:class:`str`, :class:`int`]]
+    colour: Optional[Union[:class:`str`]]
         The colour of the embed.
+    color: Optional[Union[:class:`str`]]
+        Alias for :attr:`colour`.
     icon_url: Optional[:class:`str`]
         The icon url of the embed.
     media: Optional[:class:`str`]
@@ -193,6 +200,7 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
         "description",
         "url",
         "colour",
+        "color",
         "icon_url",
         "media",
     )
@@ -202,14 +210,16 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
         title: Optional[str] = None,
         description: Optional[str] = None,
         url: Optional[str] = None,
-        colour: Optional[Union[str, int]] = None,
+        colour: Optional[str] = None,
+        color: Optional[str] = None,
         icon_url: Optional[str] = None,
         media: Optional[Union[str, File]] = None,
     ):
         self.title = title
         self.description = description
         self.url = url
-        self.colour = colour
+        self.colour = colour or color
+        self.color = self.colour
         self.icon_url = icon_url
         self.media = media
 
@@ -231,7 +241,7 @@ class SendableEmbed:  # It's Zoma's fault the name is this long.
         if self.url is not None:
             embed["url"] = self.url
         if self.colour is not None:
-            embed["colour"] = str(self.colour)
+            embed["colour"] = self.colour
         if self.icon_url is not None:
             embed["icon_url"] = self.icon_url
         if self.media is not None:

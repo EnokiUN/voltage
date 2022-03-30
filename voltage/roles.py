@@ -25,6 +25,8 @@ class Role:
         The role's name.
     colour: :class:`str`
         The role's colour.
+    color: :class:`str`
+        Alias for :attr:`colour`.
     hoist: :class:`bool`
         Whether the role is hoisted.
     rank: :class:`int`
@@ -43,6 +45,7 @@ class Role:
         "id",
         "name",
         "colour",
+        "color",
         "hoist",
         "rank",
         "permissions",
@@ -56,6 +59,7 @@ class Role:
         self.id = id
         self.name = data["name"]
         self.colour = data.get("colour")
+        self.color = self.colour
         self.hoist = data.get("hoist", False)
         self.rank = data["rank"]
         self.permissions = ServerPermissions.new_with_flags(data["permissions"][0])
@@ -103,6 +107,7 @@ class Role:
         *,
         name: Optional[str] = None,
         colour: Optional[str] = NotSupplied,
+        color: Optional[str] = NotSupplied,
         hoist: Optional[bool] = None,
         rank: Optional[int] = None,
     ):
@@ -115,6 +120,8 @@ class Role:
             The new name of the role.
         colour: Optional[:class:`str`]
             The new colour of the role.
+        color: Optional[:class:`str`]
+            Alias for :attr:`colour`.
         hoist: Optional[:class:`bool`]
             Whether the role is hoisted.
         rank: Optional[:class:`int`]
@@ -130,6 +137,9 @@ class Role:
             raise ValueError(
                 "You must provide a name"
             )  # god forgive me for I have sinned in the name of appeasing pyright.
+
+        if colour is NotSupplied and color is not NotSupplied:
+            colour = color
 
         remove: Optional[Literal["Colour"]] = "Colour" if colour is None else None
         await self.http.edit_role(self.server_id, self.id, name, colour=colour, hoist=hoist, rank=rank, remove=remove)

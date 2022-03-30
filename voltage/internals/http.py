@@ -351,8 +351,8 @@ class HTTPHandler:
     async def send_message(
         self,
         channel_id: str,
-        content: str,
         *,
+        content: Optional[str] = None,
         attachments: Optional[List[Union[str, File]]] = None,
         embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
         replies: Optional[List[Union[MessageReplyPayload, MessageReply]]] = None,
@@ -365,7 +365,7 @@ class HTTPHandler:
         ----------
         channel_id: :class:`str`
             The id of the channel.
-        content: :class:`str`
+        content: Optional[:class:`str`]
             The content of the message.
         attachments: Optional[List[Union[:class:`str`, :class:`File`]]]
             The attachments of the message.
@@ -376,7 +376,9 @@ class HTTPHandler:
         masquerade: Optional[Union[:class:`MasqueradePayload`, :class:`MessageMasquerade`]]
             The masquerade of the message.
         """
-        data: Dict[str, Any] = {"content": content}
+        data: Dict[str, Any] = {}
+        if content:
+            data["content"] = content
         if attachments:
             data["attachments"] = await gather(*[self.handle_attachment(attachment) for attachment in attachments])
         if embeds:
@@ -454,8 +456,8 @@ class HTTPHandler:
         self,
         channel_id: str,
         message_id: str,
-        content: str,
         *,
+        content: Optional[str],
         embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
     ) -> MessagePayload:
         """
@@ -467,12 +469,14 @@ class HTTPHandler:
             The id of the channel.
         message_id: :class:`str`
             The id of the message.
-        content: :class:`str`
+        content: Optional[:class:`str`]
             The content of the message.
         embeds: Optional[List[Union[:class:`SendableEmbedPayload`, :class:`SendableEmbed`]]]
             The embeds of the message.
         """
-        data: Dict[str, Any] = {"content": content}
+        data: Dict[str, Any] = {}
+        if content:
+            data["content"] = content
         if embeds:
             data["embeds"] = await gather(*[self.handle_embed(embed) for embed in embeds])
         return await self.request("PATCH", f"channels/{channel_id}/messages/{message_id}", json=data)
@@ -871,9 +875,10 @@ class HTTPHandler:
         name: str,
         *,
         colour: Optional[str] = None,
+        color: Optional[str] = None,
         hoist: Optional[bool] = None,
         rank: Optional[int] = None,
-        remove: Optional[Literal["Colour"]] = None,
+        remove: Optional[Literal["Colour", "Color"]] = None,
     ) -> RolePayload:
         """
         Edits a role.
@@ -888,21 +893,25 @@ class HTTPHandler:
             The name of the role.
         colour: Optional[:class:`str`]
             The colour of the role.
+        color: Optional[:class:`str`]
+            Alias for :attr:`colour`.
         hoist: Optional[:class:`bool`]
             Whether the role is hoisted.
         rank: Optional[:class:`int`]
             The rank of the role.
-        remove: Optional[Literal["Colour"]]
+        remove: Optional[Literal["Colour", "Color"]]
             The field to remove.
         """
         data: Dict[str, Any] = {"name": name}
-        if colour:
-            data["color"] = colour
+        if colour or color:
+            data["colour"] = colour or color
         if hoist:
             data["hoist"] = hoist
         if rank:
             data["position"] = rank
         if remove:
+            if remove == "Color":
+                remove = "Colour"
             data["remove"] = remove
         return await self.request("PATCH", f"servers/{server_id}/roles/{role_id}", json=data)
 
