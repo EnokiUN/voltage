@@ -288,7 +288,7 @@ class WebSocketHandler:
             await self.cache.populate_server(payload["id"])
             return await self.dispatch("server_added", member)
         member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
-        await self.dispatch("server_member_join", member)
+        await self.dispatch("member_join", member)
 
     async def handle_memberleave(self, payload: OnServerMemberLeavePayload):
         """
@@ -300,7 +300,7 @@ class WebSocketHandler:
             if member.id == self.user.id:
                 self.cache.servers.pop(server.id)
                 self.cache.members.pop(server.id)
-                return await self.dispatch("server_left", server)
+                return await self.dispatch("server_removed", server)
             server.members.remove(member)
             await self.dispatch("member_leave", member)
 
