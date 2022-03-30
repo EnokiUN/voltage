@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from .internals import CacheHandler
     from .server import Server
     from .types import MemberPayload, OnServerMemberUpdatePayload
+    from .roles import Role
 
 
 def make_member_dot_zip(
@@ -62,7 +63,7 @@ class Member(User):
                 roles.append(role)
                 permint |= role.permissions.flags
 
-        self.roles = sorted(roles, key=lambda r: r.rank, reverse=True)
+        self.roles: list[Role] = sorted(roles, key=lambda r: r.rank, reverse=True)
         self.permissions = ServerPermissions.new_with_flags(permint)
 
         self.server = server
@@ -110,6 +111,17 @@ class Member(User):
         A method that unbans the member from the server.
         """
         await self.cache.http.unban_member(self.server.id, self.id)
+
+    async def add_roles(self, *roles: Role):
+        """
+        A method that adds roles to the member.
+
+        Parameters
+        ----------
+        *roles: :class:`Role`
+            The roles to add to the member.
+        """
+        await self.cache.http.edit_member(self.server.id, self.id, roles=[r.id for r in roles]+[r.id for r in self.roles])
 
     def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
         if clear := data.get("clear"):
