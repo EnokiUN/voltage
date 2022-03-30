@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
 from .enums import SortType
-from .message import Message
 from .errors import HTTPError
+from .message import Message
 
 if TYPE_CHECKING:
     from .embed import Embed, SendableEmbed
