@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .asset import Asset
-from .permissions import ServerPermissions, ChannelPermissions
+from .permissions import ChannelPermissions, ServerPermissions
 
 # Internal imports
 from .user import User
