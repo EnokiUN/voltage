@@ -9,10 +9,10 @@ from ..enums import RelationshipType
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession, ClientWebSocketResponse
-    
-    from ..user import User
+
     from ..channels import GroupDMChannel
     from ..types.ws import *
+    from ..user import User
     from .cache import CacheHandler
     from .http import HTTPHandler
 
@@ -278,7 +278,7 @@ class WebSocketHandler:
             self.cache.get_user(payload["user"])
         except KeyError:
             self.cache.add_user(await self.http.fetch_user(payload["user"]))
-        if payload['user'] == self.user.id:
+        if payload["user"] == self.user.id:
             self.cache.add_server(await self.http.fetch_server(payload["id"]))
             member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
             await self.cache.populate_server(payload["id"])
