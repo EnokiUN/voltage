@@ -165,7 +165,7 @@ class Message:
 
         content = str(content) if content else None
 
-        await self.cache.http.edit_message(self.channel.id, self.id, content, embeds=embeds)  # type: ignore
+        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)  # type: ignore
 
     async def delete(self):
         """
