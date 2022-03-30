@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
 from .enums import SortType
+from .message import Message
+from .errors import HTTPError
 
 if TYPE_CHECKING:
     from .embed import Embed, SendableEmbed
@@ -178,3 +180,18 @@ class Messageable:  # Really missing rust traits rn :(
             await self.get_id(), query, sort=sort.value, limit=limit, before=before, after=after, include_users=False
         )
         return [Message(data, self.cache) for data in messages]
+
+    async def purge(self, amount: int):
+        """
+        Purge messages from the messageable object's channel.
+
+        Parameters
+        ----------
+        amount: :class:`int`
+            The amount of messages to purge.
+        """
+        for i in await self.history(limit=amount):
+            try:
+                await i.delete()
+            except HTTPError:
+                pass
