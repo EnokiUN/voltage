@@ -47,8 +47,7 @@ class Asset:
         self.size = data.get("size")
         self.name = data.get("filename")
 
-        metadata = data.get("metadata")
-        if metadata:
+        if metadata := data.get("metadata"):
             self.width = metadata.get("width")
             self.height = metadata.get("height")
             self.type = AssetType(metadata.get("type"))

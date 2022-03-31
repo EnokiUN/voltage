@@ -61,8 +61,7 @@ class Member(User):
         permint = 0
         chpermint = 0
         for i in data.get("roles", []):
-            role = server.get_role(i)
-            if role:
+            if role := server.get_role(i):
                 roles.append(role)
                 permint |= role.permissions.flags
                 chpermint |= role.channel_permissions.flags
@@ -163,9 +162,5 @@ class Member(User):
                 self.server_avatar = Asset(new["avatar"], self.cache.http)
             if new.get("roles"):
                 roles = []
-                for i in new["roles"]:
-                    role = self.server.get_role(i)
-                    if role:
-                        roles.append(role)
-
+                roles.extend(role for i in new["roles"] if (role := self.server.get_role(i)))
                 self.roles = sorted(roles, key=lambda r: r.rank, reverse=True)

@@ -109,7 +109,7 @@ class WebSocketHandler:
         )
         info = await self.http.get_api_info()
         ws_url = info["ws"]
-        print(f"\033[1;31m[Voltage]    Connecting to the websocket...\033[0m")
+        print("\\033[1;31m[Voltage]    Connecting to the websocket...\\033[0m")
         self.ws = await self.client.ws_connect(ws_url)
         await self.authorize()
         self.loop.create_task(self.heartbeat())
@@ -268,8 +268,7 @@ class WebSocketHandler:
         Handles the server member update event.
         """
         server = self.cache.get_server(payload["id"]["server"])
-        member = server.get_member(payload["id"]["user"])
-        if member:
+        if member := server.get_member(payload["id"]["user"]):
             old = copy(member)
             member._update(payload)
             await self.dispatch("server_member_update", old, member)
@@ -295,8 +294,7 @@ class WebSocketHandler:
         Handles the member leave event.
         """
         server = self.cache.get_server(payload["id"])
-        member = server.get_member(payload["user"])
-        if member:
+        if member := server.get_member(payload["user"]):
             if member.id == self.user.id:
                 self.cache.servers.pop(server.id)
                 self.cache.members.pop(server.id)
@@ -309,8 +307,7 @@ class WebSocketHandler:
         Handles the server role update event.
         """
         server = self.cache.get_server(payload["id"])
-        role = server.get_role(payload["role_id"])
-        if role:
+        if role := server.get_role(payload["role_id"]):
             old = copy(role)
             role._update(payload)
             await self.dispatch("server_role_update", old, role)
@@ -320,8 +317,7 @@ class WebSocketHandler:
         Handles the server role delete event.
         """
         server = self.cache.get_server(payload["id"])
-        role = server.get_role(payload["role_id"])
-        if role:
+        if role := server.get_role(payload["role_id"]):
             server.roles.remove(role)
             await self.dispatch("server_role_delete", role)
 

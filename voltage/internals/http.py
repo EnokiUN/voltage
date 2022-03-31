@@ -73,14 +73,12 @@ class HTTPHandler:
         The response of the request.
         """
         header = {"User-Agent": "Voltage (beta)", "Content-Type": "application/json"}
-        token_header = "x-bot-token" if self.bot else "x-session-token"
         if auth:
+            token_header = "x-bot-token" if self.bot else "x-session-token"
             header[token_header] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
             if request.status >= 200 and request.status <= 300:
-                if (await request.read()) == b"":
-                    return {}
-                return await request.json()
+                return {} if (await request.read()) == b"" else await request.json()
             raise HTTPError(request)
 
     async def upload_file(self, file: bytes, name: str, tag: str) -> AutumnPayload:

@@ -33,7 +33,7 @@ async def eval(client: Client, message: MessagePayload, superuser_ids: list[str]
     if message["content"].startswith(message_start):
         if message["author"] not in superuser_ids:
             return await client.http.send_message(message["channel"], content="You don't have access to this command.")
-        if not (parts := message["content"].split(" ", 1)) or not (len(parts) > 1):
+        if not (parts := message["content"].split(" ", 1)) or len(parts) <= 1:
             return await client.http.send_message(
                 message["channel"],
                 content=f"Usage: {message_start} <code>\nYou also have to be a superuser to use this command.",
@@ -43,7 +43,7 @@ async def eval(client: Client, message: MessagePayload, superuser_ids: list[str]
         lines = content.splitlines()
         lines = [line.strip() for line in lines if line]
         if not lines[-1].startswith("    "):
-            lines[-1] = "return " + lines[-1]
+            lines[-1] = f"return {lines[-1]}"
         cmd = "async def __eval__func(client, payload, http):\n    " + "\n    ".join(lines)
         exec(cmd)  # nosec
         try:

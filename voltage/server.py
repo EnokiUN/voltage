@@ -178,18 +178,14 @@ class Server:  # As of writing this this is the final major thing I have to impl
         self.category_ids = {i["id"]: Category(i, cache) for i in data.get("categories", [])}
 
         self.icon: Optional[Asset]
-        if icon := data.get("icon"):
-            self.icon = Asset(icon, cache.http)
-        else:
-            self.icon = None
-
+        self.icon = Asset(icon, cache.http) if (icon := data.get("icon")) else None
         self.banner: Optional[Asset]
         if banner := data.get("banner"):
             self.banner = Asset(banner, cache.http)
         else:
             self.banner = None
 
-        self.channel_ids = [i for i in data.get("channels", [])]
+        self.channel_ids = list(data.get("channels", []))
         self.role_ids = {i: Role(data, i, self, cache.http) for i, data in data.get("roles", {}).items()}
         self.member_ids: Dict[str, Member] = {}
 

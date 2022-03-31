@@ -73,16 +73,17 @@ class CacheHandler:
         """
         if attr == "id":
             return self.messages[value]
-        else:
-            for i in self.messages:
-                if got := getattr(self.messages[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.messages[i]
-                else:
-                    if getattr(self.messages[i], attr) == value:
-                        return self.messages[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        for i in self.messages:
+            if got := getattr(self.messages[i], attr, None):
+                if (
+                    isinstance(value, str)
+                    and not case
+                    and got.lower() == value.lower()
+                ):
+                    return self.messages[i]
+            elif getattr(self.messages[i], attr) == value:
+                return self.messages[i]
+        raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_channel(self, value: Any, attr: str = "id", case: bool = True) -> Channel:
         """
@@ -104,16 +105,17 @@ class CacheHandler:
         """
         if attr == "id":
             return self.channels[value]
-        else:
-            for i in self.channels:
-                if got := getattr(self.channels[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.channels[i]
-                else:
-                    if getattr(self.channels[i], attr) == value:
-                        return self.channels[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        for i in self.channels:
+            if got := getattr(self.channels[i], attr, None):
+                if (
+                    isinstance(value, str)
+                    and not case
+                    and got.lower() == value.lower()
+                ):
+                    return self.channels[i]
+            elif getattr(self.channels[i], attr) == value:
+                return self.channels[i]
+        raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_member(self, server_id: str, value: Any, attr: str = "id", case: bool = False) -> Member:
         """
@@ -137,16 +139,14 @@ class CacheHandler:
         """
         if attr == "id":
             return self.members[server_id][value]
-        else:
-            for i in self.members[server_id]:
-                if isinstance(value, str) and not case:
-                    if got := getattr(self.members[server_id][i], attr, None):
-                        if got.lower() == value.lower():
-                            return self.members[server_id][i]
-                else:
-                    if getattr(self.members[server_id][i], attr) == value:
+        for i in self.members[server_id]:
+            if isinstance(value, str) and not case:
+                if got := getattr(self.members[server_id][i], attr, None):
+                    if got.lower() == value.lower():
                         return self.members[server_id][i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+            elif getattr(self.members[server_id][i], attr) == value:
+                return self.members[server_id][i]
+        raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_server(self, value: Any, attr: str = "id", case: bool = False) -> Server:
         """
@@ -166,16 +166,17 @@ class CacheHandler:
         """
         if attr == "id":
             return self.servers[value]
-        else:
-            for i in self.servers:
-                if got := getattr(self.servers[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.servers[i]
-                else:
-                    if getattr(self.servers[i], attr) == value:
-                        return self.servers[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        for i in self.servers:
+            if got := getattr(self.servers[i], attr, None):
+                if (
+                    isinstance(value, str)
+                    and not case
+                    and got.lower() == value.lower()
+                ):
+                    return self.servers[i]
+            elif getattr(self.servers[i], attr) == value:
+                return self.servers[i]
+        raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_user(self, value: Any, attr: str = "id", case: bool = False) -> User:
         """
@@ -197,16 +198,17 @@ class CacheHandler:
         """
         if attr == "id":
             return self.users[value]
-        else:
-            for i in self.users:
-                if got := getattr(self.users[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.users[i]
-                else:
-                    if getattr(self.users[i], attr) == value:
-                        return self.users[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        for i in self.users:
+            if got := getattr(self.users[i], attr, None):
+                if (
+                    isinstance(value, str)
+                    and not case
+                    and got.lower() == value.lower()
+                ):
+                    return self.users[i]
+            elif getattr(self.users[i], attr) == value:
+                return self.users[i]
+        raise ValueError(f"No channel with {attr} {value} found.")
 
     def get_dm_channel(self, value: Any, attr: str = "id", case: bool = False) -> Optional[DMChannel]:
         """
@@ -228,16 +230,17 @@ class CacheHandler:
         """
         if attr == "id":
             return self.dm_channels.get(str(value))
-        else:
-            for i in self.dm_channels:
-                if got := getattr(self.dm_channels[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.dm_channels[i]
-                else:
-                    if getattr(self.dm_channels[i], attr) == value:
-                        return self.dm_channels[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        for i in self.dm_channels:
+            if got := getattr(self.dm_channels[i], attr, None):
+                if (
+                    isinstance(value, str)
+                    and not case
+                    and got.lower() == value.lower()
+                ):
+                    return self.dm_channels[i]
+            elif getattr(self.dm_channels[i], attr) == value:
+                return self.dm_channels[i]
+        raise ValueError(f"No channel with {attr} {value} found.")
 
     async def fetch_message(self, server_id: str, message_id: str) -> Message:
         """
@@ -523,5 +526,5 @@ class CacheHandler:
         print("\033[1;34m[CACHE]      Populating servers.\033[0m")
         await self.populate_all_servers()
         print(
-            f"\033[1;32m[CACHE]      Finished caching {len(self.servers)} servers, {len(self.channels)} channels, {len(self.users)} users and {(sum([len(i) for i in self.members.values()]))} members in {time() - start:.2f} seconds.\033[0m"
+            f"\x1b[1;32m[CACHE]      Finished caching {len(self.servers)} servers, {len(self.channels)} channels, {len(self.users)} users and {sum(len(i) for i in self.members.values())} members in {time() - start:.2f} seconds.\x1b[0m"
         )
