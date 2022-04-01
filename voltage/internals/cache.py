@@ -451,7 +451,7 @@ class CacheHandler:
         server = self.get_server(server_id)
         data = await self.http.fetch_members(server_id)
         for user in data["users"]:
-            user = self.add_user(user)
+            self.add_user(user)
         for member in data["members"]:
             if member["_id"]["user"] not in self.users:
                 continue  # Ignore deleted accounts.
