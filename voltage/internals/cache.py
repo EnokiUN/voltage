@@ -410,6 +410,7 @@ class CacheHandler:
         if user := self.users.get(data["_id"]):
             return user
         user = User(data, self)
+        self.loop.create_task(user.fetch_profile())
         self.users[user.id] = user
         return user
 
@@ -450,7 +451,7 @@ class CacheHandler:
         server = self.get_server(server_id)
         data = await self.http.fetch_members(server_id)
         for user in data["users"]:
-            self.add_user(user)
+            user = self.add_user(user)
         for member in data["members"]:
             if member["_id"]["user"] not in self.users:
                 continue  # Ignore deleted accounts.
