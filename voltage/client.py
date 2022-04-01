@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from asyncio import Future, get_event_loop, wait_for
 from re import search
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union, Literal
+from typing import TYPE_CHECKING, Any, Callable, Dict, Literal, Optional, Union
 
 import aiohttp
 
@@ -325,7 +325,7 @@ class Client:
         presence: Optional[:class:`str`]
             The presence to set the status to.
         """
-        data: dict[Literal['text', 'presence'], Union[str, Literal['Online', 'Busy', 'Idle', 'Offline']]] = {}
+        data: dict[Literal["text", "presence"], Union[str, Literal["Online", "Busy", "Idle", "Offline"]]] = {}
         if text:
             data["text"] = text
         if presence:
