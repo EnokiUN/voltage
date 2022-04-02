@@ -6,7 +6,7 @@ client = voltage.Client()  # Initialize the client.
 @client.listen("message")  # Listen for message.
 async def wakeup(message):  # Doesn't matter what you call the function.
     if message.content == "Wake up Enoki!":
-        channel = client.get_channel("YOUR CHANNEL UUID") # You get the channel.
+        channel = client.get_channel("YOUR CHANNEL UUID") # Replace with your channel UUID.
         await channel.send("Enoki wake up!") # Sends "Enoki wake up!" to the channel.
 
 # Run the client
