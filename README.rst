@@ -68,15 +68,15 @@ If you want to install the main branch which may have more features but will be 
 Credits
 =======
 
-    - **Contributers**, thank you :)
+    - **Contributors**, thank you :)
 
-    - `Revolt.py <https://github.com/revoltchat/revolt.py>`_, When shit broke, that's where I went.
+    - `Revolt.py <https://github.com/revoltchat/revolt.py>`_, when shit broke, that's where I went.
 
-    - `Revolt.js <https://github.com/revoltchat/revolt.js>`_, When the docs fail you.
+    - `Revolt.js <https://github.com/revoltchat/revolt.js>`_, when the docs fail you.
 
-    - `Discord.py <https://github.com/Rapptz/discord.py>`_, Also a really great help while making this.
+    - `Discord.py <https://github.com/Rapptz/discord.py>`_, also a really great help while making this.
 
-    - **Revolt development team**, Absolute chads.
+    - **Revolt development team**, absolute chads.
 
 .. |Support Server| image:: https://img.shields.io/badge/dynamic/json?color=ff4655&labelColor=111823&label=Support%20Server&query=member_count&suffix=%20Members&url=https%3A%2F%2Fapi.revolt.chat%2Finvites%2Fbwtscg1F&style=for-the-badge&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABiElEQVQoFYVSO0sDQRCefVzUXCI+wGClWPoHrISIlaSy8a9Y2mplYyP2gq21f0ArBSWgRTAi0UgkkJh77q0z4545UHHg25nvm5nbud0V75vbkJvAIMyynLK3uAaZgYdgBDPag4v3N9Z1oWoXY4XoOI2+Q30DxL1DiJ5NzyqqZdvndcydTM6DlYlJezkc1JDwlrKQ/S8Ua5XqKxbxTrqTJHlDZdHzhjlpx9E6ztmdlqo+q/Wx08XW/EIV476eEvQrPw3VFjY+d9Mkw8bvAl9JJlr80ehL1QABg6XSxGne9ZFlZy+JocMC/ft+AHPj8bgvsfaub9JDJBE3ZnzinPvrG5x8iqOduzBsMsFF3gQBOJRykfxjHDWKvKa9DeR0r2wywJfi8H2hXyl762rY+Uod+QBlBBAkzZeDK9yiQZhWFC0XtdWyX49RIEh6mQ4Gw3wUi4eRXo0+2gNj9lAnszXPO0dfIaJ7aUqerH8djGqTQnoWbDo0poeabYbBQVWpEwFCpDYzeH0BFX8CUB2RWiqWVAgAAAAASUVORK5CYII=
     :target: https://rvlt.gg/bwtscg1F
