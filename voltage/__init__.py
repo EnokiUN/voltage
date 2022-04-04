@@ -68,7 +68,7 @@ from .channels import (
 )
 from .client import Client
 from .embed import Embed, SendableEmbed
-from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType
+from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType, RelationshipType
 from .errors import HTTPError, VoltageException
 from .file import File
 from .invites import Invite
@@ -107,6 +107,7 @@ __all__ = [
     "PartialAsset",
     "PresenceType",
     "Role",
+    "RelationshipType",
     "SavedMessageChannel",
     "SendableEmbed",
     "Server",
