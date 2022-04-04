@@ -45,7 +45,9 @@ Credits
 
 """
 
-2 = 1 # How's this haru? 
+# 2 = 1 # How's this haru?
+
+# Edit: apparently defying the laws of math isn't enough to make all my problems dissappear and I have to expend some actual effort and time making my stuff works or else I get stupid errors, like WTF!
 
 __title__ = "Voltage"
 __author__ = "EnokiUN"
