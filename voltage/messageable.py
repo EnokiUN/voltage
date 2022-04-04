@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union
 from asyncio import sleep
+from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
 from .enums import SortType
@@ -101,7 +101,6 @@ class Messageable:  # Really missing rust traits rn :(
         if delete_after is not None:
             self.cache.loop.create_task(msg.delete(delay=delete_after))
         return msg
-
 
     async def fetch_message(self, message_id: str) -> Message:
         """

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from asyncio import sleep
 from datetime import datetime
 from typing import TYPE_CHECKING, List, NamedTuple, Optional, Union
-from asyncio import sleep
 
 from .asset import Asset, PartialAsset
 from .embed import SendableEmbed, create_embed
