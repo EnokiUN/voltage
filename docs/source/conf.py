@@ -34,11 +34,8 @@ release = "0.1.4a4"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
-    "autoapi.extension",
+    "sphinx.ext.viewcode"
 ]
-
-autoapi_dirs = ["../../voltage"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

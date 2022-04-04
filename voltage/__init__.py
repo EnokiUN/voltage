@@ -68,7 +68,7 @@ from .channels import (
 )
 from .client import Client
 from .embed import Embed, SendableEmbed
-from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType
+from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType, RelationshipType
 from .errors import HTTPError, VoltageException
 from .file import File
 from .invites import Invite
@@ -83,7 +83,7 @@ from .permissions import (
 )
 from .roles import Role
 from .server import Server, ServerBan, SystemMessages
-from .user import User
+from .user import User, UserProfile, Relationship, Status
 
 __all__ = [
     "Asset",

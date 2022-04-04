@@ -20,13 +20,6 @@ if TYPE_CHECKING:
 class MessageReply(NamedTuple):
     """
     A named tuple that represents a message reply.
-
-    Attributes
-    ----------
-    message: :class:`Message`
-        The message that was replied to,
-    mention: :class:`bool`
-        Wether or not the reply mentions the author of the message.
     """
 
     message: Message
@@ -42,13 +35,6 @@ class MessageReply(NamedTuple):
 class MessageMasquerade(NamedTuple):
     """
     A named tuple that represents a message's masquerade.
-
-    Attributes
-    ----------
-    name: Optional[:class:`str`]
-        The name of the masquerade.
-    avatar: Optional[:class:`str`]
-        The url to the masquerade avatar.
     """
 
     name: Optional[str] = None
@@ -64,23 +50,6 @@ class MessageMasquerade(NamedTuple):
 class Message:
     """
     A class that represents a Voltage message.
-
-    Attributes
-    ----------
-    id: :class:`str`
-        The id of the message.
-    channel: :class:`Channel`
-        The channel the message was sent in.
-    attachments: List[:class:`Asset`]]
-        The attachments of the message.
-    embeds: List[:class:`Embed`]
-        The embeds of the message.
-    content: :class:`str`
-        The content of the message.
-    author: Union[:class:`User`, :class:`Member`]
-        The author of the message.
-    replies: List[:class:`Message`]
-        The replies of the message.
     """
 
     __slots__ = (

@@ -3,13 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-==============================
+=======
 Voltage
-==============================
+=======
 Voltage is a simple, pythonic wrapper for the Revolt API.
 
 .. toctree::
     :maxdepth: 1
+
+    api
 
 
 Indices and tables

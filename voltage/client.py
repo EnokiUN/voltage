@@ -21,27 +21,10 @@ class Client:
     """
     Base voltage client.
 
-    Attributes
+    Parameters
     ----------
     cache_message_limit: :class:`int`
         The maximum amount of messages to cache.
-    user: :class:`User`
-        The user of the client.
-    members: List[:class:`Member`]
-        The members the client has cached.
-    servers: List[:class:`Server`]
-        The servers the client is in.
-    users: List[:class:`User`]
-        The users the client has cached.
-    channels: List[:class:`Channel`]
-        The channels the client has cached.
-
-    Methods
-    -------
-    listen:
-        Registers a function to listen for an event.
-    run:
-        Runs the client.
     """
 
     def __init__(self, *, cache_message_limit: int = 5000):

@@ -27,15 +27,6 @@ if TYPE_CHECKING:
 class ServerBan:  # No idea why this exists tbh
     """
     A class which represents a Voltage server ban.
-
-    Attributes
-    ----------
-    user: :class:`User`
-        The user who was banned.
-    server: :class:`Server`
-        The server the user was banned from.
-    reason: Optional[:class:`str`]
-        The reason for the ban.
     """
 
     __slots__ = ("data", "cache", "reason", "user", "server")
@@ -57,17 +48,6 @@ class ServerBan:  # No idea why this exists tbh
 class SystemMessages:
     """
     A class that represents a Voltage server's system message configuration.
-
-    Attributes
-    ----------
-    user_joined: Optional[:class:`Channel`]
-        The channel the user joined message is configured to.
-    user_left: Optional[:class:`Channel`]
-        The channel the user left message is configured to.
-    user_banned: Optional[:class:`Channel`]
-        The channel the user banned message is configured to.
-    user_kicked: Optional[:class:`Channel`]
-        The channel the user kicked message is configured to.
     """
 
     __slots__ = ("data", "cache", "server")
@@ -108,35 +88,6 @@ class SystemMessages:
 class Server:  # As of writing this this is the final major thing I have to implement before the lib is usable and sadly I am traveling in less than 12 hours so it's a race with time.
     """
     A class which represents a Voltage server.
-
-    Attributes
-    ----------
-    id: :class:`str`
-        The server's ID.
-    name: :class:`str`
-        The server's name.
-    description: Optional[:class:`str`]
-        The server's description.
-    owner_id: :class:`str`
-        The server's owner's ID.
-    owner: :class:`User`
-        The server's owner.
-    nsfw: :class:`bool`
-        Whether the server is NSFW or not.
-    system_messages: Optional[:class:`SystemMessages`]
-        The server's system message configuration.
-    icon: Optional[:class:`Asset`]
-        The server's icon.
-    banner: Optional[:class:`Asset`]
-        The server's banner.
-    members: List[:class:`Member`]
-        The server's members.
-    channels: List[:class:`Channel`]
-        The server's channels.
-    roles: List[:class:`Role`]
-        The server's roles.
-    categories: List[:class:`Category`]
-        The server's categories.
     """
 
     __slots__ = (
