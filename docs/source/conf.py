@@ -12,6 +12,7 @@
 #
 import os
 import sys
+import re
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -23,7 +24,12 @@ copyright = "2022-present EnokiUN"
 author = "EnokiUN"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.4a4"
+with open("../../voltage/__init__.py") as f:
+    match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE)
+    if match is not None:
+        release = match.group(1)
+    else:
+        raise RuntimeError("version is not set")
 
 
 # -- General configuration ---------------------------------------------------
