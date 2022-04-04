@@ -23,7 +23,7 @@ copyright = "2022-present EnokiUN"
 author = "EnokiUN"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.4a4"
+release = "0.1.4a5"
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,7 +34,8 @@ release = "0.1.4a4"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode"
+    "sphinx.ext.viewcode",
+    "sphinx_copybutton",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -56,6 +57,8 @@ html_theme = "furo"
 html_theme_options = {}
 
 navigation_with_keys = True
+
+html_logo = "assets/logo.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

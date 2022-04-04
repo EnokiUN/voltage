@@ -11,6 +11,7 @@ Voltage is a simple, pythonic wrapper for the Revolt API.
 .. toctree::
     :maxdepth: 1
 
+    getting_started/index
     api
 
 
