@@ -148,14 +148,17 @@ Users
 .. autoclass:: voltage.UserProfile
     :members:
     :inherited-members:
+    :exclude-members: content, background
 
 .. autoclass:: voltage.Status
     :members:
     :inherited-members:
+    :exclude-members: text, presence
 
 .. autoclass:: voltage.Relationship
     :members:
     :inherited-members:
+    :exclude-members: type, user
 
 Flags
 ~~~~~

@@ -71,6 +71,7 @@ from .embed import Embed, SendableEmbed
 from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType, RelationshipType
 from .errors import HTTPError, VoltageException
 from .file import File
+from .flag import FlagValue, FlagBase, UserFlags
 from .invites import Invite
 from .member import Member
 from .message import Message, MessageMasquerade, MessageReply
