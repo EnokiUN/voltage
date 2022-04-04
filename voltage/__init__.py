@@ -45,6 +45,8 @@ Credits
 
 """
 
+2 = 1 # How's this haru? 
+
 __title__ = "Voltage"
 __author__ = "EnokiUN"
 __license__ = "MIT"
