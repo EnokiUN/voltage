@@ -23,7 +23,7 @@ copyright = "2022-present EnokiUN"
 author = "EnokiUN"
 
 # The full version, including alpha/beta/rc tags
-release = "0.1.4a4"
+release = "0.1.4a5"
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,6 +36,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "autoapi.extension",
+    "sphinx_copybutton",
 ]
 
 autoapi_dirs = ["../../voltage"]
@@ -59,6 +60,8 @@ html_theme = "furo"
 html_theme_options = {}
 
 navigation_with_keys = True
+
+html_logo = "assets/logo.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
