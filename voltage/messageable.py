@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Union
+from asyncio import sleep
 
 # Internal imports
 from .enums import SortType
@@ -53,6 +54,7 @@ class Messageable:  # Really missing rust traits rn :(
         reply: Optional[MessageReply] = None,
         replies: Optional[List[Union[MessageReply, MessageReplyPayload]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
+        delete_after: Optional[float] = None,
     ) -> Message:  # YEAH BABY, THAT'S WHAT WE'VE BEEN WAITING FOR, THAT'S WHAT IT'S ALL ABOUT, WOOOOOOOOOOOOOOOO
         """
         Send a message to the messageable object's channel.
@@ -95,7 +97,11 @@ class Messageable:  # Really missing rust traits rn :(
             replies=replies,
             masquerade=masquerade,
         )
-        return self.cache.add_message(message)
+        msg = self.cache.add_message(message)
+        if delete_after is not None:
+            self.cache.loop.create_task(msg.delete(delay=delete_after))
+        return msg
+
 
     async def fetch_message(self, message_id: str) -> Message:
         """
