@@ -10,13 +10,13 @@ import sys
 from ...client import Client
 from ...embed import SendableEmbed
 from ...errors import CommandNotFound
+from .command import Command, CommandContext
 
 if TYPE_CHECKING:
     from ...message import Message
     from .cog import Cog
-    from .command import Command, CommandContext
 
-class CommandsClient(Client):
+class Client(Client):
     """
     A class representing a client that uses commands.
 
@@ -25,7 +25,7 @@ class CommandsClient(Client):
     cogs: List[:class:`Cog`]
         The cogs that are loaded.
     """
-    def __init__(self, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]):
+    def __init__(self, prefix: Union[str, list[str], Callable[[Message, Client], Awaitable[Any]]]):
         super().__init__()
         self.listeners = {"message": self.handle_commands}
         self.prefix = prefix
@@ -66,7 +66,7 @@ class CommandsClient(Client):
             return await ctx.reply("Here, have a help embed", embed=embed)
         await ctx.reply(f"Command {target} not found.")
 
-    async def get_prefix(self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]) -> str:
+    async def get_prefix(self, message: Message, prefix: Union[str, list[str], Callable[[Message, Client], Awaitable[Any]]]) -> str:
         if message.content is None:
             raise ValueError("Message content is None.")
         if isinstance(prefix, str):

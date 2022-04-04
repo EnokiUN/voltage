@@ -26,7 +26,7 @@ setup(
     },
     version=version,
     license="MIT",
-    packages=["voltage", "voltage.types", "voltage.utils", "voltage.internals", "voltage.ext", "voltage.ext.commands"],
+    packages=["voltage", "voltage.types", "voltage.utils", "voltage.internals", "voltage.ext.commands"],
     install_requires=requirements,
     description="A Simple Pythonic Asynchronous API wrapper for Revolt.",
     long_description=readme,

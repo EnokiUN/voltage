@@ -76,7 +76,7 @@ from .enums import (
     RelationshipType,
     SortType,
 )
-from .errors import HTTPError, VoltageException
+from .errors import VoltageException, HTTPError, CommandNotFound, UserNotFound, MemberNotFound, NotEnoughArgs
 from .file import File
 from .invites import Invite
 from .member import Member
@@ -96,9 +96,11 @@ __all__ = [
     "Asset",
     "AssetType",
     "Channel",
+    "ChannelPermissions",
     "ChannelType",
     "Client",
     "Category",
+    "CommandNotFound",
     "DMChannel",
     "Embed",
     "EmbedType",
@@ -107,10 +109,12 @@ __all__ = [
     "Invite",
     "GroupDMChannel",
     "Member",
+    "MemberNotFound",
     "Message",
     "MessageMasquerade",
     "MessageReply",
     "Messageable",
+    "NotEnoughArgs",
     "PartialAsset",
     "PresenceType",
     "Role",
@@ -124,6 +128,8 @@ __all__ = [
     "SortType",
     "SystemMessages",
     "TextChannel",
+    "User",
+    "UserNotFound",
     "VoiceChannel",
     "VoltageException",
     "channel_permissions",
