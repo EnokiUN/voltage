@@ -1,11 +1,11 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
 from inspect import Parameter, _empty, signature
 from itertools import zip_longest
 from shlex import split
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
-from voltage import Message, User, Member, NotEnoughArgs, UserNotFound, MemberNotFound
+from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
 
 if TYPE_CHECKING:
     from .client import CommandsClient
