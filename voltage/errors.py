@@ -6,8 +6,8 @@ from aiohttp import ClientResponse
 
 if TYPE_CHECKING:
     from .ext import commands
-    from .user import User
     from .member import Member
+    from .user import User
 
 
 class VoltageException(Exception):
@@ -105,6 +105,7 @@ class MemberNotFound(UserNotFound):
     def __str__(self):
         return f"Member {self.given} not found"
 
+
 class NotBotOwner(VoltageException):
     """
     An exception that is raised when a user is not the bot owner.
@@ -122,6 +123,7 @@ class NotBotOwner(VoltageException):
 
     def __str__(self):
         return "You are not the bot owner"
+
 
 class NotEnoughPerms(VoltageException):
     """

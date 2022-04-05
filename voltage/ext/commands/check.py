@@ -1,10 +1,12 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Awaitable, Any
+
+from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
 from voltage import NotBotOwner, NotEnoughPerms, User
 
 if TYPE_CHECKING:
     from .command import Command, CommandContext
+
 
 class Check:
     """
@@ -16,6 +18,7 @@ class Check:
 
     Checks are ran in parallel using ``asyncio.gather``.
     """
+
     def __init__(self, func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]) -> None:
         self.func = func
         self.args: tuple[Any, ...] = ()
@@ -24,14 +27,16 @@ class Check:
     async def check(self, context: CommandContext) -> bool:
         check = await self.func(*self.args, **self.kwargs)
         return await check(context)
-    
+
     def __call__(self, *args, **kwargs):
         def inner(command: Command):
             self.args = args
             self.kwargs = kwargs
             command.checks.append(self)
             return command
+
         return inner
+
 
 def check(func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]) -> Check:
     """
@@ -39,30 +44,38 @@ def check(func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[boo
     """
     return Check(func)
 
+
 @check
 async def is_owner() -> Callable[[CommandContext], Awaitable[bool]]:
     """
     Checks if the user invoking the command is the bot owner.
     """
+
     async def check(ctx: CommandContext) -> bool:
         return ctx.author.id == ctx.client.user.owner_id
+
     return check
+
 
 @check
 async def has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
     """
     Checks if the user invoking the command is the bot owner.
     """
+
     async def check(ctx: CommandContext) -> bool:
         if isinstance(ctx.author, User):
             return True
         for permission, state in kwargs.items():
             if state:
-                if not hasattr(ctx.author.permissions, permission) and not hasattr(ctx.author.channel_permissions, permission):
+                if not hasattr(ctx.author.permissions, permission) and not hasattr(
+                    ctx.author.channel_permissions, permission
+                ):
                     raise ValueError(f"Permission {permission} does not exist")
                 if not getattr(ctx.author.permissions, permission):
                     raise NotEnoughPerms(ctx.author)
                 elif not getattr(ctx.author.channel_permissions, permission):
                     raise NotEnoughPerms(ctx.author)
         return True
+
     return check

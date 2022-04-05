@@ -1,20 +1,22 @@
 from __future__ import annotations
 
+from asyncio import gather
 from inspect import Parameter, _empty, signature
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
-from asyncio import gather
 
 from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
 
 if TYPE_CHECKING:
+    from .check import Check
     from .client import CommandsClient
     from .cog import Cog
-    from .check import Check
+
 
 async def dummy_send(self, *args, **kwargs):
     return NotImplemented
+
 
 class CommandContext:
     """
