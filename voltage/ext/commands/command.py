@@ -4,13 +4,17 @@ from inspect import Parameter, _empty, signature
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
+from asyncio import gather
 
 from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
 
 if TYPE_CHECKING:
     from .client import CommandsClient
     from .cog import Cog
+    from .check import Check
 
+async def dummy_send(self, *args, **kwargs):
+    return NotImplemented
 
 class CommandContext:
     """
@@ -30,6 +34,8 @@ class CommandContext:
         The server that the command was invoked in.
     command: :class:`Command`
         The command that was invoked.
+    checks: list[:class:`Check`]
+        The checks that must be passed for the command to be invoked.
     """
 
     __slots__ = (
@@ -57,7 +63,7 @@ class CommandContext:
         self.command = command
         self.client = client
 
-        self.send = getattr(message.channel, "send")
+        self.send = getattr(message.channel, "send", dummy_send)
         if message.server:
             self.me: Optional[Member] = client.cache.get_member(message.server.id, client.user.id)
         else:
@@ -78,7 +84,7 @@ class Command:
         The aliases of the command.
     """
 
-    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog")
+    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog", "checks")
 
     def __init__(
         self,
@@ -95,6 +101,7 @@ class Command:
         self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
         self.signature = signature(func)
         self.cog = cog
+        self.checks: list[Check] = []
 
     def error(self, func: Callable[[Exception, CommandContext], Awaitable[Any]]):
         """
@@ -136,6 +143,11 @@ class Command:
     async def invoke(self, context: CommandContext, prefix: str):
         if context.content is None:
             return
+        print(self.checks)
+        if self.checks:
+            results = await gather(*[check.check(context) for check in self.checks])
+            if any([check is False for check in results]):
+                return
         if len((params := self.signature.parameters)) > 1:
             given = split(context.content[len(prefix + self.name) :])
             args: list[str] = []

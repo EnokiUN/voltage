@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from aiohttp import ClientResponse
 
 if TYPE_CHECKING:
     from .ext import commands
+    from .user import User
+    from .member import Member
 
 
 class VoltageException(Exception):
@@ -102,3 +104,39 @@ class MemberNotFound(UserNotFound):
 
     def __str__(self):
         return f"Member {self.given} not found"
+
+class NotBotOwner(VoltageException):
+    """
+    An exception that is raised when a user is not the bot owner.
+
+    Called by the :func:`~voltage.ext.commands.is_owner` check
+
+    Attributes
+    ----------
+    user: Union[:class:`voltage.User`, :class:`voltage.Member`]
+        The user that tried to envoke the command.
+    """
+
+    def __init__(self, user: Union[User, Member]):
+        self.user = user
+
+    def __str__(self):
+        return "You are not the bot owner"
+
+class NotEnoughPerms(VoltageException):
+    """
+    An exception that is raised when a user does not have enough permissions.
+
+    Called by the :func:`~voltage.ext.commands.has_perms` check
+
+    Attributes
+    ----------
+    user: Union[:class:`voltage.User`, :class:`voltage.Member`]
+        The user that tried to envoke the command.
+    """
+
+    def __init__(self, user: Union[User, Member]):
+        self.user = user
+
+    def __str__(self):
+        return "You do not have enough permissions"

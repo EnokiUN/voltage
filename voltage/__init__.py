@@ -83,6 +83,8 @@ from .errors import (
     NotEnoughArgs,
     UserNotFound,
     VoltageException,
+    NotBotOwner,
+    NotEnoughPerms,
 )
 from .file import File
 from .invites import Invite
@@ -98,49 +100,3 @@ from .permissions import (
 from .roles import Role
 from .server import Server, ServerBan, SystemMessages
 from .user import User
-
-__all__ = [
-    "Asset",
-    "AssetType",
-    "Channel",
-    "ChannelPermissions",
-    "ChannelType",
-    "Client",
-    "Category",
-    "CommandNotFound",
-    "DMChannel",
-    "Embed",
-    "EmbedType",
-    "File",
-    "HTTPError",
-    "Invite",
-    "GroupDMChannel",
-    "Member",
-    "MemberNotFound",
-    "Message",
-    "MessageMasquerade",
-    "MessageReply",
-    "Messageable",
-    "NotEnoughArgs",
-    "PartialAsset",
-    "PresenceType",
-    "Role",
-    "RelationshipType",
-    "SavedMessageChannel",
-    "SendableEmbed",
-    "Server",
-    "ServerBan",
-    "ServerPermissions",
-    "SavedMessageChannel",
-    "SortType",
-    "SystemMessages",
-    "TextChannel",
-    "User",
-    "UserNotFound",
-    "VoiceChannel",
-    "VoltageException",
-    "channel_permissions",
-    "server_permissions",
-    "create_channel",
-    "server_permissions",
-]
