@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import Optional, Callable, Any, Awaitable
+
+from typing import Any, Awaitable, Callable, Optional
 
 from .command import Command
+
 
 class Cog:
     """
@@ -71,7 +73,7 @@ class Cog:
     def add_command(self, command: Command):
         """
         Adds a command to the cog.
-        
+
         idk why you're doing thit but consider using the decorator for this /shrug.
 
         Parameters
@@ -81,7 +83,9 @@ class Cog:
         """
         self.commands.append(command)
 
-    def command(self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
+    def command(
+        self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+    ):
         """
         A decorator for adding commands to the cog.
 
@@ -94,8 +98,10 @@ class Cog:
         aliases: Optional[List[:class:`str`]]
             The aliases of the command.
         """
+
         def decorator(func: Callable[..., Awaitable[Any]]):
             command = Command(func, name, description, aliases, self)
             self.add_command(command)
             return command
+
         return decorator

@@ -1,15 +1,16 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, Awaitable, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
-from inspect import signature, Parameter, _empty
-from shlex import split
+from inspect import Parameter, _empty, signature
 from itertools import zip_longest
+from shlex import split
 
 from voltage import Message, User, Member, NotEnoughArgs, UserNotFound, MemberNotFound
 
 if TYPE_CHECKING:
     from .client import CommandsClient
     from .cog import Cog
+
 
 class CommandContext:
     """
@@ -30,7 +31,20 @@ class CommandContext:
     command: :class:`Command`
         The command that was invoked.
     """
-    __slots__ = ('message', 'content', 'author', 'channel', 'server', 'send', 'reply', 'delete', 'command', 'me', 'client')
+
+    __slots__ = (
+        "message",
+        "content",
+        "author",
+        "channel",
+        "server",
+        "send",
+        "reply",
+        "delete",
+        "command",
+        "me",
+        "client",
+    )
 
     def __init__(self, message: Message, command: Command, client: CommandsClient):
         self.message = message
@@ -49,6 +63,7 @@ class CommandContext:
         else:
             self.me = None
 
+
 class Command:
     """
     A class representing a command.
@@ -62,9 +77,17 @@ class Command:
     aliases: Optional[List[:class:`str`]]
         The aliases of the command.
     """
-    __slots__ = ('func', 'name', 'description', 'aliases', 'error_handler', 'signature', 'cog')
 
-    def __init__(self, func: Callable[..., Awaitable[Any]], name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None, cog: Optional[Cog] = None):
+    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog")
+
+    def __init__(
+        self,
+        func: Callable[..., Awaitable[Any]],
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        aliases: Optional[list[str]] = None,
+        cog: Optional[Cog] = None,
+    ):
         self.func = func
         self.name = name or func.__name__
         self.description = description or func.__doc__
@@ -113,8 +136,8 @@ class Command:
     async def invoke(self, context: CommandContext, prefix: str):
         if context.content is None:
             return
-        if len(( params := self.signature.parameters )) > 1:
-            given = split(context.content[len(prefix+self.name):])
+        if len((params := self.signature.parameters)) > 1:
+            given = split(context.content[len(prefix + self.name) :])
             args: list[str] = []
             kwargs = {}
 
@@ -126,7 +149,7 @@ class Command:
                 if data.kind == data.VAR_POSITIONAL or data.kind == data.POSITIONAL_OR_KEYWORD:
                     if arg is None:
                         if data.default is _empty:
-                            raise NotEnoughArgs(self, len(params)-1, len(args))
+                            raise NotEnoughArgs(self, len(params) - 1, len(args))
                         arg = data.default
                     args.append(await self.convert_arg(data, arg, context))
 
@@ -134,14 +157,14 @@ class Command:
                     if i == len(params) - 2:
                         if arg is None:
                             if data.default is _empty:
-                                raise NotEnoughArgs(self, len(params)-1, len(given))
+                                raise NotEnoughArgs(self, len(params) - 1, len(given))
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
                         kwargs[name] = await self.convert_arg(data, " ".join(given[i:]), context)
                     else:
                         if arg is None:
                             if data.default is _empty:
-                                raise NotEnoughArgs(self, len(params)-1, len(given))
+                                raise NotEnoughArgs(self, len(params) - 1, len(given))
                             arg = data.default
                         kwargs[name] = await self.convert_arg(data, arg, context)
 

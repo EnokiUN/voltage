@@ -76,7 +76,14 @@ from .enums import (
     RelationshipType,
     SortType,
 )
-from .errors import VoltageException, HTTPError, CommandNotFound, UserNotFound, MemberNotFound, NotEnoughArgs
+from .errors import (
+    CommandNotFound,
+    HTTPError,
+    MemberNotFound,
+    NotEnoughArgs,
+    UserNotFound,
+    VoltageException,
+)
 from .file import File
 from .invites import Invite
 from .member import Member

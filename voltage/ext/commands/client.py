@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Union, Callable, Awaitable, Any
-from types import ModuleType
 
-from inspect import _empty
-from importlib import import_module, reload
 import sys
+from importlib import import_module, reload
+from inspect import _empty
+from types import ModuleType
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
 # internal imports
 from voltage import Client, SendableEmbed, CommandNotFound, Message
@@ -28,7 +28,9 @@ class CommandsClient(Client):
         self.prefix = prefix
         self.cogs: dict[str, Cog] = {}
         self.extensions: dict[str, tuple[ModuleType, str]] = {}
-        self.commands: dict[str, Command] = {"help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)}
+        self.commands: dict[str, Command] = {
+            "help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)
+        }
 
     async def help(self, ctx: CommandContext, target: Optional[str] = None):
         """
@@ -36,7 +38,12 @@ class CommandsClient(Client):
         """
         prefix = await self.get_prefix(ctx.message, self.prefix)
         if target is None:
-            embed = SendableEmbed(title = "Help", description = f"Use `{prefix}help <command>` to get help for a command.", colour = "#fff0f0", icon_url = getattr(ctx.client.user.display_avatar, "url"))
+            embed = SendableEmbed(
+                title="Help",
+                description=f"Use `{prefix}help <command>` to get help for a command.",
+                colour="#fff0f0",
+                icon_url=getattr(ctx.client.user.display_avatar, "url"),
+            )
             text = "\n### **No Category**\n"
             for command in self.commands.values():
                 if command.cog is None:
@@ -50,7 +57,11 @@ class CommandsClient(Client):
             return await ctx.reply("Here, have a help embed", embed=embed)
         elif target in self.commands:
             command = self.commands[target]
-            embed = SendableEmbed(title = f"Help for {command.name}", colour = "#0000ff", icon_url = getattr(ctx.client.user.display_avatar, "url"))
+            embed = SendableEmbed(
+                title=f"Help for {command.name}",
+                colour="#0000ff",
+                icon_url=getattr(ctx.client.user.display_avatar, "url"),
+            )
             text = str()
             usage = str()
             for (name, data) in list(command.signature.parameters.items())[1:]:
@@ -137,7 +148,7 @@ class CommandsClient(Client):
         cog = module.setup(self, *args, **kwargs)
         self.extensions[path] = (module, cog.name)
         if not hasattr(module, "setup"):
-            raise AttributeError("Extension {} does not have a setup function.".format(path))
+            raise AttributeError(f"Extension {path} does not have a setup function.")
         reload(module)
         self.add_cog(cog)
 
@@ -163,7 +174,7 @@ class CommandsClient(Client):
             The path to the extension as a python dotpath.
         """
         if not path in self.extensions:
-            raise KeyError("Extension {} does not exist.".format(path))
+            raise KeyError(f"Extension {path} does not exist.")
         module, name = self.extensions.pop(path)
         cog = self.remove_cog(self.cogs[name])
         del cog
@@ -172,7 +183,9 @@ class CommandsClient(Client):
         mod = sys.modules.pop(path)
         del mod
 
-    def command(self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
+    def command(
+        self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+    ):
         """
         A decorator for adding commands to the client.
 
@@ -185,10 +198,12 @@ class CommandsClient(Client):
         aliases: Optional[List[:class:`str`]]
             The aliases of the command.
         """
+
         def decorator(func: Callable[..., Awaitable[Any]]):
             command = Command(func, name, description, aliases)
             self.add_command(command)
             return command
+
         return decorator
 
     async def cog_dispatch(self, event: str, cog: Cog, *args, **kwargs):
@@ -239,15 +254,21 @@ class CommandsClient(Client):
         if message.content is None:
             return
         if message.content.startswith(prefix):
-            content = message.content[len(prefix):]
+            content = message.content[len(prefix) :]
             command = content.split(" ")[0]
             if not command:
                 return
             if command in self.commands:
                 if "command" in self.error_handlers:
                     try:
-                        return await self.commands[command].invoke(CommandContext(message, self.commands[command], self), prefix)
+                        return await self.commands[command].invoke(
+                            CommandContext(message, self.commands[command], self), prefix
+                        )
                     except Exception as e:
-                        return await self.error_handlers["command"](e, CommandContext(message, self.commands[command], self))
-                return await self.commands[command].invoke(CommandContext(message, self.commands[command], self), prefix)
+                        return await self.error_handlers["command"](
+                            e, CommandContext(message, self.commands[command], self)
+                        )
+                return await self.commands[command].invoke(
+                    CommandContext(message, self.commands[command], self), prefix
+                )
             raise CommandNotFound(command)
