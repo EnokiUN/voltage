@@ -155,7 +155,7 @@ class Messageable:  # Really missing rust traits rn :(
         self,
         query: str,
         *,
-        sort: SortType = SortType.latest, # type: ignore
+        sort: SortType = SortType.latest,  # type: ignore
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
