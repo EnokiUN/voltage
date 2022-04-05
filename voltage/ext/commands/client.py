@@ -7,16 +7,13 @@ from importlib import import_module, reload
 import sys
 
 # internal imports
-from ...client import Client
-from ...embed import SendableEmbed
-from ...errors import CommandNotFound
+from voltage import Client, SendableEmbed, CommandNotFound, Message
 from .command import Command, CommandContext
 
 if TYPE_CHECKING:
-    from ...message import Message
     from .cog import Cog
 
-class Client(Client):
+class CommandsClient(Client):
     """
     A class representing a client that uses commands.
 
@@ -25,7 +22,7 @@ class Client(Client):
     cogs: List[:class:`Cog`]
         The cogs that are loaded.
     """
-    def __init__(self, prefix: Union[str, list[str], Callable[[Message, Client], Awaitable[Any]]]):
+    def __init__(self, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]):
         super().__init__()
         self.listeners = {"message": self.handle_commands}
         self.prefix = prefix
@@ -66,7 +63,7 @@ class Client(Client):
             return await ctx.reply("Here, have a help embed", embed=embed)
         await ctx.reply(f"Command {target} not found.")
 
-    async def get_prefix(self, message: Message, prefix: Union[str, list[str], Callable[[Message, Client], Awaitable[Any]]]) -> str:
+    async def get_prefix(self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]) -> str:
         if message.content is None:
             raise ValueError("Message content is None.")
         if isinstance(prefix, str):
@@ -193,6 +190,49 @@ class Client(Client):
             self.add_command(command)
             return command
         return decorator
+
+    async def cog_dispatch(self, event: str, cog: Cog, *args, **kwargs):
+        if func := cog.listeners.get(event):
+            if self.error_handlers.get(event):
+                try:
+                    await func(*args, **kwargs)
+                except Exception as e:
+                    await self.error_handlers[event](e, *args, **kwargs)
+            else:
+                await func(*args, **kwargs)
+
+    async def dispatch(self, event: str, *args, **kwargs):
+        event = event.lower()
+
+        for i in self.waits.get(event, []):
+            if i[0](*args, **kwargs):
+                i[1].set_result(*args, **kwargs)
+                self.waits[event].remove(i)
+
+        for cog in self.cogs.values():
+            self.loop.create_task(self.cog_dispatch(event, cog, *args, **kwargs))
+
+        if func := self.listeners.get(event):
+            if self.error_handlers.get(event):
+                try:
+                    await func(*args, **kwargs)
+                except Exception as e:
+                    await self.error_handlers[event](e, *args, **kwargs)
+            else:
+                await func(*args, **kwargs)
+
+    async def cog_raw_dispatch(self, event: str, cog: Cog, payload: dict[Any, Any]):
+        if func := cog.raw_listeners.get(event):
+            await func(payload)
+
+    async def raw_dispatch(self, payload: dict[Any, Any]):
+        event = payload["type"].lower()
+
+        for cog in self.cogs.values():
+            self.loop.create_task(self.cog_raw_dispatch(event, cog, payload))
+
+        if func := self.raw_listeners.get(event):
+            await func(payload)
 
     async def handle_commands(self, message: Message):
         prefix = await self.get_prefix(message, self.prefix)

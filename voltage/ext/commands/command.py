@@ -4,13 +4,11 @@ from typing import TYPE_CHECKING, Callable, Awaitable, Any, Optional, Union
 from inspect import signature, Parameter, _empty
 from shlex import split
 from itertools import zip_longest
-from ...errors import NotEnoughArgs, UserNotFound, MemberNotFound
+
+from voltage import Message, User, Member, NotEnoughArgs, UserNotFound, MemberNotFound
 
 if TYPE_CHECKING:
-    from ...client import Client
-    from ...message import Message
-    from ...member import Member
-    from ...user import User
+    from .client import CommandsClient
     from .cog import Cog
 
 class CommandContext:
@@ -34,7 +32,7 @@ class CommandContext:
     """
     __slots__ = ('message', 'content', 'author', 'channel', 'server', 'send', 'reply', 'delete', 'command', 'me', 'client')
 
-    def __init__(self, message: Message, command: Command, client: Client):
+    def __init__(self, message: Message, command: Command, client: CommandsClient):
         self.message = message
         self.content = message.content
         self.author = message.author
