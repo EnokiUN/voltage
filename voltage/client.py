@@ -43,6 +43,7 @@ class Client:
     run:
         Runs the client.
     """
+
     __slots__ = (
         "cache_message_limit",
         "client",

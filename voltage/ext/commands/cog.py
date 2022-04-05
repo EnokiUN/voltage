@@ -18,12 +18,13 @@ class Cog:
     commands: List[:class:`Command`]
         The commands in the cog.
     """
-    __slots__ = ('name', 'description', 'commands', 'listeners', 'raw_listeners')
+
+    __slots__ = ("name", "description", "commands", "listeners", "raw_listeners")
 
     def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
-        self.commands: list[Command] = [] 
+        self.commands: list[Command] = []
         self.listeners: dict[str, Callable[..., Any]] = {}
         self.raw_listeners: dict[str, Callable[[dict], Any]] = {}
 
@@ -68,6 +69,7 @@ class Cog:
             else:
                 self.listeners[event.lower()] = func
             return func
+
         return inner
 
     def add_command(self, command: Command):
