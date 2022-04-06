@@ -46,7 +46,16 @@ extensions = [
 ]
 
 autoapi_dirs = ["../../voltage"]
-autoapi_options = ['members', 'undoc-members', 'private-members', 'show-inheritance', 'show-module-summary', 'special-members', 'imported-members', 'inherited-members', ]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "private-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+    "inherited-members",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
