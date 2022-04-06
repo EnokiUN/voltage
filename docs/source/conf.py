@@ -42,9 +42,11 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "autoapi.extension",
+    "sphinx_copybutton",
 ]
 
 autoapi_dirs = ["../../voltage"]
+autoapi_options = ["members", "inherited-members"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
