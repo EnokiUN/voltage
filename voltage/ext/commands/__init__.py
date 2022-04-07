@@ -16,7 +16,7 @@ Commands frameworks example:
 
     @client.command() # Register a command using the ``command`` decorator.
     async def ping(ctx):
-        """Sends Pong!""" # Name and description can be passed in the decorator or automatically inferred.
+        \"""Sends Pong!""" # Name and description can be passed in the decorator or automatically inferred.
         await ctx.reply("Pong") # Reply to the context's message.
 
     client.run("TOKEN") # Again, replace with your bot token.
