@@ -9,6 +9,8 @@ client = commands.CommandsClient(
 @client.listen("ready")  # You can still listen to events.
 async def ready():
     print("Gaaah, It's rewind time.")
+    channel = client.get_channel("CHANNEL UUID")
+    await channel.send("Gaaah, Its online time.")
 
 
 @client.command()  # Register a command using the ``command`` decorator.
