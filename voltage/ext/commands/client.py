@@ -66,11 +66,7 @@ class CommandsClient(Client):
                 icon_url=getattr(ctx.client.user.display_avatar, "url"),
             )
             text = str()
-            usage = str()
-            for (name, data) in list(command.signature.parameters.items())[1:]:
-                default = f" = {data.default}" if (data.default is not _empty) and (data.default is not None) else ""
-                usage += f" [{name}{default}]" if data.default is not _empty else f" <{name}>"
-            text += f"\n### **Usage**\n> `{prefix}{command.name}{usage}`"
+            text += f"\n### **Usage**\n> `{prefix}{command.usage}`"
             if command.aliases:
                 text += f"\n\n### **Aliases**\n> {prefix}{', '.join(command.aliases)}"
             embed.description = command.description + text if command.description else text
@@ -273,13 +269,13 @@ class CommandsClient(Client):
                 if "command" in self.error_handlers:
                     try:
                         return await self.commands[command].invoke(
-                            CommandContext(message, self.commands[command], self), prefix
+                            CommandContext(message, self.commands[command], self, prefix), prefix
                         )
                     except Exception as e:
                         return await self.error_handlers["command"](
-                            e, CommandContext(message, self.commands[command], self)
+                            e, CommandContext(message, self.commands[command], self, prefix)
                         )
                 return await self.commands[command].invoke(
-                    CommandContext(message, self.commands[command], self), prefix
+                    CommandContext(message, self.commands[command], self, prefix), prefix
                 )
             raise CommandNotFound(command)
