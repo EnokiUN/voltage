@@ -8,5 +8,10 @@ async def on_message(message): # the name for this can be anything you want it t
   if any([word in message.content.lower() for word in ungodly words]): # run the if statement to trigger if a message is in the array
     await message.reply("*GASP!* You can't say that!") # reply to the message sent
     await message.delete() # delete the message afterwards
+  elif message.content == "<@your bots id>":
+    message.reply("Pong!")
+  await bot.handle_commands(message) 
+  # handle afterwards so commands will work after the on_message, 
+  # not needed here, but you would probably need this if you use commands aswell as this on_message function.
 
 client.run("TOKEN") # run your bot
