@@ -1,16 +1,21 @@
 import voltage
-from voltage.ext import commands # Import the commands module from ``voltage.ext``
+from voltage.ext import commands  # Import the commands module from ``voltage.ext``
 
-client = commands.CommandsClient("-") # Create a CommandsClient (client that has commands (original ik)) with the prefix set to "-".
+client = commands.CommandsClient(
+    "-"
+)  # Create a CommandsClient (client that has commands (original ik)) with the prefix set to "-".
 
-@client.listen("ready") # You can still listen to events.
+
+@client.listen("ready")  # You can still listen to events.
 async def ready():
     print("Gaaah, It's rewind time.")
 
-@client.command() # Register a command using the ``command`` decorator.
+
+@client.command()  # Register a command using the ``command`` decorator.
 async def ping(ctx):
-    """Sends Pong!""" # Name and description can be passed in the decorator or automatically inferred.
-    await ctx.reply("Pong") # Reply to the context's message.
+    """Sends Pong!"""  # Name and description can be passed in the decorator or automatically inferred.
+    await ctx.reply("Pong")  # Reply to the context's message.
+
 
 # When you set a command's name explicitly the function's name is disregarded.
 # Automatic type conversion is a thing I suppose.
@@ -18,4 +23,5 @@ async def ping(ctx):
 async def whoiscommand(ctx, person: voltage.Member):
     await ctx.reply("{0} is !!{0}!!".format(person.name))
 
-client.run("TOKEN") # Again, replace with your bot token.
+
+client.run("TOKEN")  # Again, replace with your bot token.
