@@ -1,12 +1,12 @@
-import voltage
+import voltage #import the voltage module
 
-client = voltage.Client()
+client = voltage.Client() # initialize our client
 
-@client.listen('message')
-async def on_message(message):
-  ungodly_words = ["sus", "baka", "suppose", "real", "amogus"]
-  if message.content.lower() in ungodly_words:
-    await message.reply("*GASP!* You can't say that!")
-    await message.delete()
+@client.listen('message') # specify what we're listening to
+async def on_message(message): # the name for this can be anything you want it to be
+  ungodly_words = ["sus", "baka", "suppose", "real", "amogus"] # create our list to iterate through later
+  if message.content.lower() in ungodly_words: # run the if statement to trigger if a message is in the array
+    await message.reply("*GASP!* You can't say that!") # reply to the message sent
+    await message.delete() # delete the message afterwards
 
-client.run("TOKEN")
+client.run("TOKEN") # run your bot
