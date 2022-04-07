@@ -102,6 +102,8 @@ class CommandsClient(Client):
             The command to add.
         """
         for alias in command.aliases:
+            if alias in self.commands:
+                raise ValueError(f"Command {alias} already exists.")
             self.commands[alias] = command
 
     def add_cog(self, cog: Cog):
@@ -116,6 +118,8 @@ class CommandsClient(Client):
         self.cogs[cog.name] = cog
         for command in cog.commands:
             self.add_command(command)
+        if func := cog.listeners.get("load"):
+            func()
 
     def remove_cog(self, cog: Cog) -> Cog:
         """
@@ -138,6 +142,8 @@ class CommandsClient(Client):
                     cmd = self.commands.pop(command_name)
                     del cmd
         cog = self.cogs.pop(cog.name)
+        if func := cog.listeners.get("unload"):
+            func()
         return cog
 
     def add_extension(self, path: str, *args, **kwargs):

@@ -194,3 +194,25 @@ class Command:
             except Exception as e:
                 return await self.error_handler(e, context)
         return await self.func(context)
+
+def command(
+    name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+    ):
+    """
+    A decorator that creates a :class:`Command` from an asynchronous function.
+
+    Parameters
+    ----------
+    name: Optional[:class:`str`]
+        The name of the command.
+    description: Optional[:class:`str`]
+        The description of the command.
+    aliases: Optional[List[:class:`str`]]
+        The aliases of the command.
+    """
+
+    def decorator(func: Callable[..., Awaitable[Any]]):
+        command = Command(func, name, description, aliases)
+        return command
+
+    return decorator
