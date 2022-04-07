@@ -149,7 +149,11 @@ class Messageable:  # Really missing rust traits rn :(
             The messages that got fetched.
         """
         messages = await self.cache.http.fetch_messages(await self.get_id(), sort.value, limit=limit, before=before, after=after, nearby=nearby, include_users=False)  # type: ignore
-        return [Message(data, self.cache) for data in messages]
+        returned = []
+        for i in messages:
+            if i['author'] != "00000000000000000000000000":
+                returned.append(Message(i, self.cache))
+        return returned
 
     async def search(
         self,
@@ -195,8 +199,13 @@ class Messageable:  # Really missing rust traits rn :(
         amount: :class:`int`
             The amount of messages to purge.
         """
-        for i in await self.history(limit=amount):
+        channel_id = await self.get_id()
+        for i in await self.cache.http.fetch_messages(channel_id, "Latest", limit=amount):
             try:
-                await i.delete()
-            except HTTPError:
-                pass
+                await self.cache.http.delete_message(channel_id, i['_id'])
+            except HTTPError as e:
+                status = e.response.status
+                if status == 404:
+                    pass
+                else:
+                    raise
