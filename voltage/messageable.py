@@ -151,7 +151,7 @@ class Messageable:  # Really missing rust traits rn :(
         messages = await self.cache.http.fetch_messages(await self.get_id(), sort.value, limit=limit, before=before, after=after, nearby=nearby, include_users=False)  # type: ignore
         returned = []
         for i in messages:
-            if i['author'] != "00000000000000000000000000":
+            if i["author"] != "00000000000000000000000000":
                 returned.append(Message(i, self.cache))
         return returned
 
@@ -202,7 +202,7 @@ class Messageable:  # Really missing rust traits rn :(
         channel_id = await self.get_id()
         for i in await self.cache.http.fetch_messages(channel_id, "Latest", limit=amount):
             try:
-                await self.cache.http.delete_message(channel_id, i['_id'])
+                await self.cache.http.delete_message(channel_id, i["_id"])
             except HTTPError as e:
                 status = e.response.status
                 if status == 404:
