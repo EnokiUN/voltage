@@ -43,7 +43,11 @@ Commands frameworks example:
     import voltage
     from voltage.ext import commands # Import the commands module from ``voltage.ext``
 
-    client = commands.CommandsClient("-") # Create a CommandsClient (client that has commands (original ik)) with the prefix set to "-"
+    client = commands.CommandsClient("-") # Create a CommandsClient (client that has commands (original ik)) with the prefix set to "-".
+
+    @client.listen("ready") # You can still listen to events.
+    async def ready():
+        print("Gaaah, It's rewind time.")
 
     @client.command() # Register a command using the ``command`` decorator.
     async def ping(ctx):
@@ -51,7 +55,6 @@ Commands frameworks example:
         await ctx.reply("Pong") # Reply to the context's message.
 
     client.run("TOKEN") # Again, replace with your bot token.
- 
 
 For more examples check the `examples <https://github.com/EnokiUN/voltage/tree/main/examples>`_ folder which has a lot of useful, ready to go, and explained examples.
 
