@@ -216,9 +216,8 @@ class Command:
                 return await self.error_handler(e, context)
         return await self.func(context)
 
-def command(
-    name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
-    ):
+
+def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
     """
     A decorator that creates a :class:`Command` from an asynchronous function.
 
