@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from asyncio import sleep
 from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
@@ -53,6 +54,7 @@ class Messageable:  # Really missing rust traits rn :(
         reply: Optional[MessageReply] = None,
         replies: Optional[List[Union[MessageReply, MessageReplyPayload]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
+        delete_after: Optional[float] = None,
     ) -> Message:  # YEAH BABY, THAT'S WHAT WE'VE BEEN WAITING FOR, THAT'S WHAT IT'S ALL ABOUT, WOOOOOOOOOOOOOOOO
         """
         Send a message to the messageable object's channel.
@@ -95,7 +97,10 @@ class Messageable:  # Really missing rust traits rn :(
             replies=replies,
             masquerade=masquerade,
         )
-        return self.cache.add_message(message)
+        msg = self.cache.add_message(message)
+        if delete_after is not None:
+            self.cache.loop.create_task(msg.delete(delay=delete_after))
+        return msg
 
     async def fetch_message(self, message_id: str) -> Message:
         """
@@ -144,13 +149,17 @@ class Messageable:  # Really missing rust traits rn :(
             The messages that got fetched.
         """
         messages = await self.cache.http.fetch_messages(await self.get_id(), sort.value, limit=limit, before=before, after=after, nearby=nearby, include_users=False)  # type: ignore
-        return [Message(data, self.cache) for data in messages]
+        returned = []
+        for i in messages:
+            if i["author"] != "00000000000000000000000000":
+                returned.append(Message(i, self.cache))
+        return returned
 
     async def search(
         self,
         query: str,
         *,
-        sort: SortType = SortType.latest,
+        sort: SortType = SortType.latest,  # type: ignore
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -190,8 +199,13 @@ class Messageable:  # Really missing rust traits rn :(
         amount: :class:`int`
             The amount of messages to purge.
         """
-        for i in await self.history(limit=amount):
+        channel_id = await self.get_id()
+        for i in await self.cache.http.fetch_messages(channel_id, "Latest", limit=amount):
             try:
-                await i.delete()
-            except HTTPError:
-                pass
+                await self.cache.http.delete_message(channel_id, i["_id"])
+            except HTTPError as e:
+                status = e.response.status
+                if status == 404:
+                    pass
+                else:
+                    raise

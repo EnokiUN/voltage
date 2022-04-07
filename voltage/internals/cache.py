@@ -82,7 +82,7 @@ class CacheHandler:
                 else:
                     if getattr(self.messages[i], attr) == value:
                         return self.messages[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+            raise ValueError(f"No message with {attr} {value} found.")
 
     def get_channel(self, value: Any, attr: str = "id", case: bool = True) -> Channel:
         """
@@ -146,7 +146,7 @@ class CacheHandler:
                 else:
                     if getattr(self.members[server_id][i], attr) == value:
                         return self.members[server_id][i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+            raise ValueError(f"No member with {attr} {value} found.")
 
     def get_server(self, value: Any, attr: str = "id", case: bool = False) -> Server:
         """
@@ -175,7 +175,7 @@ class CacheHandler:
                 else:
                     if getattr(self.servers[i], attr) == value:
                         return self.servers[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+            raise ValueError(f"No server with {attr} {value} found.")
 
     def get_user(self, value: Any, attr: str = "id", case: bool = False) -> User:
         """
@@ -206,7 +206,7 @@ class CacheHandler:
                 else:
                     if getattr(self.users[i], attr) == value:
                         return self.users[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+            raise ValueError(f"No user with {attr} {value} found.")
 
     def get_dm_channel(self, value: Any, attr: str = "id", case: bool = False) -> Optional[DMChannel]:
         """
@@ -347,6 +347,24 @@ class CacheHandler:
         self.channels[channel.id] = channel
         return channel
 
+    async def add_channel_by_id(self, channel_id: str) -> Channel:
+        """
+        Fetches a channel object by it's id then caches it if it doesn't exist already.
+
+        Parameters
+        ----------
+        channel_id: :class:`str`
+            The id of the channel to add.
+
+        Returns
+        -------
+        :class:`Channel`
+            The channel that was added.
+        """
+        if channel := self.channels.get(channel_id):
+            return channel
+        return self.add_channel(await self.http.fetch_channel(channel_id))
+
     def add_member(self, server_id: str, data: MemberPayload) -> Member:
         """
         Creates a member object and adds it to the cache if it doesn't exist already.
@@ -391,6 +409,8 @@ class CacheHandler:
             return server
         server = Server(data, self)
         self.servers[server.id] = server
+        for channel in server.channel_ids:
+            self.loop.create_task(self.add_channel_by_id(channel))
         return server
 
     def add_user(self, data: UserPayload) -> User:

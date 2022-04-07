@@ -45,11 +45,15 @@ Credits
 
 """
 
+# 2 = 1 # How's this haru?
+
+# Edit: apparently defying the laws of math isn't enough to make all my problems dissappear and I have to expend some actual effort and time making my stuff works or else I get stupid errors, like WTF!
+
 __title__ = "Voltage"
 __author__ = "EnokiUN"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2021-present EnokiUN"
-__version__ = "0.1.4a5"
+__version__ = "0.1.5a2"
 
 from .asset import Asset, PartialAsset
 from .categories import Category
@@ -64,8 +68,24 @@ from .channels import (
 )
 from .client import Client
 from .embed import Embed, SendableEmbed
-from .enums import AssetType, ChannelType, EmbedType, PresenceType, SortType
-from .errors import HTTPError, VoltageException
+from .enums import (
+    AssetType,
+    ChannelType,
+    EmbedType,
+    PresenceType,
+    RelationshipType,
+    SortType,
+)
+from .errors import (
+    CommandNotFound,
+    HTTPError,
+    MemberNotFound,
+    NotBotOwner,
+    NotEnoughArgs,
+    NotEnoughPerms,
+    UserNotFound,
+    VoltageException,
+)
 from .file import File
 from .invites import Invite
 from .member import Member
@@ -80,42 +100,3 @@ from .permissions import (
 from .roles import Role
 from .server import Server, ServerBan, SystemMessages
 from .user import User
-
-__all__ = [
-    "Asset",
-    "AssetType",
-    "Channel",
-    "ChannelType",
-    "Client",
-    "Category",
-    "DMChannel",
-    "Embed",
-    "EmbedType",
-    "File",
-    "HTTPError",
-    "Invite",
-    "GroupDMChannel",
-    "Member",
-    "Message",
-    "MessageMasquerade",
-    "MessageReply",
-    "Messageable",
-    "PartialAsset",
-    "PresenceType",
-    "Role",
-    "SavedMessageChannel",
-    "SendableEmbed",
-    "Server",
-    "ServerBan",
-    "ServerPermissions",
-    "SavedMessageChannel",
-    "SortType",
-    "SystemMessages",
-    "TextChannel",
-    "VoiceChannel",
-    "VoltageException",
-    "channel_permissions",
-    "server_permissions",
-    "create_channel",
-    "server_permissions",
-]

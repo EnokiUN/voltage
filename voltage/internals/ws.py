@@ -85,7 +85,7 @@ class WebSocketHandler:
         print(
             f"""\033[1;31m                                                  
 \033[1;31m                  **************                  \033[1;34mLibrary: Voltage
-\033[1;31m               ***  ***************               \033[1;35mVersion: 0.1.4a5
+\033[1;31m               ***  ***************               \033[1;35mVersion: 0.1.5a2
 \033[1;31m               ***   **************               \033[1;36mBot: {self.user}
 \033[1;31m               ********************               \033[1;37mBot ID: {self.user.id}
 \033[1;31m                         **********               \033[1;30mAPI endpoint: {self.http.api_url}
@@ -283,7 +283,7 @@ class WebSocketHandler:
         except KeyError:
             self.cache.add_user(await self.http.fetch_user(payload["user"]))
         if payload["user"] == self.user.id:
-            self.cache.add_server(await self.http.fetch_server(payload["id"]))
+            i = self.cache.add_server(await self.http.fetch_server(payload["id"]))
             member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
             await self.cache.populate_server(payload["id"])
             return await self.dispatch("server_added", member)

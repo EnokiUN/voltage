@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from asyncio import sleep
 from datetime import datetime
 from typing import TYPE_CHECKING, List, NamedTuple, Optional, Union
 
@@ -100,7 +101,7 @@ class Message:
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.content = data.get("content")
+        self.content = data["content"]
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
 
@@ -167,10 +168,12 @@ class Message:
 
         await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)  # type: ignore
 
-    async def delete(self):
+    async def delete(self, *, delay: Optional[float] = None):
         """
         Deletes the message.
         """
+        if delay is not None:
+            await sleep(delay)
         await self.cache.http.delete_message(self.channel.id, self.id)
 
     async def reply(
@@ -183,6 +186,7 @@ class Message:
         attachments: Optional[List[Union[File, str]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
         mention: bool = True,
+        delete_after: Optional[float] = None,
     ) -> Message:
         """
         Replies to the message.
@@ -203,6 +207,8 @@ class Message:
             The masquerade of the message.
         mention: Optional[:class:`bool`]
             Wether or not the reply mentions the author of the message.
+        delete_after: Optional[:class:`float`]
+            The amount of seconds to wait before deleting the message, if ``None`` the message will not be deleted.
 
         Returns
         -------
@@ -223,7 +229,10 @@ class Message:
             replies=[replies],
             masquerade=masquerade,
         )
-        return self.cache.add_message(message)
+        msg = self.cache.add_message(message)
+        if delete_after is not None:
+            self.cache.loop.create_task(msg.delete(delay=delete_after))
+        return msg
 
     @property
     def url(self) -> str:

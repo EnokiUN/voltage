@@ -44,6 +44,21 @@ class Client:
         Runs the client.
     """
 
+    __slots__ = (
+        "cache_message_limit",
+        "client",
+        "error_handlers",
+        "listeners",
+        "loop",
+        "raw_listeners",
+        "raw_waits",
+        "waits",
+        "ws",
+        "http",
+        "cache",
+        "user",
+    )
+
     def __init__(self, *, cache_message_limit: int = 5000):
         self.cache_message_limit = cache_message_limit
         self.client = aiohttp.ClientSession()
