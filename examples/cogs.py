@@ -1,5 +1,6 @@
-import voltage
 from voltage.ext import commands
+
+import voltage
 
 
 def setup(client) -> commands.Cog:

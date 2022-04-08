@@ -1,5 +1,6 @@
-import voltage
 from voltage.ext import commands  # Import the commands module from ``voltage.ext``
+
+import voltage
 
 client = commands.CommandsClient(
     "-"
