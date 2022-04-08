@@ -4,7 +4,7 @@ Voltage
 
 |Support Server| |PyPi| |Docs| |Checks|
 
-A simple, pythonic, and asynchronous API wrapper for `Revolt. <https://revolt.chat>`_
+A simple pythonic asynchronous API wrapper for `Revolt. <https://revolt.chat>`_
 
 |Screenshot|
 

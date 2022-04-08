@@ -83,6 +83,9 @@ class Cog:
         command: :class:`Command`
             The command to add.
         """
+        if command.cog is not None:
+            raise RuntimeError("Command already has a cog.")
+        command.cog = self
         self.commands.append(command)
 
     def command(

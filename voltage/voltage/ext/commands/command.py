@@ -36,8 +36,8 @@ class CommandContext:
         The server that the command was invoked in.
     command: :class:`Command`
         The command that was invoked.
-    checks: list[:class:`Check`]
-        The checks that must be passed for the command to be invoked.
+    prefix: :class:`str`
+        The prefix used to invoke the command.
     """
 
     __slots__ = (
@@ -52,9 +52,10 @@ class CommandContext:
         "command",
         "me",
         "client",
+        "prefix",
     )
 
-    def __init__(self, message: Message, command: Command, client: CommandsClient):
+    def __init__(self, message: Message, command: Command, client: CommandsClient, prefix: str):
         self.message = message
         self.content = message.content
         self.author = message.author
@@ -71,6 +72,8 @@ class CommandContext:
         else:
             self.me = None
 
+        self.prefix = prefix
+
 
 class Command:
     """
@@ -84,9 +87,15 @@ class Command:
         The description of the command.
     aliases: Optional[List[:class:`str`]]
         The aliases of the command.
+    cog: Optional[:class:`Cog`]
+        The cog that the command belongs to.
+    checks: list[:class:`Check`]
+        The checks that must be passed for the command to be invoked.
+    usage: str
+        The usage of the command.
     """
 
-    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog", "checks")
+    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog", "checks", "usage")
 
     def __init__(
         self,
@@ -104,6 +113,18 @@ class Command:
         self.signature = signature(func)
         self.cog = cog
         self.checks: list[Check] = []
+
+        usage = list()
+        for name, param in list(self.signature.parameters.items())[1:]:
+            if param.default is not _empty:
+                if param.default is not _empty or param.default is not None:
+                    usage.append(f"[{name}={param.default}]")
+                else:
+                    usage += f"[{name}]"
+            else:
+                usage.append(f"<{name}>")
+
+        self.usage = f"{self.name} {' '.join(usage)}"
 
     def error(self, func: Callable[[Exception, CommandContext], Awaitable[Any]]):
         """
@@ -194,3 +215,24 @@ class Command:
             except Exception as e:
                 return await self.error_handler(e, context)
         return await self.func(context)
+
+
+def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
+    """
+    A decorator that creates a :class:`Command` from an asynchronous function.
+
+    Parameters
+    ----------
+    name: Optional[:class:`str`]
+        The name of the command.
+    description: Optional[:class:`str`]
+        The description of the command.
+    aliases: Optional[List[:class:`str`]]
+        The aliases of the command.
+    """
+
+    def decorator(func: Callable[..., Awaitable[Any]]):
+        command = Command(func, name, description, aliases)
+        return command
+
+    return decorator

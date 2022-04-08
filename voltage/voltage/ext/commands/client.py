@@ -66,11 +66,7 @@ class CommandsClient(Client):
                 icon_url=getattr(ctx.client.user.display_avatar, "url"),
             )
             text = str()
-            usage = str()
-            for (name, data) in list(command.signature.parameters.items())[1:]:
-                default = f" = {data.default}" if (data.default is not _empty) and (data.default is not None) else ""
-                usage += f" [{name}{default}]" if data.default is not _empty else f" <{name}>"
-            text += f"\n### **Usage**\n> `{prefix}{command.name}{usage}`"
+            text += f"\n### **Usage**\n> `{prefix}{command.usage}`"
             if command.aliases:
                 text += f"\n\n### **Aliases**\n> {prefix}{', '.join(command.aliases)}"
             embed.description = command.description + text if command.description else text
@@ -102,6 +98,8 @@ class CommandsClient(Client):
             The command to add.
         """
         for alias in command.aliases:
+            if alias in self.commands:
+                raise ValueError(f"Command {alias} already exists.")
             self.commands[alias] = command
 
     def add_cog(self, cog: Cog):
@@ -116,6 +114,8 @@ class CommandsClient(Client):
         self.cogs[cog.name] = cog
         for command in cog.commands:
             self.add_command(command)
+        if func := cog.listeners.get("load"):
+            func()
 
     def remove_cog(self, cog: Cog) -> Cog:
         """
@@ -138,6 +138,8 @@ class CommandsClient(Client):
                     cmd = self.commands.pop(command_name)
                     del cmd
         cog = self.cogs.pop(cog.name)
+        if func := cog.listeners.get("unload"):
+            func()
         return cog
 
     def add_extension(self, path: str, *args, **kwargs):
@@ -267,13 +269,13 @@ class CommandsClient(Client):
                 if "command" in self.error_handlers:
                     try:
                         return await self.commands[command].invoke(
-                            CommandContext(message, self.commands[command], self), prefix
+                            CommandContext(message, self.commands[command], self, prefix), prefix
                         )
                     except Exception as e:
                         return await self.error_handlers["command"](
-                            e, CommandContext(message, self.commands[command], self)
+                            e, CommandContext(message, self.commands[command], self, prefix)
                         )
                 return await self.commands[command].invoke(
-                    CommandContext(message, self.commands[command], self), prefix
+                    CommandContext(message, self.commands[command], self, prefix), prefix
                 )
             raise CommandNotFound(command)
