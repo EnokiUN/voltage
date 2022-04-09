@@ -16,7 +16,7 @@ class BaseChannelPayload(TypedDict):
 
 class SavedMessagePayload(BaseChannelPayload):
     user: str
-    channel_type: Literal["SavedMessage"]
+    channel_type: Literal["SavedMessages"]
 
 
 class DMChannelPayload(BaseChannelPayload):
