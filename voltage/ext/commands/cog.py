@@ -105,7 +105,7 @@ class Cog:
         """
 
         def decorator(func: Callable[..., Awaitable[Any]]):
-            command = Command(func, name, description, aliases, self)
+            command = Command(func, name, description, aliases)
             self.add_command(command)
             return command
 
