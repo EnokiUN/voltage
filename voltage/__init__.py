@@ -85,6 +85,9 @@ from .errors import (
     NotEnoughPerms,
     UserNotFound,
     VoltageException,
+    RoleNotFound,
+    ChannelNotFound,
+    NotFoundException,
 )
 from .file import File
 from .invites import Invite
