@@ -58,8 +58,6 @@ Commands frameworks example:
 
 For more examples check the `examples <https://github.com/EnokiUN/voltage/tree/main/examples>`_ folder which has a lot of useful, ready to go, and explained examples.
 
-You can also read the code of `RedCrewmate <https://github.com/EnokiUN/redcrewmatw>`_. 
-
 ============
 Installation
 ============
