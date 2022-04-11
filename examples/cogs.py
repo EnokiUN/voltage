@@ -1,18 +1,26 @@
 import voltage  # Import voltage.
-from voltage.ext import commands  # Importing the cog framework so we can use the cogs.
+from voltage.ext import commands  # Importing the commands framework so we that we're able to create a Cog object.
 
 
-def setup(
-    client,
-) -> commands.Cog:  # The setup of the cog, you may replace client as whatever you named your client as but we'll use client as default.
-    test = commands.Cog(
-        "Test", "Some commands for testing."
-    )  # You may edit the description however you want, this will also be the description fo your cogs in the help command.
+# Next up is the setup function, aka where all the magic happens.
+# This is what's actually called by the client to be used for `add_cog`.
+# Here you define your cog, define it's commands then return the cog so that the client is able to add it.
+# Additionally, any args / kwargs you pass to the `client.add_extension` function will be passed to the setup function.
+# The client is passed by default however.
+def setup(client) -> commands.Cog:
 
-    # A example of a command in cog.
-    @test.command()  # Setting up a cog comamnd.
-    async def ping(ctx):  # Defining a async function.
-        """Sends Pong!"""  # The command description.
-        await ctx.reply("Pong")  # Sends Pong.
+    test = commands.Cog( # Create a new Cog object.
+        "Test", # Give it a name.
+        "Some commands for testing." # And an optional description.
+    )  # The name and description will be used in the help command.
 
-    return test  # Returning the cogs, this is needed to actually show and load the cog.
+    # Register a command as normal, difference is you use the Cog object instead of the client in the decorator.
+    @test.command()
+    async def ping(ctx): # No self parameter.
+        """Sends Pong!"""
+        await ctx.reply("Pong from inside a Cog!")
+
+    return test # Finally, return the cog object.
+
+# To load a Cog to the client you run `client.add_extension(path, *args, **kwargs)` with the path being the Python dotpath to your file, args and kwargs are optional.
+
