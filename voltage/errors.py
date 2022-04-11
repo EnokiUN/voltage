@@ -74,6 +74,7 @@ class NotEnoughArgs(VoltageException):
     def __str__(self):
         return f"{self.command.name} expected {self.expected} args, got {self.actual}"
 
+
 class NotFoundException(VoltageException):
     """
     An exception that is raised when a resource is not found.
@@ -90,10 +91,12 @@ class NotFoundException(VoltageException):
     def __str__(self):
         return f"{self.resource} not found"
 
+
 class UserNotFound(NotFoundException):
     """
     An exception that is raised when a user is not found.
     """
+
     def __str__(self):
         return f"User {self.resource} not found"
 
@@ -102,6 +105,7 @@ class MemberNotFound(UserNotFound):
     """
     An exception that is raised when a member is not found.
     """
+
     def __str__(self):
         return f"Member {self.resource} not found"
 
@@ -110,6 +114,7 @@ class ChannelNotFound(NotFoundException):
     """
     An exception that is raised when a channel is not found.
     """
+
     def __str__(self):
         return f"Channel {self.resource} not found"
 
@@ -118,8 +123,10 @@ class RoleNotFound(NotFoundException):
     """
     An exception that is raised when a role is not found.
     """
+
     def __str__(self):
         return f"Role {self.resource} not found"
+
 
 class NotBotOwner(VoltageException):
     """
