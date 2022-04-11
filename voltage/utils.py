@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any, Callable, TypeVar, Optional, Iterable
+from typing import TYPE_CHECKING, Callable, Optional, TypeVar, Iterable
 
 if TYPE_CHECKING:
     pass
@@ -11,4 +11,3 @@ def get(base: Iterable[T], predicate: Callable[[T], bool]) -> Optional[T]:
         if predicate(item):
             return item
     return None
-

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 from .asset import Asset
 from .enums import ChannelType
 from .messageable import Messageable
-from .notsuplied import NotSupplied
+from .notsupplied import NotSupplied
 from .permissions import ChannelPermissions
 
 if TYPE_CHECKING:
