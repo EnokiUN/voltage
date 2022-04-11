@@ -38,15 +38,19 @@ class Channel:
         The type of the channel.
     server: Optional[:class:`Server`]
         The server the channel belongs to.
+    name: Optional[:class:`str`]
+        The name of the channel if it has one.
     """
 
-    __slots__ = ("id", "type", "server", "cache")
+    __slots__ = ("id", "type", "server", "cache", "name")
 
     def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         self.id = data["_id"]
         self.type = ChannelType(data["channel_type"])
         self.server = cache.get_server(server_id) if server_id else None
         self.cache = cache
+        name = data.get("name")
+        self.name = str(name) if name is not None else None
 
     def __repr__(self):
         return f"<{self.__class__.__name__} id={self.id}>"
