@@ -65,4 +65,4 @@ ChannelPayload = Union[
 class CategoryPayload(TypedDict):
     id: str
     title: str
-    channels: List[ChannelPayload]
+    channels: List[str]
