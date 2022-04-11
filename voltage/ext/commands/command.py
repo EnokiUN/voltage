@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from asyncio import gather
-from inspect import Parameter, _empty, signature
+from inspect import Parameter, _empty, signature, isclass
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
+# internal imports
 from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
+from . import converter
 
 if TYPE_CHECKING:
     from .check import Check
@@ -142,26 +144,14 @@ class Command:
         annotation = arg.annotation
         if given is None:
             return None
-        elif isinstance(annotation, str):
-            return given
         elif annotation is _empty or annotation is Any or issubclass(annotation, str):
             return given
-        elif issubclass(annotation, int):
-            return int(given)
-        elif issubclass(annotation, float):
-            return float(given)
-        elif issubclass(annotation, Member):
-            if context.server:
-                member = context.server.get_member(given)
-                if member is None:
-                    raise MemberNotFound(given)
-                return member
-            raise MemberNotFound(given)
-        elif issubclass(annotation, User):
-            user = context.client.get_user(given)
-            if user is None:
-                raise UserNotFound(given)
-            return user
+        if issubclass(annotation, converter.Converter):
+            return await annotation().convert(context, given)
+        elif isclass(annotation):
+            if func := getattr(converter, f"{annotation.__name__.capitalize()}Converter", None):
+                return await func().convert(context, given)
+        return str(given)
 
     async def invoke(self, context: CommandContext, prefix: str):
         if context.content is None:
