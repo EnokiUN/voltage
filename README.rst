@@ -36,7 +36,7 @@ Usage
     # Run the client which is an abstraction of calling the start coroutine.
     client.run("TOKEN")  # Replace with your token.
 
-Commands frameworks example:
+Commands framework example:
 
 .. code-block:: python3
 
