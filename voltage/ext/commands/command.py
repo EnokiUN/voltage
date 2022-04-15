@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
 # internal imports
 from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
-from . import converter
+from . import converters
 
 if TYPE_CHECKING:
     from .check import Check
@@ -146,10 +146,10 @@ class Command:
             return None
         elif annotation is _empty or annotation is Any or issubclass(annotation, str):
             return given
-        if issubclass(annotation, converter.Converter):
+        if issubclass(annotation, converters.Converter):
             return await annotation().convert(context, given)
         elif isclass(annotation):
-            if func := getattr(converter, f"{annotation.__name__.capitalize()}Converter", None):
+            if func := getattr(converters, f"{annotation.__name__.capitalize()}Converter", None):
                 return await func().convert(context, given)
         return str(given)
 
