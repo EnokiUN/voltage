@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from asyncio import gather
-from inspect import Parameter, _empty, signature, isclass
+from inspect import Parameter, _empty, isclass, signature
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union

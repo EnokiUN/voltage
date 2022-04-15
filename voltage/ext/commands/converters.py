@@ -1,11 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Type, Callable, Awaitable, Any
+
 from re import compile
-from voltage import get, UserNotFound, MemberNotFound, ChannelNotFound, RoleNotFound
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Type
+
+from voltage import ChannelNotFound, MemberNotFound, RoleNotFound, UserNotFound, get
 
 if TYPE_CHECKING:
+    from voltage import Channel, Member, Role, User
+
     from .command import CommandContext
-    from voltage import User, Member, Channel, Role
+
 
 class Converter:
     """
@@ -13,6 +17,7 @@ class Converter:
 
     The only important method is the `convert` method, which takes a context and a string then returns an object.
     """
+
     async def convert(self, ctx: CommandContext, arg: str):
         """
         Convert a string into an object.
@@ -26,29 +31,37 @@ class StrConverter(Converter):
     """
     A converter that converts a string into a string.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> str:
         return arg
+
 
 class IntConverter(Converter):
     """
     A converter that converts a string into an integer.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> int:
         return int(arg)
+
 
 class FloatConverter(Converter):
     """
     A converter that converts a string into a float.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> float:
         return float(arg)
 
+
 id_regex = compile(r"[0-9A-HJ-KM-NP-TV-Z]{26}")
+
 
 class UserConverter(Converter):
     """
     A converter that converts a string into a user.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> User:
         if match := id_regex.match(arg):
             return ctx.client.cache.get_user(match.group(0))
@@ -57,10 +70,12 @@ class UserConverter(Converter):
             return user
         raise UserNotFound(arg)
 
+
 class MemberConverter(Converter):
     """
     A converter that converts a string into a member.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> Member:
         if ctx.server is None:
             raise ValueError("Cannot convert a member to a member without a server")
@@ -69,14 +84,19 @@ class MemberConverter(Converter):
         arg = arg.replace("@", "").lower()
         if member := get(ctx.client.cache.members[ctx.server.id].values(), lambda m: m.name.lower() == arg):
             return member
-        if member := get(ctx.client.cache.members[ctx.server.id].values(), lambda m: m.nickname.lower() == arg if m.nickname else False):
+        if member := get(
+            ctx.client.cache.members[ctx.server.id].values(),
+            lambda m: m.nickname.lower() == arg if m.nickname else False,
+        ):
             return member
         raise MemberNotFound(arg)
+
 
 class ChannelConverter(Converter):
     """
     A converter that converts a string into a channel.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> Channel:
         if match := id_regex.match(arg):
             return ctx.client.cache.get_channel(match.group(0))
@@ -85,10 +105,12 @@ class ChannelConverter(Converter):
             return channel
         raise ChannelNotFound(arg)
 
+
 class RoleConverter(Converter):
     """
     A converter that converts a string into a role.
     """
+
     async def convert(self, ctx: CommandContext, arg: str) -> Role:
         if ctx.server is None:
             raise ValueError("Cannot convert a role to a role without a server")
@@ -105,6 +127,8 @@ def converter(converter: Callable[[CommandContext, str], Awaitable[Any]]) -> Typ
     """
     A decorator that converts a function into a converter.
     """
+
     class Wrapper(Converter):
         converter = converter
+
     return Wrapper
