@@ -146,9 +146,9 @@ class Command:
             return None
         elif annotation is _empty or annotation is Any or issubclass(annotation, str):
             return given
-        if issubclass(annotation, converters.Converter):
-            return await annotation().convert(context, given)
-        elif isclass(annotation):
+        if isclass(annotation):
+            if issubclass(annotation, converters.Converter):
+                return await annotation().convert(context, given)
             if func := getattr(converters, f"{annotation.__name__.capitalize()}Converter", None):
                 return await func().convert(context, given)
         return str(given)
