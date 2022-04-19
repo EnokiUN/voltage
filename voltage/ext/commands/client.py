@@ -4,7 +4,7 @@ import sys
 from importlib import import_module, reload
 from inspect import _empty
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union, Type
 
 # internal imports
 from voltage import Client, CommandNotFound, Message, SendableEmbed
@@ -13,6 +13,7 @@ from .command import Command, CommandContext
 
 if TYPE_CHECKING:
     from .cog import Cog
+    from .help import HelpCommand
 
 
 class CommandsClient(Client):
@@ -21,16 +22,26 @@ class CommandsClient(Client):
 
     Attributes
     ----------
+    prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
+        The prefixes that the client will respond to.
+    help_command: Type[HelpCommand]
+        The help command class.
+    commands: dict[str, Command]
+        The commands that the client will respond to.
     cogs: List[:class:`Cog`]
         The cogs that are loaded.
+    extensions: dict[str, tuple[ModuleType, str]]
+        The extensions that are loaded.
     """
+    __slots__ = ("cogs", "extensions", "help_command", "prefix", "commands")
 
-    def __init__(self, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]):
+    def __init__(self, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]], help_command: Type[HelpCommand] = HelpCommand):
         super().__init__()
         self.listeners = {"message": self.handle_commands}
         self.prefix = prefix
         self.cogs: dict[str, Cog] = {}
         self.extensions: dict[str, tuple[ModuleType, str]] = {}
+        self.help_command = help_command(self)
         self.commands: dict[str, Command] = {
             "help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)
         }
@@ -39,38 +50,12 @@ class CommandsClient(Client):
         """
         Basic help command.
         """
-        prefix = await self.get_prefix(ctx.message, self.prefix)
         if target is None:
-            embed = SendableEmbed(
-                title="Help",
-                description=f"Use `{prefix}help <command>` to get help for a command.",
-                colour="#fff0f0",
-                icon_url=getattr(ctx.client.user.display_avatar, "url"),
-            )
-            text = "\n### **No Category**\n"
-            for command in self.commands.values():
-                if command.cog is None:
-                    text += f"> {command.name}\n"
-            for i in self.cogs.values():
-                text += f"\n### **{i.name}**\n{i.description}\n"
-                for j in i.commands:
-                    text += f"\n> {j.name}"
-            if embed.description:
-                embed.description += text
-            return await ctx.reply("Here, have a help embed", embed=embed)
-        elif target in self.commands:
-            command = self.commands[target]
-            embed = SendableEmbed(
-                title=f"Help for {command.name}",
-                colour="#0000ff",
-                icon_url=getattr(ctx.client.user.display_avatar, "url"),
-            )
-            text = str()
-            text += f"\n### **Usage**\n> `{prefix}{command.usage}`"
-            if command.aliases:
-                text += f"\n\n### **Aliases**\n> {prefix}{', '.join(command.aliases)}"
-            embed.description = command.description + text if command.description else text
-            return await ctx.reply("Here, have a help embed", embed=embed)
+            return await self.help_command.send_help(ctx)
+        elif command := self.commands.get(target):
+            return await self.help_command.send_command_help(ctx, command)
+        elif cog := self.cogs.get(target):
+            return await self.help_command.send_cog_help(ctx, cog)
         await ctx.reply(f"Command {target} not found.")
 
     async def get_prefix(
