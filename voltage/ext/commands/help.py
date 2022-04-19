@@ -1,17 +1,20 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from voltage import SendableEmbed
 
 if TYPE_CHECKING:
-    from .command import Command, CommandContext
     from .client import CommandsClient
     from .cog import Cog
+    from .command import Command, CommandContext
+
 
 class HelpCommand:
     """
     A simple subclassable help command.
     """
+
     def __init__(self, client: CommandsClient):
         self.client = client
 
@@ -35,17 +38,17 @@ class HelpCommand:
         return await ctx.reply("Here, have a help embed", embed=embed)
 
     async def send_command_help(self, ctx: CommandContext, command: Command):
-            embed = SendableEmbed(
-                title=f"Help for {command.name}",
-                colour="#0000ff",
-                icon_url=getattr(self.client.user.display_avatar, "url"),
-            )
-            text = str()
-            text += f"\n### **Usage**\n> `{ctx.prefix}{command.usage}`"
-            if command.aliases:
-                text += f"\n\n### **Aliases**\n> {ctx.prefix}{', '.join(command.aliases)}"
-            embed.description = command.description + text if command.description else text
-            return await ctx.reply("Here, have a help embed", embed=embed)
+        embed = SendableEmbed(
+            title=f"Help for {command.name}",
+            colour="#0000ff",
+            icon_url=getattr(self.client.user.display_avatar, "url"),
+        )
+        text = str()
+        text += f"\n### **Usage**\n> `{ctx.prefix}{command.usage}`"
+        if command.aliases:
+            text += f"\n\n### **Aliases**\n> {ctx.prefix}{', '.join(command.aliases)}"
+        embed.description = command.description + text if command.description else text
+        return await ctx.reply("Here, have a help embed", embed=embed)
 
     async def send_cog_help(self, ctx: CommandContext, cog: Cog):
         embed = SendableEmbed(
@@ -60,4 +63,3 @@ class HelpCommand:
             text += f"> {ctx.prefix}{command.name}\n"
         embed.description = text
         return await ctx.reply("Here, have a help embed", embed=embed)
-
