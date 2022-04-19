@@ -8,6 +8,10 @@ Voltage
 =======
 Voltage is a simple, pythonic wrapper for the Revolt API.
 
+.. note::
+
+    The docs are still WIP and are in need of alot of work so feel free to contribute!
+
 .. toctree::
     :maxdepth: 1
 
@@ -19,5 +23,4 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`

@@ -2,6 +2,13 @@
 Getting Started
 ---------------
 
+.. note::
+
+   This part and other parts of the documentation are still work in progress.
+
+   If you are willing to help please state that you're interested in helping via the revolt support server or github discussion.
+
+
 This tutorial is designed to get you up and running with the basics of Voltage and the revolt api.
 
 This tutorial will cover:
