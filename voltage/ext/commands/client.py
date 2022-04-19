@@ -4,7 +4,7 @@ import sys
 from importlib import import_module, reload
 from inspect import _empty
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union, Type
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
 # internal imports
 from voltage import Client, CommandNotFound, Message, SendableEmbed
@@ -33,9 +33,14 @@ class CommandsClient(Client):
     extensions: dict[str, tuple[ModuleType, str]]
         The extensions that are loaded.
     """
+
     __slots__ = ("cogs", "extensions", "help_command", "prefix", "commands")
 
-    def __init__(self, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]], help_command: Type[HelpCommand] = HelpCommand):
+    def __init__(
+        self,
+        prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]],
+        help_command: Type[HelpCommand] = HelpCommand,
+    ):
         super().__init__()
         self.listeners = {"message": self.handle_commands}
         self.prefix = prefix
