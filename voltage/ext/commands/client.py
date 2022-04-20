@@ -10,10 +10,10 @@ from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Unio
 from voltage import Client, CommandNotFound, Message, SendableEmbed
 
 from .command import Command, CommandContext
+from .help import HelpCommand
 
 if TYPE_CHECKING:
     from .cog import Cog
-    from .help import HelpCommand
 
 
 class CommandsClient(Client):
