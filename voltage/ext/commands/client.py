@@ -4,12 +4,13 @@ import sys
 from importlib import import_module, reload
 from inspect import _empty
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
 # internal imports
 from voltage import Client, CommandNotFound, Message, SendableEmbed
 
 from .command import Command, CommandContext
+from .help import HelpCommand
 
 if TYPE_CHECKING:
     from .cog import Cog
@@ -21,16 +22,31 @@ class CommandsClient(Client):
 
     Attributes
     ----------
+    prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
+        The prefixes that the client will respond to.
+    help_command: Type[HelpCommand]
+        The help command class.
+    commands: dict[str, Command]
+        The commands that the client will respond to.
     cogs: List[:class:`Cog`]
         The cogs that are loaded.
+    extensions: dict[str, tuple[ModuleType, str]]
+        The extensions that are loaded.
     """
 
-    def __init__(self, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]):
+    __slots__ = ("cogs", "extensions", "help_command", "prefix", "commands")
+
+    def __init__(
+        self,
+        prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]],
+        help_command: Type[HelpCommand] = HelpCommand,
+    ):
         super().__init__()
         self.listeners = {"message": self.handle_commands}
         self.prefix = prefix
         self.cogs: dict[str, Cog] = {}
         self.extensions: dict[str, tuple[ModuleType, str]] = {}
+        self.help_command = help_command(self)
         self.commands: dict[str, Command] = {
             "help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)
         }
@@ -39,42 +55,12 @@ class CommandsClient(Client):
         """
         Basic help command.
         """
-        prefix = await self.get_prefix(ctx.message, self.prefix)
         if target is None:
-            embed = SendableEmbed(
-                title="Help",
-                description=f"Use `{prefix}help <command>` to get help for a command.",
-                colour="#fff0f0",
-                icon_url=getattr(ctx.client.user.display_avatar, "url"),
-            )
-            text = "\n### **No Category**\n"
-            for command in self.commands.values():
-                if command.cog is None:
-                    text += f"> {command.name}\n"
-            for i in self.cogs.values():
-                text += f"\n### **{i.name}**\n{i.description}\n"
-                for j in i.commands:
-                    text += f"\n> {j.name}"
-            if embed.description:
-                embed.description += text
-            return await ctx.reply("Here, have a help embed", embed=embed)
-        elif target in self.commands:
-            command = self.commands[target]
-            embed = SendableEmbed(
-                title=f"Help for {command.name}",
-                colour="#0000ff",
-                icon_url=getattr(ctx.client.user.display_avatar, "url"),
-            )
-            text = str()
-            usage = str()
-            for (name, data) in list(command.signature.parameters.items())[1:]:
-                default = f" = {data.default}" if (data.default is not _empty) and (data.default is not None) else ""
-                usage += f" [{name}{default}]" if data.default is not _empty else f" <{name}>"
-            text += f"\n### **Usage**\n> `{prefix}{command.name}{usage}`"
-            if command.aliases:
-                text += f"\n\n### **Aliases**\n> {prefix}{', '.join(command.aliases)}"
-            embed.description = command.description + text if command.description else text
-            return await ctx.reply("Here, have a help embed", embed=embed)
+            return await self.help_command.send_help(ctx)
+        elif command := self.commands.get(target):
+            return await self.help_command.send_command_help(ctx, command)
+        elif cog := self.cogs.get(target):
+            return await self.help_command.send_cog_help(ctx, cog)
         await ctx.reply(f"Command {target} not found.")
 
     async def get_prefix(
@@ -102,6 +88,8 @@ class CommandsClient(Client):
             The command to add.
         """
         for alias in command.aliases:
+            if alias in self.commands:
+                raise ValueError(f"Command {alias} already exists.")
             self.commands[alias] = command
 
     def add_cog(self, cog: Cog):
@@ -116,6 +104,8 @@ class CommandsClient(Client):
         self.cogs[cog.name] = cog
         for command in cog.commands:
             self.add_command(command)
+        if func := cog.listeners.get("load"):
+            func()
 
     def remove_cog(self, cog: Cog) -> Cog:
         """
@@ -138,6 +128,8 @@ class CommandsClient(Client):
                     cmd = self.commands.pop(command_name)
                     del cmd
         cog = self.cogs.pop(cog.name)
+        if func := cog.listeners.get("unload"):
+            func()
         return cog
 
     def add_extension(self, path: str, *args, **kwargs):
@@ -267,13 +259,13 @@ class CommandsClient(Client):
                 if "command" in self.error_handlers:
                     try:
                         return await self.commands[command].invoke(
-                            CommandContext(message, self.commands[command], self), prefix
+                            CommandContext(message, self.commands[command], self, prefix), prefix
                         )
                     except Exception as e:
                         return await self.error_handlers["command"](
-                            e, CommandContext(message, self.commands[command], self)
+                            e, CommandContext(message, self.commands[command], self, prefix)
                         )
                 return await self.commands[command].invoke(
-                    CommandContext(message, self.commands[command], self), prefix
+                    CommandContext(message, self.commands[command], self, prefix), prefix
                 )
             raise CommandNotFound(command)

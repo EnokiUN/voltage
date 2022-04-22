@@ -4,7 +4,7 @@ Voltage
 
 |Support Server| |PyPi| |Docs| |Checks|
 
-A simple, pythonic, and asynchronous API wrapper for `Revolt. <https://revolt.chat>`_
+A simple pythonic asynchronous API wrapper for `Revolt. <https://revolt.chat>`_
 
 |Screenshot|
 
@@ -36,7 +36,7 @@ Usage
     # Run the client which is an abstraction of calling the start coroutine.
     client.run("TOKEN")  # Replace with your token.
 
-Commands frameworks example:
+Commands framework example:
 
 .. code-block:: python3
 
@@ -57,8 +57,6 @@ Commands frameworks example:
     client.run("TOKEN") # Again, replace with your bot token.
 
 For more examples check the `examples <https://github.com/EnokiUN/voltage/tree/main/examples>`_ folder which has a lot of useful, ready to go, and explained examples.
-
-You can also read the code of `RedCrewmate <https://github.com/EnokiUN/redcrewmatw>`_. RedCrewmate also contains a framework for commands and cogs.
 
 ============
 Installation

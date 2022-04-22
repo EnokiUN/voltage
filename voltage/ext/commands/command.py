@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from asyncio import gather
-from inspect import Parameter, _empty, signature
+from inspect import Parameter, _empty, isclass, signature
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
+# internal imports
 from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
+
+from . import converters
 
 if TYPE_CHECKING:
     from .check import Check
@@ -36,8 +39,8 @@ class CommandContext:
         The server that the command was invoked in.
     command: :class:`Command`
         The command that was invoked.
-    checks: list[:class:`Check`]
-        The checks that must be passed for the command to be invoked.
+    prefix: :class:`str`
+        The prefix used to invoke the command.
     """
 
     __slots__ = (
@@ -52,9 +55,10 @@ class CommandContext:
         "command",
         "me",
         "client",
+        "prefix",
     )
 
-    def __init__(self, message: Message, command: Command, client: CommandsClient):
+    def __init__(self, message: Message, command: Command, client: CommandsClient, prefix: str):
         self.message = message
         self.content = message.content
         self.author = message.author
@@ -71,6 +75,8 @@ class CommandContext:
         else:
             self.me = None
 
+        self.prefix = prefix
+
 
 class Command:
     """
@@ -84,9 +90,15 @@ class Command:
         The description of the command.
     aliases: Optional[List[:class:`str`]]
         The aliases of the command.
+    cog: Optional[:class:`Cog`]
+        The cog that the command belongs to.
+    checks: list[:class:`Check`]
+        The checks that must be passed for the command to be invoked.
+    usage: str
+        The usage of the command.
     """
 
-    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog", "checks")
+    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog", "checks", "usage")
 
     def __init__(
         self,
@@ -105,6 +117,18 @@ class Command:
         self.cog = cog
         self.checks: list[Check] = []
 
+        usage = list()
+        for name, param in list(self.signature.parameters.items())[1:]:
+            if param.default is not _empty:
+                if param.default is not _empty or param.default is not None:
+                    usage.append(f"[{name}={param.default}]")
+                else:
+                    usage += f"[{name}]"
+            else:
+                usage.append(f"<{name}>")
+
+        self.usage = f"{self.name} {' '.join(usage)}"
+
     def error(self, func: Callable[[Exception, CommandContext], Awaitable[Any]]):
         """
         Sets the error handler for this command.
@@ -121,26 +145,14 @@ class Command:
         annotation = arg.annotation
         if given is None:
             return None
-        elif isinstance(annotation, str):
-            return given
         elif annotation is _empty or annotation is Any or issubclass(annotation, str):
             return given
-        elif issubclass(annotation, int):
-            return int(given)
-        elif issubclass(annotation, float):
-            return float(given)
-        elif issubclass(annotation, Member):
-            if context.server:
-                member = context.server.get_member(given)
-                if member is None:
-                    raise MemberNotFound(given)
-                return member
-            raise MemberNotFound(given)
-        elif issubclass(annotation, User):
-            user = context.client.get_user(given)
-            if user is None:
-                raise UserNotFound(given)
-            return user
+        if isclass(annotation):
+            if issubclass(annotation, converters.Converter):
+                return await annotation().convert(context, given)
+            if func := getattr(converters, f"{annotation.__name__.capitalize()}Converter", None):
+                return await func().convert(context, given)
+        return str(given)
 
     async def invoke(self, context: CommandContext, prefix: str):
         if context.content is None:
@@ -194,3 +206,24 @@ class Command:
             except Exception as e:
                 return await self.error_handler(e, context)
         return await self.func(context)
+
+
+def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
+    """
+    A decorator that creates a :class:`Command` from an asynchronous function.
+
+    Parameters
+    ----------
+    name: Optional[:class:`str`]
+        The name of the command.
+    description: Optional[:class:`str`]
+        The description of the command.
+    aliases: Optional[List[:class:`str`]]
+        The aliases of the command.
+    """
+
+    def decorator(func: Callable[..., Awaitable[Any]]):
+        command = Command(func, name, description, aliases)
+        return command
+
+    return decorator

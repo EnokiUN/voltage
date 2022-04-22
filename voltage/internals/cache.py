@@ -53,69 +53,39 @@ class CacheHandler:
         self.users: Dict[str, User] = {}
         self.dm_channels: Dict[str, DMChannel] = {}
 
-    def get_message(self, value: Any, attr: str = "id", case: bool = True) -> Message:
+    def get_message(self, message_id: str) -> Message:
         """
         Gets a message from the cache.
 
         Parameters
         ----------
-        value: Any
-            The value of the attr of the desired message.
-        attr: :class:`str`
-            The attribute of the message to get.
-        case: :class:`bool`
-            Whether to ignore case when getting the message from an attr that isn't the ID and is a string.
+        message_id: :class:`str`
+            The id of the message to get.
 
         Returns
         -------
         :class:`Message`
             The message object from the cache.
         """
-        if attr == "id":
-            return self.messages[value]
-        else:
-            for i in self.messages:
-                if got := getattr(self.messages[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.messages[i]
-                else:
-                    if getattr(self.messages[i], attr) == value:
-                        return self.messages[i]
-            raise ValueError(f"No message with {attr} {value} found.")
+        return self.messages[message_id]
 
-    def get_channel(self, value: Any, attr: str = "id", case: bool = True) -> Channel:
+    def get_channel(self, channel_id: str) -> Channel:
         """
         Gets a channel from the cache.
 
         Parameters
         ----------
-        value: Any
-            The value of the attr of the desired channel.
-        attr: :class:`str`
-            The attribute of the channel to get.
-        case: :class:`bool`
-            Whether to ignore case when getting the channel from an attr that isn't the ID and is a string.
+        channel_id: :class:`str`
+            The id of the channel to get.
 
         Returns
         -------
         :class:`Channel`
             The channel object from the cache.
         """
-        if attr == "id":
-            return self.channels[value]
-        else:
-            for i in self.channels:
-                if got := getattr(self.channels[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.channels[i]
-                else:
-                    if getattr(self.channels[i], attr) == value:
-                        return self.channels[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        return self.channels[channel_id]
 
-    def get_member(self, server_id: str, value: Any, attr: str = "id", case: bool = False) -> Member:
+    def get_member(self, server_id: str, member_id: str) -> Member:
         """
         Gets a member from the cache.
 
@@ -123,121 +93,62 @@ class CacheHandler:
         ----------
         server_id: :class:`str`
             The id of the server the member is in.
-        value: Any
-            The value of the attr of the desired member.
-        attr: :class:`str`
-            The attribute of the member to get.
-        case: :class:`bool`
-            Whether to ignore case when getting the member from an attr that isn't the ID and is a string.
+        member_id: :class:`str`
+            The id of the member to get.
 
         Returns
         -------
         :class:`Member`
             The member object from the cache.
         """
-        if attr == "id":
-            return self.members[server_id][value]
-        else:
-            for i in self.members[server_id]:
-                if isinstance(value, str) and not case:
-                    if got := getattr(self.members[server_id][i], attr, None):
-                        if got.lower() == value.lower():
-                            return self.members[server_id][i]
-                else:
-                    if getattr(self.members[server_id][i], attr) == value:
-                        return self.members[server_id][i]
-            raise ValueError(f"No member with {attr} {value} found.")
+        return self.members[server_id][member_id]
 
-    def get_server(self, value: Any, attr: str = "id", case: bool = False) -> Server:
+    def get_server(self, server_id: str) -> Server:
         """
         Gets a server from the cache.
 
         Parameters
         ----------
-        value: Any
-            The value of the attr of the desired server.
-        attr: :class:`str`
-            The attribute of the server to get.
+        server_id: :class:`str`
+            The id of the server to get.
 
         Returns
         -------
         :class:`Server`
             The server object from the cache.
         """
-        if attr == "id":
-            return self.servers[value]
-        else:
-            for i in self.servers:
-                if got := getattr(self.servers[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.servers[i]
-                else:
-                    if getattr(self.servers[i], attr) == value:
-                        return self.servers[i]
-            raise ValueError(f"No server with {attr} {value} found.")
+        return self.servers[server_id]
 
-    def get_user(self, value: Any, attr: str = "id", case: bool = False) -> User:
+    def get_user(self, user_id: str) -> User:
         """
         Gets a user from the cache.
 
         Parameters
         ----------
-        value: Any
-            The value of the attr of the desired user.
-        attr: :class:`str`
-            The attribute of the user to get.
-        case: :class:`bool`
-            Whether to ignore case when getting the user from an attr that isn't the ID and is a string.
+        user_id: str
 
         Returns
         -------
         :class:`User`
             The user object from the cache.
         """
-        if attr == "id":
-            return self.users[value]
-        else:
-            for i in self.users:
-                if got := getattr(self.users[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.users[i]
-                else:
-                    if getattr(self.users[i], attr) == value:
-                        return self.users[i]
-            raise ValueError(f"No user with {attr} {value} found.")
+        return self.users[user_id]
 
-    def get_dm_channel(self, value: Any, attr: str = "id", case: bool = False) -> Optional[DMChannel]:
+    def get_dm_channel(self, dm_channel_id: str) -> Optional[DMChannel]:
         """
         Gets a dm channel from the cache.
 
         Parameters
         ----------
-        value: Any
-            The value of the attr of the desired dm channel.
-        attr: :class:`str`
-            The attribute of the dm channel to get.
-        case: :class:`bool`
-            Whether to ignore case when getting the dm channel from an attr that isn't the ID and is a string.
+        dm_channel_id: :class:`str`
+            The id of the dm channel to get.
 
         Returns
         -------
         :class:`DMChannel`
             The dm channel object from the cache.
         """
-        if attr == "id":
-            return self.dm_channels.get(str(value))
-        else:
-            for i in self.dm_channels:
-                if got := getattr(self.dm_channels[i], attr, None):
-                    if isinstance(value, str) and not case:
-                        if got.lower() == value.lower():
-                            return self.dm_channels[i]
-                else:
-                    if getattr(self.dm_channels[i], attr) == value:
-                        return self.dm_channels[i]
-            raise ValueError(f"No channel with {attr} {value} found.")
+        return self.dm_channels.get(dm_channel_id)
 
     async def fetch_message(self, server_id: str, message_id: str) -> Message:
         """

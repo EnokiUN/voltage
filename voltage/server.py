@@ -81,28 +81,36 @@ class SystemMessages:
         """
         The channel the user joined message is configured to.
         """
-        return self.cache.get_channel(self.data.get("user_joined"))
+        if channel_id := self.data.get("user_joined"):
+            return self.cache.get_channel(channel_id)
+        return None
 
     @property
     def user_left(self) -> Optional[Channel]:
         """
         The channel the user left message is configured to.
         """
-        return self.cache.get_channel(self.data.get("user_left"))
+        if channel_id := self.data.get("user_left"):
+            return self.cache.get_channel(channel_id)
+        return None
 
     @property
     def user_kicked(self) -> Optional[Channel]:
         """
         The channel the user kicked message is configured to.
         """
-        return self.cache.get_channel(self.data.get("user_kicked"))
+        if channel_id := self.data.get("user_kicked"):
+            return self.cache.get_channel(channel_id)
+        return None
 
     @property
     def user_banned(self) -> Optional[Channel]:
         """
         The channel the user banned message is configured to.
         """
-        return self.cache.get_channel(self.data.get("user_banned"))
+        if channel_id := self.data.get("user_banned"):
+            return self.cache.get_channel(channel_id)
+        return None
 
 
 class Server:  # As of writing this this is the final major thing I have to implement before the lib is usable and sadly I am traveling in less than 12 hours so it's a race with time.
@@ -303,15 +311,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         Optional[:class:`Member`]
             The member with the given ID, or None if it doesn't exist.
         """
-        if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", member):
-            return self.cache.get_member(self.id, match.group(0))
-        try:
-            return self.cache.get_member(self.id, member.replace("@", ""), "name", case=False)
-        except ValueError:
-            try:
-                return self.cache.get_member(self.id, member.replace("@", ""), "nickname", case=False)
-            except ValueError:
-                return None
+        return self.cache.get_member(self.id, member)
 
     def get_role(self, role_id: str) -> Optional[Role]:
         """

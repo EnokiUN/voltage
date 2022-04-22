@@ -30,12 +30,12 @@ class Category:
         self.name = data["title"]
         self.description = data.get("description")
         self.id = data["id"]
-        self.channel_ids = data["channels"]
+        self.channel_ids = [channel for channel in data["channels"]]
         self.cache = cache
 
     @property
     def channels(self) -> list[Channel]:
-        return [self.cache.get_channel(id) for id in self.channel_ids]
+        return [self.cache.get_channel(channel_id) for channel_id in self.channel_ids]
 
     def __repr__(self):
         return f"<Category {self.name}>"

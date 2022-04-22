@@ -83,6 +83,9 @@ class Cog:
         command: :class:`Command`
             The command to add.
         """
+        if command.cog is not None:
+            raise RuntimeError("Command already has a cog.")
+        command.cog = self
         self.commands.append(command)
 
     def command(
@@ -102,7 +105,7 @@ class Cog:
         """
 
         def decorator(func: Callable[..., Awaitable[Any]]):
-            command = Command(func, name, description, aliases, self)
+            command = Command(func, name, description, aliases)
             self.add_command(command)
             return command
 

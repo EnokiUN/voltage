@@ -284,12 +284,7 @@ class Client:
         Optional[:class:`User`]
             The user.
         """
-        if match := search(r"[0-9A-HJ-KM-NP-TV-Z]{26}", user):
-            return self.cache.get_user(match.group(0))
-        try:
-            return self.cache.get_user(user.replace("@", ""), "name", case=False)
-        except ValueError:
-            return None
+        return self.cache.get_user(user)
 
     def get_channel(self, channel_id: str) -> Optional[Channel]:
         """

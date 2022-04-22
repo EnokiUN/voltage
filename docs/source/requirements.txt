@@ -1,4 +1,5 @@
 sphinx
 furo
-sphinx-autoapi
-spinx_copybutton
+sphinx-copybutton
+aiohttp
+typing-extensions

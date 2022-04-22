@@ -13,7 +13,7 @@ Nice, now add your token to your ``.env`` file, it should be in the same folder 
 
 Let's say that your token is ``qwertyuiop1234567890`` and you want to put it in your ``.env`` file, you'd do this:
 
-.. code-block:: env
+.. code-block::
 
    TOKEN=qwertyuiop1234567890
 

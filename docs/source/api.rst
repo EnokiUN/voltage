@@ -21,10 +21,6 @@ Abstract Base Classes
     :members: 
     :inherited-members:
 
-.. autoclass:: voltage.FlagBase
-    :members:
-    :inherited-members:
-
 Models
 ======
 
@@ -145,31 +141,6 @@ Users
     :members:
     :inherited-members:
 
-.. autoclass:: voltage.UserProfile
-    :members:
-    :inherited-members:
-    :exclude-members: content, background
-
-.. autoclass:: voltage.Status
-    :members:
-    :inherited-members:
-    :exclude-members: text, presence
-
-.. autoclass:: voltage.Relationship
-    :members:
-    :inherited-members:
-    :exclude-members: type, user
-
-Flags
-~~~~~
-
-.. autoclass:: voltage.FlagValue
-    :members:
-    :inherited-members:
-
-.. autoclass:: voltage.UserFlags
-    :members:
-    :inherited-members:
 
 Enums
 =====

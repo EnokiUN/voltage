@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Union
 
+# internal imports
 from .asset import Asset
+from .utils import get
 
 if TYPE_CHECKING:
     from .internals import CacheHandler
@@ -62,7 +64,7 @@ class Invite:
         self.channel = cache.get_channel(self.channel_id)
         self.member_count = data["member_count"]
 
-        self.user = cache.get_user(data["user_name"], "name")
+        self.user = get(cache.users.values(), lambda x: x.name == data["user_name"])
 
         self.cache = cache
 
