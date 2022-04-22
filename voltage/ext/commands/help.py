@@ -63,3 +63,6 @@ class HelpCommand:
             text += f"> {ctx.prefix}{command.name}\n"
         embed.description = text
         return await ctx.reply("Here, have a help embed", embed=embed)
+
+    async def send_not_found(self, ctx: CommandContext, target: str):
+        return await ctx.send(f"Command {target} not found")

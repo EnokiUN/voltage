@@ -61,7 +61,7 @@ class CommandsClient(Client):
             return await self.help_command.send_command_help(ctx, command)
         elif cog := self.cogs.get(target):
             return await self.help_command.send_cog_help(ctx, cog)
-        await ctx.reply(f"Command {target} not found.")
+        await self.help_command.send_not_found(ctx, target)
 
     async def get_prefix(
         self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
