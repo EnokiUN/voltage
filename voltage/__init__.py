@@ -53,7 +53,7 @@ __title__ = "Voltage"
 __author__ = "EnokiUN"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2021-present EnokiUN"
-__version__ = "0.1.5a2"
+__version__ = "0.1.5a3"
 
 from .asset import Asset, PartialAsset
 from .categories import Category
