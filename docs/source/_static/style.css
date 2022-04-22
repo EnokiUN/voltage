@@ -1,0 +1,69 @@
+:root {
+  --attrtable-title-color: #EE5151;
+  --attrtable-entry-border: #9CA0A5;
+  --attrtable-entry-text: #9CA0A5;
+  --attrtable-entry-hover-bg: #1E2124;
+  --attrtable-entry-hover-border: #368CE2;
+  --attrtable-badge: #EE5151;
+}
+
+
+/* attributetable styles addapted from discord.py */
+.py-attribute-table {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin: 0 2em;
+  padding-top: 16px;
+}
+
+.py-attribute-table-column {
+  flex: 1 1 auto;
+}
+
+.py-attribute-table-column:not(:first-child) {
+  margin-top: 1em;
+}
+
+.py-attribute-table-column > span {
+  font-weight: bold;
+  color: var(--attrtable-title-color);
+}
+
+main .py-attribute-table > ul {
+  list-style: none;
+  margin: 4px 0px;
+  padding-left: 0;
+  font-size: 0.95em;
+}
+
+.py-attribute-table-entry {
+  margin: 0;
+  padding: 2px 0;
+  border-left: 2px solid var(--attrtable-entry-border);
+  display: flex;
+  line-height: 1.2em;
+}
+
+.py-attribute-table-entry > a {
+  padding-left: 0.5em;
+  color: var(--attrtable-entry-text);
+  flex-grow: 1;
+}
+
+.py-attribute-table-entry:hover {
+  background-color: var(--attrtable-entry-hover-bg);
+  border-left: 2px solid var(--attrtable-entry-hover-border);
+  text-decoration: none;
+}
+
+.py-attribute-table-badge {
+  flex-basis: 3em;
+  text-align: right;
+  font-size: 0.9em;
+  color: var(--attrtable-badge);
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
