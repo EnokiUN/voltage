@@ -69,5 +69,6 @@ pygments_style = "friendly"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+
 def setup(app):
     app.add_css_file("style.css")
