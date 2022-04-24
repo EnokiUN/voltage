@@ -389,6 +389,27 @@ class Server:  # As of writing this this is the final major thing I have to impl
         data = await self.cache.http.create_channel(self.id, type=type, name=name, description=description, nsfw=nsfw)
         return self.cache.add_channel(data)
 
+    async def create_category(self, name: str, position: Optional[int] = None):
+        """
+        Creates a category in this server.
+
+        Parameters
+        ----------
+        name: str
+            The name of the category to create.
+        position: Optional[int]
+            The position of the category to create.
+
+        Returns
+        -------
+        :class:`Category`
+            The category that was created.
+        """
+        position = position if position is not None else len(self.categories)
+        categories = [{"title": i.name, "id": i.id, "channels": i.channel_ids} for i in self.categories]
+        categories.insert(position, {"title": name, "channels": [], "id": ULID().generate()})
+        await self.cache.http.edit_server(self.id, categories=categories) # type: ignore
+
     async def create_role(self, name: str):
         """
         Creates a role in this server.
