@@ -14,6 +14,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, os.path.abspath("extensions"))
 
 
 # -- Project information -----------------------------------------------------
@@ -36,6 +37,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
+    "attributetable",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -60,7 +62,13 @@ navigation_with_keys = True
 
 html_logo = "assets/logo.png"
 
+pygments_style = "friendly"
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+
+def setup(app):
+    app.add_css_file("style.css")

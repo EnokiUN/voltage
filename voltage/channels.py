@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
+from ulid import ULID
+
 from .asset import Asset
 from .enums import ChannelType
 from .messageable import Messageable
@@ -34,6 +36,8 @@ class Channel:
     ----------
     id: :class:`str`
         The ID of the channel.
+    created_at: :class:`int`
+        The timestamp of when the channel was created.
     type: :class:`ChannelType`
         The type of the channel.
     server: Optional[:class:`Server`]
@@ -42,10 +46,11 @@ class Channel:
         The name of the channel if it has one.
     """
 
-    __slots__ = ("id", "type", "server", "cache", "name")
+    __slots__ = ("id", "created_at", "type", "server", "cache", "name")
 
     def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         self.id = data["_id"]
+        self.created_at = ULID().decode(self.id)
         self.type = ChannelType(data["channel_type"])
         self.server = cache.get_server(server_id) if server_id else None
         self.cache = cache

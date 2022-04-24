@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import sys
 from importlib import import_module, reload
-from inspect import _empty
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
 # internal imports
-from voltage import Client, CommandNotFound, Message, SendableEmbed
+from voltage import Client, CommandNotFound, Message
 
 from .command import Command, CommandContext
 from .help import HelpCommand
@@ -40,8 +39,9 @@ class CommandsClient(Client):
         self,
         prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]],
         help_command: Type[HelpCommand] = HelpCommand,
+        cache_message_limit: int = 5000,
     ):
-        super().__init__()
+        super().__init__(cache_message_limit=cache_message_limit)
         self.listeners = {"message": self.handle_commands}
         self.prefix = prefix
         self.cogs: dict[str, Cog] = {}
@@ -61,7 +61,7 @@ class CommandsClient(Client):
             return await self.help_command.send_command_help(ctx, command)
         elif cog := self.cogs.get(target):
             return await self.help_command.send_cog_help(ctx, cog)
-        await ctx.reply(f"Command {target} not found.")
+        await self.help_command.send_not_found(ctx, target)
 
     async def get_prefix(
         self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]

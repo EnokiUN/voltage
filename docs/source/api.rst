@@ -6,16 +6,22 @@ API Reference
 Client
 ======
 
+.. attributetable:: voltage.Client
+
 .. autoclass:: voltage.Client
-    :members: 
+    :members:
     :inherited-members:
 
 Abstract Base Classes
 =====================
 
+.. attributetable:: voltage.Messageable
+
 .. autoclass:: voltage.Messageable
     :members:
     :inherited-members:
+
+.. attributetable:: voltage.Channel
 
 .. autoclass:: voltage.Channel
     :members: 
@@ -27,13 +33,19 @@ Models
 Servers
 ~~~~~~~
 
+.. attributetable:: voltage.Server
+
 .. autoclass:: voltage.Server
     :members:
     :inherited-members:
 
+.. attributetable:: voltage.ServerBan
+
 .. autoclass:: voltage.ServerBan
     :members:
     :inherited-members:
+
+.. attributetable:: voltage.SystemMessages
 
 .. autoclass:: voltage.SystemMessages
     :members:
@@ -42,12 +54,16 @@ Servers
 Members
 ~~~~~~~
 
+.. attributetable:: voltage.Member
+
 .. autoclass:: voltage.Member
     :members:
     :inherited-members:
 
 Categories
 ~~~~~~~~~~
+
+.. attributetable:: voltage.Category
 
 .. autoclass:: voltage.Category
     :members:
@@ -56,21 +72,31 @@ Categories
 Channels
 ~~~~~~~~
 
+.. attributetable:: voltage.SavedMessageChannel
+
 .. autoclass:: voltage.SavedMessageChannel
     :members: 
     :inherited-members:
+
+.. attributetable:: voltage.DMChannel
 
 .. autoclass:: voltage.DMChannel
     :members: 
     :inherited-members:
 
+.. attributetable:: voltage.GroupDMChannel
+
 .. autoclass:: voltage.GroupDMChannel
     :members: 
     :inherited-members:
 
+.. attributetable:: voltage.TextChannel
+
 .. autoclass:: voltage.TextChannel
     :members: 
     :inherited-members:
+
+.. attributetable:: voltage.VoiceChannel
 
 .. autoclass:: voltage.VoiceChannel
     :members: 
@@ -79,13 +105,19 @@ Channels
 Messages
 ~~~~~~~~
 
+.. attributetable:: voltage.Message
+
 .. autoclass:: voltage.Message
     :members:
     :inherited-members:
 
+.. attributetable:: voltage.MessageReply
+
 .. autoclass:: voltage.MessageReply
     :members:
     :inherited-members:
+
+.. attributetable:: voltage.MessageMasquerade
 
 .. autoclass:: voltage.MessageMasquerade
     :members:
@@ -94,6 +126,8 @@ Messages
 Roles
 ~~~~~
 
+.. attributetable:: voltage.Role
+
 .. autoclass:: voltage.Role
     :members:
     :inherited-members:
@@ -101,9 +135,13 @@ Roles
 Permissions
 ~~~~~~~~~~~
 
+.. attributetable:: voltage.ChannelPermissions
+
 .. autoclass:: voltage.ChannelPermissions
     :members:
     :inherited-members:
+
+.. attributetable:: voltage.ServerPermissions
 
 .. autoclass:: voltage.ServerPermissions
     :members:
@@ -112,12 +150,16 @@ Permissions
 Invites
 ~~~~~~~
 
+.. attributetable:: voltage.Invite
+
 .. autoclass:: voltage.Invite
     :members:
     :inherited-members:
 
 Files
 ~~~~~
+
+.. attributetable:: voltage.File
 
 .. autoclass:: voltage.File
     :members:
@@ -126,9 +168,13 @@ Files
 Assets
 ~~~~~~
 
+.. attributetable:: voltage.Asset
+
 .. autoclass:: voltage.Asset
     :members:
     :inherited-members:
+
+.. attributetable:: voltage.PartialAsset
 
 .. autoclass:: voltage.PartialAsset
     :members:
@@ -136,6 +182,8 @@ Assets
 
 Users
 ~~~~~
+
+.. attributetable:: voltage.User
 
 .. autoclass:: voltage.User
     :members:

@@ -1,4 +1,4 @@
-sphinx
+sphinx==4.5
 furo
 sphinx-copybutton
 aiohttp

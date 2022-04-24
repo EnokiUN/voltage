@@ -12,6 +12,7 @@ from ..user import User
 
 # Internal imports
 from .http import HTTPHandler
+from .ws import WebSocketHandler
 
 if TYPE_CHECKING:
     from ..types import (
@@ -41,10 +42,24 @@ class CacheHandler:
         The maximum amount of messages to cache.
     """
 
+    __slots__ = (
+        "channels",
+        "dm_channels",
+        "http",
+        "loop",
+        "ws",
+        "message_limit",
+        "members",
+        "messages",
+        "servers",
+        "users",
+    )
+
     def __init__(self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000):
         self.http = http
         self.message_limit = message_limit
         self.loop = loop
+        self.ws: WebSocketHandler
 
         self.messages: Dict[str, Message] = {}
         self.channels: Dict[str, Channel] = {}
@@ -439,7 +454,8 @@ class CacheHandler:
         """
         self.add_member(data["_id"]["server"], data)
 
-    async def handle_ready_caching(self, data: OnReadyPayload):
+    async def handle_ready_caching(self, data: OnReadyPayload, ws: WebSocketHandler):
+        self.ws = ws
         """
         Handles the caching of the ready event.
         """

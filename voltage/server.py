@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from re import search
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
+
+from ulid import ULID
 
 from .asset import Asset
 from .categories import Category
@@ -121,6 +122,8 @@ class Server:  # As of writing this this is the final major thing I have to impl
     ----------
     id: :class:`str`
         The server's ID.
+    created_at: :class:`int`
+        The timestamp the server was created at.
     name: :class:`str`
         The server's name.
     description: Optional[:class:`str`]
@@ -151,6 +154,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         "data",
         "cache",
         "id",
+        "created_at",
         "name",
         "description",
         "owner_id",
@@ -170,6 +174,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         self.data = data
         self.cache = cache
         self.id = data["_id"]
+        self.created_at = ULID().decode(self.id)
         self.name = data["name"]
         self.description = data.get("description")
         self.owner_id = data["owner"]
@@ -384,6 +389,27 @@ class Server:  # As of writing this this is the final major thing I have to impl
         """
         data = await self.cache.http.create_channel(self.id, type=type, name=name, description=description, nsfw=nsfw)
         return self.cache.add_channel(data)
+
+    async def create_category(self, name: str, position: Optional[int] = None):
+        """
+        Creates a category in this server.
+
+        Parameters
+        ----------
+        name: str
+            The name of the category to create.
+        position: Optional[int]
+            The position of the category to create.
+
+        Returns
+        -------
+        :class:`Category`
+            The category that was created.
+        """
+        position = position if position is not None else len(self.categories)
+        categories = [{"title": i.name, "id": i.id, "channels": i.channel_ids} for i in self.categories]
+        categories.insert(position, {"title": name, "channels": [], "id": ULID().generate()})
+        await self.cache.http.edit_server(self.id, categories=categories)  # type: ignore
 
     async def create_role(self, name: str):
         """
