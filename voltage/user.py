@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple, Optional
+
 from ulid import ULID
 
 from .asset import Asset, PartialAsset

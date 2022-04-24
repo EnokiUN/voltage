@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from ulid import ULID
 from typing import TYPE_CHECKING, Literal, Optional
+
+from ulid import ULID
 
 from .notsupplied import NotSupplied
 

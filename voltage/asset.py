@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
 from ulid import ULID
 
 # Internal imports
@@ -39,7 +40,20 @@ class Asset:
         The url of the asset.
     """
 
-    __slots__ = ("id", "created_at", "tag", "size", "name", "width", "height", "type", "content_type", "url", "http", "data")
+    __slots__ = (
+        "id",
+        "created_at",
+        "tag",
+        "size",
+        "name",
+        "width",
+        "height",
+        "type",
+        "content_type",
+        "url",
+        "http",
+        "data",
+    )
 
     def __init__(self, data: FilePayload, http: HTTPHandler):
         self.data = data

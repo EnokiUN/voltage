@@ -338,16 +338,10 @@ class WebSocketHandler:
         """
         Starts typing in a channel.
         """
-        await self.ws.send_json({
-            "type": "BeginTyping",
-            "channel": channel_id
-            })
+        await self.ws.send_json({"type": "BeginTyping", "channel": channel_id})
 
     async def end_typing(self, channel_id):
         """
         Stops typing in a channel.
         """
-        await self.ws.send_json({
-            "type": "EndTyping",
-            "channel": channel_id
-        })
+        await self.ws.send_json({"type": "EndTyping", "channel": channel_id})
