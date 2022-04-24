@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from ulid import ULID
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
+
+from ulid import ULID
 
 from .asset import Asset
 from .categories import Category

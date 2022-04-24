@@ -41,17 +41,18 @@ class CacheHandler:
     message_limit: :class:`int`
         The maximum amount of messages to cache.
     """
+
     __slots__ = (
-        'channels',
-        'dm_channels',
-        'http',
-        'loop',
-        'ws',
-        'message_limit',
-        'members',
-        'messages',
-        'servers',
-        'users',
+        "channels",
+        "dm_channels",
+        "http",
+        "loop",
+        "ws",
+        "message_limit",
+        "members",
+        "messages",
+        "servers",
+        "users",
     )
 
     def __init__(self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000):

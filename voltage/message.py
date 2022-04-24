@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from ulid import ULID
 from asyncio import sleep
 from datetime import datetime
 from typing import TYPE_CHECKING, List, NamedTuple, Optional, Union
+
+from ulid import ULID
 
 from .asset import Asset, PartialAsset
 from .embed import SendableEmbed, create_embed

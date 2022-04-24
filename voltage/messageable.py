@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from asyncio import sleep, Task
+from asyncio import Task, sleep
 from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
@@ -13,12 +13,14 @@ if TYPE_CHECKING:
     from .file import File
     from .internals import CacheHandler
     from .message import Message, MessageMasquerade, MessageReply
-    from .types import MessageReplyPayload, SendableEmbedPayload, MessagePayload
+    from .types import MessagePayload, MessageReplyPayload, SendableEmbedPayload
+
 
 class Typing:
     """
     A simple context manager for typing.
     """
+
     def __init__(self, channel: Messageable):
         self.channel = channel
         self.ws = channel.cache.ws
@@ -45,6 +47,7 @@ class Typing:
     async def __aexit__(self, *_):
         self.task.cancel()
         await self.channel.end_typing()
+
 
 class MessageIterator:
     def __init__(self, data: list[MessagePayload], channel: Messageable):
@@ -81,6 +84,7 @@ class MessageIterator:
 
     def __reversed__(self):
         return MessageIterator(list(reversed(self.data)), self.channel)
+
 
 class Messageable:  # Really missing rust traits rn :(
     """
@@ -229,7 +233,7 @@ class Messageable:  # Really missing rust traits rn :(
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
-        ) -> MessageIterator:
+    ) -> MessageIterator:
         """
         Search for messages in the messageable object's channel.
 
