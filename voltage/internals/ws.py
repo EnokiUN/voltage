@@ -140,7 +140,7 @@ class WebSocketHandler:
         Handles the ready event.
         """
         print("\033[1;31m[Voltage]    Started caching data...\033[0m")
-        await self.cache.handle_ready_caching(payload)
+        await self.cache.handle_ready_caching(payload, self)
         print("\033[1;31m[Voltage]    Finished caching data.\033[0m")
         print("\033[1;32m[Voltage]    Bot is running!\033[0m")
         self.ready = True
@@ -333,3 +333,21 @@ class WebSocketHandler:
         old = copy(user)
         user._update(payload)
         await self.dispatch("user_update", old, user)
+
+    async def begin_typing(self, channel_id):
+        """
+        Starts typing in a channel.
+        """
+        await self.ws.send_json({
+            "type": "BeginTyping",
+            "channel": channel_id
+            })
+
+    async def end_typing(self, channel_id):
+        """
+        Stops typing in a channel.
+        """
+        await self.ws.send_json({
+            "type": "EndTyping",
+            "channel": channel_id
+        })

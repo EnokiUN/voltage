@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from asyncio import sleep
+from asyncio import sleep, Task
 from typing import TYPE_CHECKING, List, Optional, Union
 
 # Internal imports
@@ -9,12 +9,78 @@ from .errors import HTTPError
 from .message import Message
 
 if TYPE_CHECKING:
-    from .embed import Embed, SendableEmbed
+    from .embed import SendableEmbed
     from .file import File
     from .internals import CacheHandler
     from .message import Message, MessageMasquerade, MessageReply
-    from .types import MessageReplyPayload, SendableEmbedPayload
+    from .types import MessageReplyPayload, SendableEmbedPayload, MessagePayload
 
+class Typing:
+    """
+    A simple context manager for typing.
+    """
+    def __init__(self, channel: Messageable):
+        self.channel = channel
+        self.ws = channel.cache.ws
+        self.loop = channel.cache.loop
+        self.task: Task
+
+    async def keep_typing(self):
+        while True:
+            await self.channel.start_typing()
+            await sleep(2)
+
+    def __enter__(self):
+        self.task = self.loop.create_task(self.keep_typing())
+        return self
+
+    def __exit__(self, *_):
+        self.task.cancel()
+        self.loop.create_task(self.channel.end_typing())
+
+    async def __aenter__(self):
+        self.task = self.loop.create_task(self.keep_typing())
+        return self
+
+    async def __aexit__(self, *_):
+        self.task.cancel()
+        await self.channel.end_typing()
+
+class MessageIterator:
+    def __init__(self, data: list[MessagePayload], channel: Messageable):
+        self.data = data
+        self.processed: list[Message] = []
+        self.channel = channel
+
+    def _process_next(self):
+        if len(self.data) == 0:
+            if len(self.processed) == 0:
+                return None
+            else:
+                self.processed.append(Message(self.data.pop(0), self.channel.cache))
+                return self.processed[-1]
+
+    def _get_next_message(self):
+        return self.processed.pop(0)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if len(self.data) == 0:
+            raise StopIteration
+        return Message(self.data.pop(0), self.channel.cache)
+
+    def __len__(self):
+        return len(self.data) + len(self.processed)
+
+    def __getitem__(self, index: int):
+        while len(self.processed) <= index:
+            self._process_next()
+        return Message(self.data[index], self.channel.cache)
+
+    def __reversed__(self):
+        return MessageIterator(list(reversed(self.data)), self.channel)
 
 class Messageable:  # Really missing rust traits rn :(
     """
@@ -126,7 +192,7 @@ class Messageable:  # Really missing rust traits rn :(
         before: Optional[str] = None,
         after: Optional[str] = None,
         nearby: Optional[str] = None,
-    ) -> List[Message]:
+    ) -> MessageIterator:
         """
         Fetch the messageable object's channel's history.
 
@@ -152,8 +218,8 @@ class Messageable:  # Really missing rust traits rn :(
         returned = []
         for i in messages:
             if i["author"] != "00000000000000000000000000":
-                returned.append(Message(i, self.cache))
-        return returned
+                returned.append(i)
+        return MessageIterator(returned, self)
 
     async def search(
         self,
@@ -163,7 +229,7 @@ class Messageable:  # Really missing rust traits rn :(
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> List[Message]:
+        ) -> MessageIterator:
         """
         Search for messages in the messageable object's channel.
 
@@ -188,7 +254,7 @@ class Messageable:  # Really missing rust traits rn :(
         messages = await self.cache.http.search_for_message(
             await self.get_id(), query, sort=sort.value, limit=limit, before=before, after=after, include_users=False
         )
-        return [Message(data, self.cache) for data in messages]
+        return MessageIterator(messages, self)
 
     async def purge(self, amount: int):
         """
@@ -209,3 +275,21 @@ class Messageable:  # Really missing rust traits rn :(
                     pass
                 else:
                     raise
+
+    def typing(self) -> Typing:
+        """
+        A context manager that sends a typing indicator to the messageable object's channel.
+        """
+        return Typing(self)
+
+    async def start_typing(self):
+        """
+        Send a typing indicator to the messageable object's channel.
+        """
+        await self.cache.ws.begin_typing(await self.get_id())
+
+    async def end_typing(self):
+        """
+        Stop sending a typing indicator to the messageable object's channel.
+        """
+        await self.cache.ws.end_typing(await self.get_id())

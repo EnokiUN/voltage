@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .cog import Cog
 
 
-async def dummy_send(self, *args, **kwargs):
+async def dummy_func(self, *args, **kwargs):
     return NotImplemented
 
 
@@ -50,6 +50,7 @@ class CommandContext:
         "channel",
         "server",
         "send",
+        "typing",
         "reply",
         "delete",
         "command",
@@ -69,7 +70,8 @@ class CommandContext:
         self.command = command
         self.client = client
 
-        self.send = getattr(message.channel, "send", dummy_send)
+        self.send = getattr(message.channel, "send", dummy_func)
+        self.typing = getattr(message.channel, "typing", dummy_func)
         if message.server:
             self.me: Optional[Member] = client.cache.get_member(message.server.id, client.user.id)
         else:
