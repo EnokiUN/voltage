@@ -159,7 +159,6 @@ class Command:
     async def invoke(self, context: CommandContext, prefix: str):
         if context.content is None:
             return
-        print(self.checks)
         if self.checks:
             results = await gather(*[check.check(context) for check in self.checks])
             if any([check is False for check in results]):
