@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
+from ulid import ULID
 
 # Internal imports
 from .enums import AssetType
@@ -18,6 +19,8 @@ class Asset:
     ----------
     id: :class:`str`
         The id of the asset.
+    created_at: :class:`int`
+        The timestamp of when the asset was created.
     tag: :class:`str`
         The tag of the asset.
     size: :class:`int`
@@ -36,13 +39,14 @@ class Asset:
         The url of the asset.
     """
 
-    __slots__ = ("id", "tag", "size", "name", "width", "height", "type", "content_type", "url", "http", "data")
+    __slots__ = ("id", "created_at", "tag", "size", "name", "width", "height", "type", "content_type", "url", "http", "data")
 
     def __init__(self, data: FilePayload, http: HTTPHandler):
         self.data = data
         self.http = http
 
         self.id = data.get("_id")
+        self.created_at = ULID().decode(self.id) if self.id else None
         self.tag = data.get("tag")
         self.size = data.get("size")
         self.name = data.get("filename")
@@ -83,6 +87,8 @@ class PartialAsset(Asset):
         The url of the asset.
     id: :class:`str`
         The id of the asset.
+    created_at: :class:`int`
+        The timestamp of when the asset was created.
     tag: Optional[:class:`str`]
         The tag of the asset.
     size: :class:`int`
@@ -97,13 +103,14 @@ class PartialAsset(Asset):
         The type of the asset.
     """
 
-    __slots__ = ("url", "http", "id", "tag", "size", "name", "width", "height", "type", "content_type")
+    __slots__ = ("url", "http", "id", "created_at", "tag", "size", "name", "width", "height", "type", "content_type")
 
     def __init__(self, url: str, http: HTTPHandler):
         self.url = url
         self.http = http
 
         self.id = "0"
+        self.created_at = 0
         self.tag = None
         self.size = 0
         self.name = ""

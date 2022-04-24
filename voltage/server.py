@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from re import search
+from ulid import ULID
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
 
 from .asset import Asset
@@ -121,6 +121,8 @@ class Server:  # As of writing this this is the final major thing I have to impl
     ----------
     id: :class:`str`
         The server's ID.
+    created_at: :class:`int`
+        The timestamp the server was created at.
     name: :class:`str`
         The server's name.
     description: Optional[:class:`str`]
@@ -151,6 +153,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         "data",
         "cache",
         "id",
+        "created_at",
         "name",
         "description",
         "owner_id",
@@ -170,6 +173,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         self.data = data
         self.cache = cache
         self.id = data["_id"]
+        self.created_at = ULID().decode(self.id)
         self.name = data["name"]
         self.description = data.get("description")
         self.owner_id = data["owner"]

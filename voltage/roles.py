@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from ulid import ULID
 from typing import TYPE_CHECKING, Literal, Optional
 
 from .notsupplied import NotSupplied
@@ -21,6 +22,8 @@ class Role:
     ----------
     id: :class:`str`
         The role's ID.
+    created_at: :class:int:
+        The timestamp of when the role was created.
     name: :class:`str`
         The role's name.
     colour: :class:`str`
@@ -43,6 +46,7 @@ class Role:
 
     __slots__ = (
         "id",
+        "created_at",
         "name",
         "colour",
         "color",
@@ -57,6 +61,7 @@ class Role:
 
     def __init__(self, data: RolePayload, id: str, server: Server, http: HTTPHandler):
         self.id = id
+        self.created_at = ULID().decode(id)
         self.name = data["name"]
         self.colour = data.get("colour")
         self.color = self.colour

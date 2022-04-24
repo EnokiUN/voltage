@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from ulid import ULID
 from asyncio import sleep
 from datetime import datetime
 from typing import TYPE_CHECKING, List, NamedTuple, Optional, Union
@@ -70,6 +71,8 @@ class Message:
     ----------
     id: :class:`str`
         The id of the message.
+    created_at: :class:`int`
+        The timestamp of when the message was created.
     channel: :class:`Channel`
         The channel the message was sent in.
     attachments: List[:class:`Asset`]]
@@ -86,6 +89,7 @@ class Message:
 
     __slots__ = (
         "id",
+        "created_at",
         "channel",
         "attachments",
         "server",
@@ -101,6 +105,7 @@ class Message:
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
+        self.created_at = ULID().decode(self.id)
         self.content = data["content"]
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]

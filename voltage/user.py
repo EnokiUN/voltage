@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple, Optional
+from ulid import ULID
 
 from .asset import Asset, PartialAsset
 from .enums import PresenceType, RelationshipType
@@ -68,6 +69,8 @@ class User(Messageable):
     ----------
     id: :class:`str`
         The user's ID.
+    created_at: :class:`int`
+        The epoch time when the user was created.
     name: :class:`str`
         The user's name.
     avatar: :class:`Asset`
@@ -90,6 +93,7 @@ class User(Messageable):
 
     __slots__ = (
         "id",
+        "created_at",
         "name",
         "avatar",
         "dm_channel",
@@ -110,6 +114,7 @@ class User(Messageable):
     def __init__(self, data: UserPayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
+        self.created_at = ULID().decode(self.id)[0]
 
         self.name = data["username"]
         self.dm_channel = cache.get_dm_channel(self.id)
