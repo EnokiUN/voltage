@@ -409,7 +409,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         position = position if position is not None else len(self.categories)
         categories = [{"title": i.name, "id": i.id, "channels": i.channel_ids} for i in self.categories]
         categories.insert(position, {"title": name, "channels": [], "id": ULID().generate()})
-        await self.cache.http.edit_server(self.id, categories=categories) # type: ignore
+        await self.cache.http.edit_server(self.id, categories=categories)  # type: ignore
 
     async def create_role(self, name: str):
         """
