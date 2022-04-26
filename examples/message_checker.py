@@ -18,5 +18,6 @@ async def add_word(ctx, word): # Define our command
   ungodly_words.append(word.lower()) # Append to our list
   await ctx.send(f"Added `{word.lower()}` to the list of `{len(ungodly_words)}` words!") # Tell user that the word was added to the list.
   
+# note that when the bot goes offline, the list of words is cleared as its only a LOCAL array.
   
 client.run("TOKEN") # Run the bot
