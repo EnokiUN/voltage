@@ -6,7 +6,7 @@ client = voltage.Client()  # Initialize the client.
 @client.listen("message")  # Listen for pings
 async def on_ping(message):  # Doesn't matter what you call the function.
     if message.content.startswith("embed"):
-        # Create the embed. Most of these attributes are self-explanitory
+        # Create the embed. Most of these attributes are self-explanatory
         embed = voltage.SendableEmbed(
             title="Cat",  # The title of the embed
             description="Cat",  # The description of the embed
