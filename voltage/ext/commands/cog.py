@@ -18,15 +18,29 @@ class Cog:
     commands: List[:class:`Command`]
         The commands in the cog.
     """
+    name: str
+    description: Optional[str]
+    commands: list[Command] = []
+    listeners: dict[str, Callable[..., Any]] = {}
+    raw_listeners: dict[str, Callable[[dict], Any]] = {}
 
-    __slots__ = ("name", "description", "commands", "listeners", "raw_listeners")
+    def __new__(cls, *args, **kwargs):
+        cls.name = cls.__name__
+        cls.description = cls.__doc__
+        for (name, attr) in cls.__dict__.items():
+            if isinstance(attr, Command):
+                attr.subclassed = True
+                cls.commands.append(attr)
+            elif isinstance(attr, Callable):
+                if name.startswith("on_"):
+                    cls.listeners[name[3:].lower()] = attr
+                elif name.startswith("raw_"):
+                    cls.raw_listeners[name[4:].lower()] = attr
+        return super().__new__(cls)
 
     def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
-        self.commands: list[Command] = []
-        self.listeners: dict[str, Callable[..., Any]] = {}
-        self.raw_listeners: dict[str, Callable[[dict], Any]] = {}
 
     def listen(self, event: str, *, raw: bool = False):
         """

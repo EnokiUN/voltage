@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from asyncio import gather
-from inspect import Parameter, _empty, isclass, signature
+from inspect import Parameter, _empty, isclass, signature, ismethod
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
@@ -73,7 +73,8 @@ class CommandContext:
         self.send = getattr(message.channel, "send", dummy_func)
         self.typing = getattr(message.channel, "typing", dummy_func)
         if message.server:
-            self.me: Optional[Member] = client.cache.get_member(message.server.id, client.user.id)
+            self.me: Optional[Member] = client.cache.get_member(
+                message.server.id, client.user.id)
         else:
             self.me = None
 
@@ -100,7 +101,8 @@ class Command:
         The usage of the command.
     """
 
-    __slots__ = ("func", "name", "description", "aliases", "error_handler", "signature", "cog", "checks", "usage")
+    __slots__ = ("func", "name", "description", "aliases",
+                 "error_handler", "signature", "cog", "checks", "usage", "subclassed")
 
     def __init__(
         self,
@@ -114,10 +116,12 @@ class Command:
         self.name = name or func.__name__
         self.description = description or func.__doc__
         self.aliases = aliases or [self.name]
-        self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
+        self.error_handler: Optional[Callable[[
+            Exception, CommandContext], Awaitable[Any]]] = None
         self.signature = signature(func)
         self.cog = cog
         self.checks: list[Check] = []
+        self.subclassed = False
 
         usage = list()
         for name, param in list(self.signature.parameters.items())[1:]:
@@ -163,12 +167,15 @@ class Command:
             results = await gather(*[check.check(context) for check in self.checks])
             if any([check is False for check in results]):
                 return
-        if len((params := self.signature.parameters)) > 1:
-            given = split(context.content[len(prefix + self.name) :])
+
+        start_index = 2 if self.subclassed else 1
+
+        if len((params := self.signature.parameters)) > start_index:
+            given = split(context.content[len(prefix + self.name):])
             args: list[str] = []
             kwargs = {}
 
-            for i, (param, arg) in enumerate(zip_longest(list(params.items())[1:], given)):
+            for i, (param, arg) in enumerate(zip_longest(list(params.items())[start_index:], given)):
                 if param is None:
                     break
                 name, data = param
@@ -176,7 +183,8 @@ class Command:
                 if data.kind == data.VAR_POSITIONAL or data.kind == data.POSITIONAL_OR_KEYWORD:
                     if arg is None:
                         if data.default is _empty:
-                            raise NotEnoughArgs(self, len(params) - 1, len(args))
+                            raise NotEnoughArgs(
+                                self, len(params) - 1, len(args))
                         arg = data.default
                     args.append(await self.convert_arg(data, arg, context))
 
@@ -184,29 +192,38 @@ class Command:
                     if i == len(params) - 2:
                         if arg is None:
                             if data.default is _empty:
-                                raise NotEnoughArgs(self, len(params) - 1, len(given))
+                                raise NotEnoughArgs(
+                                    self, len(params) - 1, len(given))
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
                         kwargs[name] = await self.convert_arg(data, " ".join(given[i:]), context)
                     else:
                         if arg is None:
                             if data.default is _empty:
-                                raise NotEnoughArgs(self, len(params) - 1, len(given))
+                                raise NotEnoughArgs(
+                                    self, len(params) - 1, len(given))
                             arg = data.default
                         kwargs[name] = await self.convert_arg(data, arg, context)
 
+            coro = self.func(self.cog, context, *args, **
+                             kwargs) if self.subclassed else self.func(context, *args, **kwargs)
+
             if self.error_handler:
                 try:
-                    return await self.func(context, *args, **kwargs)
+                    return await coro
                 except Exception as e:
                     return await self.error_handler(e, context)
-            return await self.func(context, *args, **kwargs)
+            return await coro
+
+        coro = self.func(
+            self.cog, context) if self.subclassed else self.func(context)
+
         if self.error_handler:
             try:
-                return await self.func(context)
+                return await coro
             except Exception as e:
                 return await self.error_handler(e, context)
-        return await self.func(context)
+        return await coro
 
 
 def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
