@@ -3,12 +3,12 @@ from voltage.ext import commands  # Import the commands module from ``voltage.ex
 
 client = commands.CommandsClient(
     "-"
-)  # Create a CommandsClient (client that has commands (original ik)) with the prefix set to "-".
+)  # Create a CommandsClient (client that has commands (original)) with the prefix set to "-".
 
 
 @client.listen("ready")  # You can still listen to events.
 async def ready():
-    print("Gaaah, It's rewind time.")
+    print("Gaaah, it's rewind time.")
 
 
 @client.command()  # Register a command using the ``command`` decorator.
