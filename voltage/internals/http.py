@@ -77,6 +77,8 @@ class HTTPHandler:
         if auth:
             header[token_header] = self.token
         async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
+            headers = request.headers
+            # print(headers.get("X-Ratelimit-Remaining"))
             if request.status >= 200 and request.status <= 300:
                 if (await request.read()) == b"":
                     return {}
