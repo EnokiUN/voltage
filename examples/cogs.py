@@ -6,7 +6,7 @@ from voltage.ext import (  # Importing the commands framework so we that we're a
 
 # Next up is the setup function, aka where all the magic happens.
 # This is what's actually called by the client to be used for `add_cog`.
-# Here you define your cog, define it's commands then return the cog so that the client is able to add it.
+# Here you define your cog, define its commands then return the cog so that the client is able to add it.
 # Additionally, any args / kwargs you pass to the `client.add_extension` function will be passed to the setup function.
 # The client is passed by default however.
 def setup(client) -> commands.Cog:
