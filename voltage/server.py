@@ -260,6 +260,13 @@ class Server:  # As of writing this this is the final major thing I have to impl
         return list(self.member_ids.values())
 
     @property
+    def jump_url(self) -> str:
+        """
+        Returns a URL that allows the client to jump to the category.
+        """
+        return f"https://app.revolt.chat/server/{self.id}"
+
+    @property
     def roles(self) -> List[Role]:
         """
         A list of all the roles this server has.

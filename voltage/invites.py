@@ -100,5 +100,10 @@ class Invite:
 
         return self
 
+    @property
+    def url(self) -> str:
+        """Returns the invite URL."""
+        return f"https://rvlt.gg/{self.code}"
+
     async def delete(self):
         return await self.cache.http.delete_invite(self.code)

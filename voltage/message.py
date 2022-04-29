@@ -241,9 +241,9 @@ class Message:
         return msg
 
     @property
-    def url(self) -> str:
+    def jump_url(self) -> str:
         """
-        Returns the url of the message.
+        Returns a URL that allows the client to jump to the message.
         """
         server_segment = "" if self.server is None else f"/server/{self.server.id}"
         return f"https://app.revolt.chat/{server_segment}channel/{self.channel.id}/{self.id}"
