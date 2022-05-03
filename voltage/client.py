@@ -192,9 +192,9 @@ class Client:
             @client.listen("message")
             async def message(message):
                 if message.content == "-wait":
-                    await message.reply("Okay, send something")
-                    msg = await client.wait_for("message", check=lambda message: message.author == client.user)
-                    await message.reply("You sent: " + msg.content)
+                    await message.reply("Send me something nice")
+                    msg = await client.wait_for("message", check=lambda message: message.author.id != client.user.id)
+                    await message.reply("Thank you for your wonderful words: " + msg.content)
 
             client.run("token")
 
