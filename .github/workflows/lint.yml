@@ -1,36 +1,36 @@
+
 name: Lint
-
-on: [push] # what if it lints for something that isn't there :panik:
-
+on: [ pull_request, push ]
 jobs:
   build:
+    if: github.event.pull_request.user.type != 'Bot' && !contains(github.event.pull_request.labels.*.name, 'skip-ci')
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9"]
+        python-version: [ "3.8" ]
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flynt black isort[requirements_deprecated_finder]
-    - name: isort
-      run: isort . --profile black
-    - name: Black
-      run: black ./ --line-length=120
-    - name: Flynt
-      run: flynt ./ -tc
-    - name: Setup Git
-      run: |
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Isort, Black, and Flynt
+        run: |
+          python -m pip install --upgrade pip
+          pip install isort black flynt
+      - name: Run Isort
+        run: isort ./ --profile black
+      - name: Run Black
+        run: black ./ --line-length=100
+      - name: Run Flynt
+        run: flynt ./ -tc
+      - name: Setup Git
+        run: |
           git config user.name "Automated Linter"
-    - name: Push To Git
-      continue-on-error: true
-      run: |
+      - name: Push To Git
+        run: |
           git pull
-          git add . || exit 0
+          git add ./ || exit 0
           git commit --reuse-message=HEAD || exit 0
           git push || exit 0
+          
