@@ -58,11 +58,7 @@ class VoiceChannelPayload(BaseChannelPayload):
 
 
 ChannelPayload = Union[
-    SavedMessagePayload,
-    DMChannelPayload,
-    GroupDMChannelPayload,
-    TextChannelPayload,
-    VoiceChannelPayload,
+    SavedMessagePayload, DMChannelPayload, GroupDMChannelPayload, TextChannelPayload, VoiceChannelPayload
 ]
 
 

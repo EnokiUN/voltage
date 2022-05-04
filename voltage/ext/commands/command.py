@@ -196,9 +196,7 @@ class Command:
             args: list[str] = []
             kwargs = {}
 
-            for i, (param, arg) in enumerate(
-                zip_longest(list(params.items())[start_index:], given)
-            ):
+            for i, (param, arg) in enumerate(zip_longest(list(params.items())[start_index:], given)):
                 if param is None:
                     break
                 name, data = param
@@ -248,11 +246,7 @@ class Command:
         return await coro
 
 
-def command(
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    aliases: Optional[list[str]] = None,
-):
+def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
     """
     A decorator that creates a :class:`Command` from an asynchronous function.
 

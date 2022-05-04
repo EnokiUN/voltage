@@ -3,13 +3,7 @@ from voltage.ext import commands  # Importing commands for our client
 
 client = commands.CommandsClient("!")  # Initializing our client
 
-ungodly_words = [
-    "sus",
-    "baka",
-    "suppose",
-    "real",
-    "amogus",
-]  # Creating our list to iterate through and add items later
+ungodly_words = ["sus", "baka", "suppose", "real", "amogus"]  # Creating our list to iterate through and add items later
 
 
 @client.listen("message")  # Specify what we're going to listen to

@@ -44,14 +44,7 @@ class Member(User):
         The member's channel permissions.
     """
 
-    __slots__ = (
-        "nickname",
-        "server_avatar",
-        "roles",
-        "server",
-        "permissions",
-        "channel_permissions",
-    )
+    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions", "channel_permissions")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
         user = cache.get_user(data["_id"]["user"])

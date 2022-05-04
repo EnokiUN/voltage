@@ -13,9 +13,7 @@ async def on_message(message):  # Doesn't matter what you call the function.
     if message.content == "-ping":
         await message.channel.send("pong!")  # Send a message.
     if message.content == "-embed":
-        embed = voltage.SendableEmbed(
-            title="Hello World", description="This is an embed"
-        )  # Create an embed.
+        embed = voltage.SendableEmbed(title="Hello World", description="This is an embed")  # Create an embed.
         # Reply to a message.
         await message.reply(content="embed", embed=embed)  # Obligatory message content.
 

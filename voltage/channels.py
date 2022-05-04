@@ -293,19 +293,9 @@ class TextChannel(Channel, Messageable):
         The icon of the text channel.
     """
 
-    __slots__ = (
-        "name",
-        "description",
-        "last_message",
-        "nsfw",
-        "default_permissions",
-        "role_permissions",
-        "icon",
-    )
+    __slots__ = ("name", "description", "last_message", "nsfw", "default_permissions", "role_permissions", "icon")
 
-    def __init__(
-        self, data: TextChannelPayload, cache: CacheHandler, server_id: Optional[str] = None
-    ):
+    def __init__(self, data: TextChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         super().__init__(data, cache, server_id)
         self.name = data["name"]
         self.description = data.get("description")
@@ -317,9 +307,7 @@ class TextChannel(Channel, Messageable):
         else:
             self.last_message = None
 
-        self.default_permissions = ChannelPermissions.new_with_flags(
-            data.get("default_permissions", 0)
-        )
+        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
         self.role_permissions = {
             role: ChannelPermissions.new_with_flags(permissions)
             for role, permissions in data.get("role_permissions", {}).items()
@@ -365,16 +353,12 @@ class VoiceChannel(Channel):
 
     __slots__ = ("name", "description", "default_permissions", "role_permissions", "icon")
 
-    def __init__(
-        self, data: VoiceChannelPayload, cache: CacheHandler, server_id: Optional[str] = None
-    ):
+    def __init__(self, data: VoiceChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         super().__init__(data, cache, server_id)
         self.name = data["name"]
         self.description = data.get("description")
 
-        self.default_permissions = ChannelPermissions.new_with_flags(
-            data.get("default_permissions", 0)
-        )
+        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
         self.role_permissions = {
             role: ChannelPermissions.new_with_flags(permissions)
             for role, permissions in data.get("role_permissions", {}).items()
