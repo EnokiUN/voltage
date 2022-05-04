@@ -24,8 +24,7 @@ class Converter:
 
         This method should be overridden by subclasses.
         """
-        raise NotImplementedError(
-            "Converter.convert must be overridden by subclasses")
+        raise NotImplementedError("Converter.convert must be overridden by subclasses")
 
 
 class StrConverter(Converter):
@@ -79,8 +78,7 @@ class MemberConverter(Converter):
 
     async def convert(self, ctx: CommandContext, arg: str) -> Member:
         if ctx.server is None:
-            raise ValueError(
-                "Cannot convert a member to a member without a server")
+            raise ValueError("Cannot convert a member to a member without a server")
         if match := id_regex.search(arg):
             return ctx.client.cache.get_member(ctx.server.id, match.group(0))
         arg = arg.replace("@", "").lower()
@@ -115,8 +113,7 @@ class RoleConverter(Converter):
 
     async def convert(self, ctx: CommandContext, arg: str) -> Role:
         if ctx.server is None:
-            raise ValueError(
-                "Cannot convert a role to a role without a server")
+            raise ValueError("Cannot convert a role to a role without a server")
         if match := id_regex.match(arg):
             if role := ctx.server.get_role(match.group(0)):
                 return role
