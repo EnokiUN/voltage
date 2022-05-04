@@ -7,7 +7,7 @@ ungodly_words = ["sus", "baka", "suppose", "real", "amogus"] # Creating our list
 
 @client.listen('message') # Specify what we're going to listen to
 async def on_message(message): # The name for this can be anything you want it to be
-  if any([word in message.content.lower() for word in ungodly words]): # Run the if statement to trigger if the message has words in the array
+  if any([word in message.content.lower() for word in ungodly_words]): # Run the if statement to trigger if the message has words in the array
     await message.reply("*GASP!* You can't say that word!", delete_after=5) # Reply to the message sent and delete OUR message after 5 seconds
     await message.delete() # Delete the USERS message
   await bot.handle_commands(message) 
