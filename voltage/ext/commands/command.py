@@ -102,7 +102,7 @@ class Command:
     """
 
     __slots__ = ("func", "name", "description", "aliases",
-                 "error_handler", "signature", "cog", "checks", "usage", "subclassed")
+                 "error_handler", "signature", "cog", "checks", "usage_str", "subclassed")
 
     def __init__(
         self,
@@ -123,17 +123,28 @@ class Command:
         self.checks: list[Check] = []
         self.subclassed = False
 
+        self.usage_str = ""
+
+    @property
+    def usage(self) -> str:
+        """
+        The usage of the command.
+        """
+        if self.usage_str:
+            return self.usage_str
         usage = list()
-        for name, param in list(self.signature.parameters.items())[1:]:
+        start = 2 if self.subclassed else 1
+        for name, param in list(self.signature.parameters.items())[start:]:
             if param.default is not _empty:
-                if param.default is not _empty or param.default is not None:
+                if param.default is not _empty and param.default is not None:
                     usage.append(f"[{name}={param.default}]")
                 else:
-                    usage += f"[{name}]"
+                    usage.append(f"[{name}]")
             else:
                 usage.append(f"<{name}>")
 
-        self.usage = f"{self.name} {' '.join(usage)}"
+        self.usage_str = f"{self.name} {' '.join(usage)}"
+        return self.usage_str
 
     def error(self, func: Callable[[Exception, CommandContext], Awaitable[Any]]):
         """
@@ -149,6 +160,8 @@ class Command:
 
     async def convert_arg(self, arg: Parameter, given: str, context: CommandContext) -> Any:
         annotation = arg.annotation
+        if isinstance(annotation, str):
+            return given
         if given is None:
             return None
         elif annotation is _empty or annotation is Any or issubclass(annotation, str):

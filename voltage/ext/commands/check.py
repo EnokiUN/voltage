@@ -58,6 +58,20 @@ async def is_owner() -> Callable[[CommandContext], Awaitable[bool]]:
 
 
 @check
+async def is_server_owner() -> Callable[[CommandContext], Awaitable[bool]]:
+    """
+    Checks if the user invoking the command is the server owner.
+    """
+
+    async def check(ctx: CommandContext) -> bool:
+        if not ctx.server:
+            return False
+        return ctx.author.id == ctx.server.owner_id
+
+    return check
+
+
+@check
 async def has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
     """
     Checks if the user invoking the command is the bot owner.

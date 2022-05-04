@@ -51,7 +51,7 @@ class CommandsClient(Client):
             "help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)
         }
 
-    async def help(self, ctx: CommandContext, target: Optional[str] = None):
+    async def help(self, ctx: CommandContext, target: str = None):  # type: ignore
         """
         Basic help command.
         """
@@ -145,7 +145,8 @@ class CommandsClient(Client):
         cog = module.setup(self, *args, **kwargs)
         self.extensions[path] = (module, cog.name)
         if not hasattr(module, "setup"):
-            raise AttributeError(f"Extension {path} does not have a setup function.")
+            raise AttributeError(
+                f"Extension {path} does not have a setup function.")
         reload(module)
         self.add_cog(cog)
 
@@ -222,7 +223,8 @@ class CommandsClient(Client):
                 self.waits[event].remove(i)
 
         for cog in self.cogs.values():
-            self.loop.create_task(self.cog_dispatch(event, cog, *args, **kwargs))
+            self.loop.create_task(self.cog_dispatch(
+                event, cog, *args, **kwargs))
 
         if func := self.listeners.get(event):
             if self.error_handlers.get(event):
@@ -251,7 +253,7 @@ class CommandsClient(Client):
         if message.content is None:
             return
         if message.content.startswith(prefix):
-            content = message.content[len(prefix) :]
+            content = message.content[len(prefix):]
             command = content.split(" ")[0]
             if not command:
                 return
@@ -259,13 +261,16 @@ class CommandsClient(Client):
                 if "command" in self.error_handlers:
                     try:
                         return await self.commands[command].invoke(
-                            CommandContext(message, self.commands[command], self, prefix), prefix
+                            CommandContext(
+                                message, self.commands[command], self, prefix), prefix
                         )
                     except Exception as e:
                         return await self.error_handlers["command"](
-                            e, CommandContext(message, self.commands[command], self, prefix)
+                            e, CommandContext(
+                                message, self.commands[command], self, prefix)
                         )
                 return await self.commands[command].invoke(
-                    CommandContext(message, self.commands[command], self, prefix), prefix
+                    CommandContext(
+                        message, self.commands[command], self, prefix), prefix
                 )
             raise CommandNotFound(command)
