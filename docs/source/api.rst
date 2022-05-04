@@ -1,4 +1,4 @@
-.. currentmodule:: volatge
+.. currentmodule:: voltage
 
 API Reference
 =============
