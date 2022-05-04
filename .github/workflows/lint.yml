@@ -31,6 +31,6 @@ jobs:
       continue-on-error: true
       run: |
           git pull
-          git add .
-          git commit --reuse-message=HEAD
-          git push
+          git add . || exit 0
+          git commit --reuse-message=HEAD || exit 0
+          git push || exit 0
