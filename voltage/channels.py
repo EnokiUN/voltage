@@ -68,6 +68,12 @@ class Channel:
         """Returns a string that allows you to mention the channel."""
         return f"<#{self.id}>"
 
+    @property
+    def jump_url(self) -> str:
+        """Returns a URL that allows the client to jump to the channel."""
+        server_segment = "" if self.server is None else f"/server/{self.server.id}"
+        return f"https://app.revolt.chat{server_segment}/channel/{self.id}"
+
     def _update(self, data: OnChannelUpdatePayload):
         raise NotImplementedError
 

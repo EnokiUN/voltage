@@ -18,6 +18,7 @@ class Cog:
     commands: List[:class:`Command`]
         The commands in the cog.
     """
+
     name: str
     description: Optional[str]
     commands: list[Command] = []

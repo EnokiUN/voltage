@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from asyncio import gather
-from inspect import Parameter, _empty, isclass, signature, ismethod
+from inspect import Parameter, _empty, isclass, ismethod, signature
 from itertools import zip_longest
 from shlex import split
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
@@ -218,8 +218,11 @@ class Command:
                             arg = data.default
                         kwargs[name] = await self.convert_arg(data, arg, context)
 
-            coro = self.func(self.cog, context, *args, **
-                             kwargs) if self.subclassed else self.func(context, *args, **kwargs)
+            coro = (
+                self.func(self.cog, context, *args, **kwargs)
+                if self.subclassed
+                else self.func(context, *args, **kwargs)
+            )
 
             if self.error_handler:
                 try:
