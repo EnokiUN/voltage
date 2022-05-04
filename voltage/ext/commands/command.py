@@ -73,8 +73,7 @@ class CommandContext:
         self.send = getattr(message.channel, "send", dummy_func)
         self.typing = getattr(message.channel, "typing", dummy_func)
         if message.server:
-            self.me: Optional[Member] = client.cache.get_member(
-                message.server.id, client.user.id)
+            self.me: Optional[Member] = client.cache.get_member(message.server.id, client.user.id)
         else:
             self.me = None
 
@@ -101,8 +100,18 @@ class Command:
         The usage of the command.
     """
 
-    __slots__ = ("func", "name", "description", "aliases",
-                 "error_handler", "signature", "cog", "checks", "usage_str", "subclassed")
+    __slots__ = (
+        "func",
+        "name",
+        "description",
+        "aliases",
+        "error_handler",
+        "signature",
+        "cog",
+        "checks",
+        "usage_str",
+        "subclassed",
+    )
 
     def __init__(
         self,
@@ -116,8 +125,7 @@ class Command:
         self.name = name or func.__name__
         self.description = description or func.__doc__
         self.aliases = aliases or [self.name]
-        self.error_handler: Optional[Callable[[
-            Exception, CommandContext], Awaitable[Any]]] = None
+        self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
         self.signature = signature(func)
         self.cog = cog
         self.checks: list[Check] = []
@@ -184,11 +192,13 @@ class Command:
         start_index = 2 if self.subclassed else 1
 
         if len((params := self.signature.parameters)) > start_index:
-            given = split(context.content[len(prefix + self.name):])
+            given = split(context.content[len(prefix + self.name) :])
             args: list[str] = []
             kwargs = {}
 
-            for i, (param, arg) in enumerate(zip_longest(list(params.items())[start_index:], given)):
+            for i, (param, arg) in enumerate(
+                zip_longest(list(params.items())[start_index:], given)
+            ):
                 if param is None:
                     break
                 name, data = param
@@ -196,8 +206,7 @@ class Command:
                 if data.kind == data.VAR_POSITIONAL or data.kind == data.POSITIONAL_OR_KEYWORD:
                     if arg is None:
                         if data.default is _empty:
-                            raise NotEnoughArgs(
-                                self, len(params) - 1, len(args))
+                            raise NotEnoughArgs(self, len(params) - 1, len(args))
                         arg = data.default
                     args.append(await self.convert_arg(data, arg, context))
 
@@ -205,16 +214,14 @@ class Command:
                     if i == len(params) - 2:
                         if arg is None:
                             if data.default is _empty:
-                                raise NotEnoughArgs(
-                                    self, len(params) - 1, len(given))
+                                raise NotEnoughArgs(self, len(params) - 1, len(given))
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
                         kwargs[name] = await self.convert_arg(data, " ".join(given[i:]), context)
                     else:
                         if arg is None:
                             if data.default is _empty:
-                                raise NotEnoughArgs(
-                                    self, len(params) - 1, len(given))
+                                raise NotEnoughArgs(self, len(params) - 1, len(given))
                             arg = data.default
                         kwargs[name] = await self.convert_arg(data, arg, context)
 
@@ -231,8 +238,7 @@ class Command:
                     return await self.error_handler(e, context)
             return await coro
 
-        coro = self.func(
-            self.cog, context) if self.subclassed else self.func(context)
+        coro = self.func(self.cog, context) if self.subclassed else self.func(context)
 
         if self.error_handler:
             try:
@@ -242,7 +248,11 @@ class Command:
         return await coro
 
 
-def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
+def command(
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    aliases: Optional[list[str]] = None,
+):
     """
     A decorator that creates a :class:`Command` from an asynchronous function.
 

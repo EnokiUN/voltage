@@ -186,8 +186,12 @@ class Server:  # As of writing this this is the final major thing I have to impl
         else:
             self.system_messages = None
 
-        self.default_channel_permissions = ChannelPermissions.new_with_flags(data["default_permissions"][0])
-        self.default_role_permissions = ServerPermissions.new_with_flags(data["default_permissions"][1])
+        self.default_channel_permissions = ChannelPermissions.new_with_flags(
+            data["default_permissions"][0]
+        )
+        self.default_role_permissions = ServerPermissions.new_with_flags(
+            data["default_permissions"][1]
+        )
         self.category_ids = {i["id"]: Category(i, cache) for i in data.get("categories", [])}
 
         self.icon: Optional[Asset]
@@ -203,7 +207,9 @@ class Server:  # As of writing this this is the final major thing I have to impl
             self.banner = None
 
         self.channel_ids = [i for i in data.get("channels", [])]
-        self.role_ids = {i: Role(data, i, self, cache.http) for i, data in data.get("roles", {}).items()}
+        self.role_ids = {
+            i: Role(data, i, self, cache.http) for i, data in data.get("roles", {}).items()
+        }
         self.member_ids: Dict[str, Member] = {}
 
     def _add_member(self, member: Member):
@@ -239,8 +245,12 @@ class Server:  # As of writing this this is the final major thing I have to impl
             if system_messages := new.get("system_messages"):
                 self.system_messages = SystemMessages(system_messages, self.cache)
             if default_permissions := new.get("default_permissions"):
-                self.default_channel_permissions = ChannelPermissions.new_with_flags(default_permissions[0])
-                self.default_role_permissions = ServerPermissions.new_with_flags(default_permissions[1])
+                self.default_channel_permissions = ChannelPermissions.new_with_flags(
+                    default_permissions[0]
+                )
+                self.default_role_permissions = ServerPermissions.new_with_flags(
+                    default_permissions[1]
+                )
             if categories := new.get("categories"):
                 self.category_ids = {i["id"]: Category(i, self.cache) for i in categories}
 
@@ -370,10 +380,16 @@ class Server:  # As of writing this this is the final major thing I have to impl
         role_permissions: :class:`ServerPermissions`
             The role permissions to set.
         """
-        await self.cache.http.set_default_permissions(self.id, channel_permissions.flags, role_permissions.flags)
+        await self.cache.http.set_default_permissions(
+            self.id, channel_permissions.flags, role_permissions.flags
+        )
 
     async def create_channel(
-        self, name: str, description: Optional[str] = None, nsfw: bool = False, type: Literal["Text", "Voice"] = "Text"
+        self,
+        name: str,
+        description: Optional[str] = None,
+        nsfw: bool = False,
+        type: Literal["Text", "Voice"] = "Text",
     ):
         """
         Creates a channel in this server.
@@ -394,7 +410,9 @@ class Server:  # As of writing this this is the final major thing I have to impl
         :class:`Channel`
             The channel that was created.
         """
-        data = await self.cache.http.create_channel(self.id, type=type, name=name, description=description, nsfw=nsfw)
+        data = await self.cache.http.create_channel(
+            self.id, type=type, name=name, description=description, nsfw=nsfw
+        )
         return self.cache.add_channel(data)
 
     async def create_category(self, name: str, position: Optional[int] = None):
@@ -414,7 +432,9 @@ class Server:  # As of writing this this is the final major thing I have to impl
             The category that was created.
         """
         position = position if position is not None else len(self.categories)
-        categories = [{"title": i.name, "id": i.id, "channels": i.channel_ids} for i in self.categories]
+        categories = [
+            {"title": i.name, "id": i.id, "channels": i.channel_ids} for i in self.categories
+        ]
         categories.insert(position, {"title": name, "channels": [], "id": ULID().generate()})
         await self.cache.http.edit_server(self.id, categories=categories)  # type: ignore
 

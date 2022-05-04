@@ -109,7 +109,9 @@ class Client:
             if raw:
                 self.raw_listeners[event.lower()] = func
             else:
-                self.listeners[event.lower()] = func  # Why would we have more than one listener for the same event?
+                self.listeners[
+                    event.lower()
+                ] = func  # Why would we have more than one listener for the same event?
             return func
 
         return inner  # Returns the function so the user can use it by itself
@@ -157,7 +159,11 @@ class Client:
         self.loop.run_until_complete(self.start(token, bot=bot))
 
     async def wait_for(
-        self, event: str, *, timeout: Optional[float] = None, check: Optional[Callable[..., bool]] = None
+        self,
+        event: str,
+        *,
+        timeout: Optional[float] = None,
+        check: Optional[Callable[..., bool]] = None,
     ) -> Any:
         """
         Waits for an event to be triggered.
@@ -243,7 +249,9 @@ class Client:
         """
         self.http = HTTPHandler(self.client, token, bot=bot)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
-        self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
+        self.ws = WebSocketHandler(
+            self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch
+        )
         await self.http.get_api_info()
         self.user = self.cache.add_user(await self.http.fetch_self())
         await self.ws.connect()
@@ -335,7 +343,9 @@ class Client:
         presence: Optional[:class:`str`]
             The presence to set the status to.
         """
-        data: dict[Literal["text", "presence"], Union[str, Literal["Online", "Busy", "Idle", "Offline"]]] = {}
+        data: dict[
+            Literal["text", "presence"], Union[str, Literal["Online", "Busy", "Idle", "Offline"]]
+        ] = {}
         if text:
             data["text"] = text
         if presence:

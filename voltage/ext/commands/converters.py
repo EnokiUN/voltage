@@ -24,8 +24,7 @@ class Converter:
 
         This method should be overridden by subclasses.
         """
-        raise NotImplementedError(
-            "Converter.convert must be overridden by subclasses")
+        raise NotImplementedError("Converter.convert must be overridden by subclasses")
 
 
 class StrConverter(Converter):
@@ -79,12 +78,13 @@ class MemberConverter(Converter):
 
     async def convert(self, ctx: CommandContext, arg: str) -> Member:
         if ctx.server is None:
-            raise ValueError(
-                "Cannot convert a member to a member without a server")
+            raise ValueError("Cannot convert a member to a member without a server")
         if match := id_regex.search(arg):
             return ctx.client.cache.get_member(ctx.server.id, match.group(0))
         arg = arg.replace("@", "").lower()
-        if member := get(ctx.client.cache.members[ctx.server.id].values(), lambda m: m.name.lower() == arg):
+        if member := get(
+            ctx.client.cache.members[ctx.server.id].values(), lambda m: m.name.lower() == arg
+        ):
             return member
         if member := get(
             ctx.client.cache.members[ctx.server.id].values(),
@@ -103,7 +103,9 @@ class ChannelConverter(Converter):
         if match := id_regex.match(arg):
             return ctx.client.cache.get_channel(match.group(0))
         arg = arg.replace("#", "").lower()
-        if channel := get(ctx.client.cache.channels.values(), lambda c: c.name.lower() == arg if c.name else False):
+        if channel := get(
+            ctx.client.cache.channels.values(), lambda c: c.name.lower() == arg if c.name else False
+        ):
             return channel
         raise ChannelNotFound(arg)
 
@@ -115,8 +117,7 @@ class RoleConverter(Converter):
 
     async def convert(self, ctx: CommandContext, arg: str) -> Role:
         if ctx.server is None:
-            raise ValueError(
-                "Cannot convert a role to a role without a server")
+            raise ValueError("Cannot convert a role to a role without a server")
         if match := id_regex.match(arg):
             if role := ctx.server.get_role(match.group(0)):
                 return role

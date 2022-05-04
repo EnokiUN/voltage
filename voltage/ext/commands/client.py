@@ -64,7 +64,9 @@ class CommandsClient(Client):
         await self.help_command.send_not_found(ctx, target)
 
     async def get_prefix(
-        self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
+        self,
+        message: Message,
+        prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]],
     ) -> str:
         if message.content is None:
             raise ValueError("Message content is None.")
@@ -145,8 +147,7 @@ class CommandsClient(Client):
         cog = module.setup(self, *args, **kwargs)
         self.extensions[path] = (module, cog.name)
         if not hasattr(module, "setup"):
-            raise AttributeError(
-                f"Extension {path} does not have a setup function.")
+            raise AttributeError(f"Extension {path} does not have a setup function.")
         reload(module)
         self.add_cog(cog)
 
@@ -182,7 +183,10 @@ class CommandsClient(Client):
         del mod
 
     def command(
-        self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        aliases: Optional[list[str]] = None,
     ):
         """
         A decorator for adding commands to the client.
@@ -223,8 +227,7 @@ class CommandsClient(Client):
                 self.waits[event].remove(i)
 
         for cog in self.cogs.values():
-            self.loop.create_task(self.cog_dispatch(
-                event, cog, *args, **kwargs))
+            self.loop.create_task(self.cog_dispatch(event, cog, *args, **kwargs))
 
         if func := self.listeners.get(event):
             if self.error_handlers.get(event):
@@ -253,7 +256,7 @@ class CommandsClient(Client):
         if message.content is None:
             return
         if message.content.startswith(prefix):
-            content = message.content[len(prefix):]
+            content = message.content[len(prefix) :]
             command = content.split(" ")[0]
             if not command:
                 return
@@ -261,16 +264,13 @@ class CommandsClient(Client):
                 if "command" in self.error_handlers:
                     try:
                         return await self.commands[command].invoke(
-                            CommandContext(
-                                message, self.commands[command], self, prefix), prefix
+                            CommandContext(message, self.commands[command], self, prefix), prefix
                         )
                     except Exception as e:
                         return await self.error_handlers["command"](
-                            e, CommandContext(
-                                message, self.commands[command], self, prefix)
+                            e, CommandContext(message, self.commands[command], self, prefix)
                         )
                 return await self.commands[command].invoke(
-                    CommandContext(
-                        message, self.commands[command], self, prefix), prefix
+                    CommandContext(message, self.commands[command], self, prefix), prefix
                 )
             raise CommandNotFound(command)
