@@ -40,7 +40,11 @@ class BandcampEmbedPayload(TypedDict):
 
 
 SpecialWebsiteEmbedPayload = Union[
-    YoutubeEmbedPayload, TwitchEmbedPayload, SpotifyEmbedPayload, SoundCloudEmbedPayload, BandcampEmbedPayload
+    YoutubeEmbedPayload,
+    TwitchEmbedPayload,
+    SpotifyEmbedPayload,
+    SoundCloudEmbedPayload,
+    BandcampEmbedPayload,
 ]
 
 

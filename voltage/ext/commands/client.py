@@ -64,7 +64,9 @@ class CommandsClient(Client):
         await self.help_command.send_not_found(ctx, target)
 
     async def get_prefix(
-        self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
+        self,
+        message: Message,
+        prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]],
     ) -> str:
         if message.content is None:
             raise ValueError("Message content is None.")
@@ -181,7 +183,10 @@ class CommandsClient(Client):
         del mod
 
     def command(
-        self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        aliases: Optional[list[str]] = None,
     ):
         """
         A decorator for adding commands to the client.
