@@ -10,7 +10,7 @@ from aiohttp import ClientSession, FormData
 from ..embed import SendableEmbed
 
 # Internal imports
-from ..errors import HTTPError
+from ..errors import HTTPError, PermissionError
 from ..file import File
 from ..message import MessageMasquerade, MessageReply
 
@@ -83,6 +83,8 @@ class HTTPHandler:
                 if (await request.read()) == b"":
                     return {}
                 return await request.json()
+            elif request.status == 403:
+                raise PermissionError()
             raise HTTPError(request)
 
     async def upload_file(self, file: bytes, name: str, tag: str) -> AutumnPayload:

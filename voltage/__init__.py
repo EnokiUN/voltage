@@ -80,6 +80,7 @@ from .errors import (
     ChannelNotFound,
     CommandNotFound,
     HTTPError,
+    PermissionError,
     MemberNotFound,
     NotBotOwner,
     NotEnoughArgs,

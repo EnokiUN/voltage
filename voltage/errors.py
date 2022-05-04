@@ -35,6 +35,13 @@ class HTTPError(VoltageException):
         self.response = response
 
 
+class PermissionError(VoltageException):
+    """
+    An n exception that's riased when the client doesn't have the required permissions to perform an action.
+    """
+    pass
+
+
 class CommandNotFound(VoltageException):
     """
     An exception that is raised when a command is not found.
