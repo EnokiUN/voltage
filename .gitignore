@@ -135,8 +135,7 @@ dmypy.json
 .idea/
 
 # le tests
-test.py
-tests/
+*test*
 
 # venv
 .voltage/
