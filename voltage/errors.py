@@ -39,6 +39,7 @@ class PermissionError(VoltageException):
     """
     An n exception that's riased when the client doesn't have the required permissions to perform an action.
     """
+
     pass
 
 
