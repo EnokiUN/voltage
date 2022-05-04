@@ -1,0 +1,23 @@
+name: PyRight
+on: [ pull_request, push ]
+jobs:
+  build:
+    if: github.event.pull_request.user.type != 'Bot' && !contains(github.event.pull_request.labels.*.name, 'skip-ci')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.10" ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install PyRight
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyright
+      - name: Install Dependencies For PyRight
+        run: pip install -r requirements.txt
+      - name: Run PyRight
+        run: pyright ./
