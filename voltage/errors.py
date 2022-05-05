@@ -37,7 +37,7 @@ class HTTPError(VoltageException):
 
 class PermissionError(VoltageException):
     """
-    An n exception that's riased when the client doesn't have the required permissions to perform an action.
+    Exception that's raised when the client doesn't have the required permissions to perform an action.
     """
 
     pass
@@ -45,7 +45,7 @@ class PermissionError(VoltageException):
 
 class CommandNotFound(VoltageException):
     """
-    An exception that is raised when a command is not found.
+    Exception that's raised when a command is not found.
 
     Attributes
     ----------
@@ -80,7 +80,7 @@ class NotEnoughArgs(VoltageException):
         self.actual = actual
 
     def __str__(self):
-        return f"{self.command.name} expected {self.expected} args, got {self.actual}"
+        return f"{self.command.name} expected {self.expected} arg(s), got {self.actual}"
 
 
 class NotFoundException(VoltageException):
@@ -152,7 +152,7 @@ class NotBotOwner(VoltageException):
         self.user = user
 
     def __str__(self):
-        return "You are not the bot owner"
+        return "You are not this bots owner"
 
 
 class NotEnoughPerms(VoltageException):
@@ -171,4 +171,4 @@ class NotEnoughPerms(VoltageException):
         self.user = user
 
     def __str__(self):
-        return "You do not have enough permissions"
+        return "You don't have the required permission(s) to use this command."
