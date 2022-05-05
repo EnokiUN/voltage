@@ -68,6 +68,7 @@ class WebsiteEmbedPayload(TypedDict):
     site_name: NotRequired[str]
     icon_url: NotRequired[str]
     colour: NotRequired[str]
+    color: NotRequired[str]
 
 
 class ImageEmbedPayload(TypedDict):  # TODO? idk
@@ -82,6 +83,7 @@ class TextEmbedPayload(TypedDict):
     media: NotRequired[FilePayload]
     icon_url: NotRequired[str]
     colour: NotRequired[str]
+    color: NotRequired[str]
 
 
 class NoneEmbed(TypedDict):
@@ -99,3 +101,4 @@ class SendableEmbedPayload(TypedDict):
     media: NotRequired[str]
     icon_url: NotRequired[str]
     colour: NotRequired[str]
+    color: NotRequired[str]
