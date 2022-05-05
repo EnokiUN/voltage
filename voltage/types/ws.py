@@ -38,7 +38,7 @@ class OnMessagePayload(BasePayload, MessagePayload):
 
 class MessageUpdateDataPayload(BasePayload):
     content: str
-    data: EditedPayload
+    edited: EditedPayload
 
 
 class OnMessageUpdatePayload(BasePayload):
