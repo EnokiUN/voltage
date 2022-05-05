@@ -51,7 +51,7 @@ class CommandsClient(Client):
             "help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)
         }
 
-    async def help(self, ctx: CommandContext, target: Optional[str] = None):
+    async def help(self, ctx: CommandContext, target: str = None):  # type: ignore
         """
         Basic help command.
         """

@@ -251,6 +251,6 @@ class Message:
     def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):
             if new.get("edited"):
-                self.edited_at = datetime.strptime(new["data"]["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
+                self.edited_at = datetime.strptime(new["edited"]["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
             if new.get("content"):
                 self.content = new["content"]

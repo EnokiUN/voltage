@@ -85,6 +85,7 @@ from .errors import (
     NotEnoughArgs,
     NotEnoughPerms,
     NotFoundException,
+    PermissionError,
     RoleNotFound,
     UserNotFound,
     VoltageException,
