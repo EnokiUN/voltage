@@ -8,7 +8,7 @@ from .asset import Asset
 from .enums import ChannelType
 from .messageable import Messageable
 from .notsupplied import NotSupplied
-from .permissions import ChannelPermissions
+from .permissions import Permissions
 
 if TYPE_CHECKING:
     from .file import File
@@ -208,7 +208,7 @@ class GroupDMChannel(Channel, Messageable):
         else:
             self.icon = None
 
-        self.permissions = ChannelPermissions.new_with_flags(data.get("permissions", 0))
+        self.permissions = Permissions(data.get("permissions", {"a": 0, "b": 0}))
 
     async def set_role_permission(self):
         raise NotImplementedError
@@ -307,9 +307,9 @@ class TextChannel(Channel, Messageable):
         else:
             self.last_message = None
 
-        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
+        self.default_permissions = Permissions(data.get("default_permissions", {"a": 0, "b": 0}))
         self.role_permissions = {
-            role: ChannelPermissions.new_with_flags(permissions)
+            role: Permissions(permissions)
             for role, permissions in data.get("role_permissions", {}).items()
         }
 
@@ -358,9 +358,9 @@ class VoiceChannel(Channel):
         self.name = data["name"]
         self.description = data.get("description")
 
-        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
+        self.default_permissions = Permissions(data.get("default_permissions", {"a": 0, "b": 0}))
         self.role_permissions = {
-            role: ChannelPermissions.new_with_flags(permissions)
+            role: Permissions(permissions)
             for role, permissions in data.get("role_permissions", {}).items()
         }
 
