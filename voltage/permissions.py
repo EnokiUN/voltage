@@ -10,6 +10,7 @@ def create_permissions(**kwargs):
     permissions_int = 0
     return ChannelPermissions.new_with_flags(permission_int)
 
+
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlag(FlagBase):
     """
@@ -29,7 +30,7 @@ class PermissionsFlag(FlagBase):
 
     @classmethod
     def all(cls) -> ChannelPermissions:
-        return cls.new_with_flags(0xffffffffff)
+        return cls.new_with_flags(0xFFFFFFFFFF)
 
     @FlagValue
     def manage_channels(self):
@@ -219,4 +220,3 @@ class PermissionsFlag(FlagBase):
         Whether the move members permission is granted.
         """
         return 1 << 34
- 
