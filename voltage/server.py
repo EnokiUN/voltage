@@ -185,7 +185,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         else:
             self.system_messages = None
 
-        self.default_channel_permissions = Permissions(data["default_permissions"])
+        self.default_permissions = Permissions(data["default_permissions"])
         self.category_ids = {i["id"]: Category(i, cache) for i in data.get("categories", [])}
 
         self.icon: Optional[Asset]
@@ -237,8 +237,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
             if system_messages := new.get("system_messages"):
                 self.system_messages = SystemMessages(system_messages, self.cache)
             if default_permissions := new.get("default_permissions"):
-                self.default_channel_permissions = ChannelPermissions.new_with_flags(default_permissions[0])
-                self.default_role_permissions = ServerPermissions.new_with_flags(default_permissions[1])
+                self.default_permissions = Permissions(default_permissions)
             if categories := new.get("categories"):
                 self.category_ids = {i["id"]: Category(i, self.cache) for i in categories}
 
