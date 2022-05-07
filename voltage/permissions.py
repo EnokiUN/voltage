@@ -10,24 +10,24 @@ if TYPE_CHECKING:
     from .types import OverrideFieldPayload
 
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
-class PermissionsFlag(FlagBase):
+class PermissionsFlags(FlagBase):
     """
     A class which represents a channel permissions object.
 
     Methods
     -------
-    none: :class:`ChannelPermissions`
-        Returns a new :class:`ChannelPermissions` object with all permissions set to ``False``.
+    none: :class:`PermissionsFlags`
+        Returns a new :class:`PermissionsFlags` object with all permissions set to ``False``.
     all: :class:`ChannelPermissions`
-        Returns a new :class:`ChannelPermissions` object with all permissions set to ``True``.
+        Returns a new :class:`PermissionsFlags` object with all permissions set to ``True``.
     """
 
     @classmethod
-    def none(cls) -> ChannelPermissions:
+    def none(cls) -> PermissionsFlags:
         return cls.new_with_flags(0b0)
 
     @classmethod
-    def all(cls) -> ChannelPermissions:
+    def all(cls) -> PermissionsFlags:
         return cls.new_with_flags(0xFFFFFFFFFF)
 
     @FlagValue
