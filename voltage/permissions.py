@@ -5,6 +5,7 @@ from typing import Optional
 
 from .flag import FlagBase, FlagValue
 
+
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlag(FlagBase):
     """
@@ -215,10 +216,12 @@ class PermissionsFlag(FlagBase):
         """
         return 1 << 34
 
+
 class Permissions:
     """
     A class which represents a member's permissions.
     """
+
     def __init__(self, data: PermissionsOverridePayload):
         self.allow = PermissionsFlag.new_with_flag(data["a"])
         self.deny = PermissionsFlag.new_with_flag(data["d"])
