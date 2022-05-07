@@ -5,6 +5,7 @@ from typing import Optional
 
 from .flag import FlagBase, FlagValue
 
+
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlag(FlagBase):
     """
