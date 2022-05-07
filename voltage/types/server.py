@@ -8,6 +8,7 @@ from voltage.types.channel import CategoryPayload
 
 if TYPE_CHECKING:
     from .file import FilePayload
+    from .channel OverrideFieldPayload
 
 
 class _MemberBase(TypedDict):
@@ -25,17 +26,14 @@ class MemberPayload(_MemberBase):
     _id: MemberIDPayload
 
 
-PermissionPayload = Tuple[int, int]
-
-
 class PartialRolePayload(TypedDict):
     name: str
-    permissions: PermissionPayload
+    permissions: OverrideFieldPayload
 
 
 class RolePayload(TypedDict):
     name: str
-    permissions: PermissionPayload
+    permissions: OverridePayload
     colour: NotRequired[str]
     hoist: NotRequired[bool]
     rank: int
