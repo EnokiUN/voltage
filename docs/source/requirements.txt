@@ -1,5 +1,5 @@
 sphinx==4.5
-docutils==1.8
+docutils==0.18
 furo
 sphinx-copybutton
 aiohttp
