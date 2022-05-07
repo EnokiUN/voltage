@@ -320,7 +320,7 @@ class HTTPHandler:
         """
         return await self.request("POST", f"channels/{channel_id}/invites")
 
-    async def set_role_perms(self, channel_id: str, role_id: str, permissions: int):
+    async def set_role_perms(self, channel_id: str, role_id: str, permissions: OverrideFieldPayload):
         """
         Sets the permissions of a role in a channel.
 
@@ -330,14 +330,14 @@ class HTTPHandler:
             The id of the channel.
         role_id: :class:`str`
             The id of the role.
-        permissions: :class:`int`
+        permissions: :class:`OverrideFieldPayload`
             The permissions to set.
         """
         return await self.request(
             "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permissions}
         )
 
-    async def set_default_perms(self, channel_id: str, permissions: int):
+    async def set_default_perms(self, channel_id: str, permissions: OverrideFieldPayload):
         """
         Sets the default permissions of a channel.
 
@@ -345,7 +345,7 @@ class HTTPHandler:
         ----------
         channel_id: :class:`str`
             The id of the channel.
-        permissions: :class:`int`
+        permissions: :class:`OverrideFieldPayload`
             The permission to set.
         """
         return await self.request(
@@ -818,7 +818,7 @@ class HTTPHandler:
         return await self.request("GET", f"servers/{server_id}/bans")
 
     async def set_role_permission(
-        self, server_id: str, role_id: str, server_permissions: int, channel_permissions: int
+        self, server_id: str, role_id: str, permissions: OverrideFieldPayload
     ):
         """
         Sets the permissions of a role.
@@ -829,18 +829,16 @@ class HTTPHandler:
             The id of the server.
         role_id: :class:`str`
             The id of the role.
-        server_permissions: :class:`int`
-            The server permissions.
-        channel_permissions: :class:`int`
-            The channel permissions.
+        permissions: :class:`OverrideFieldPayload`
+            The new permissions of the role.
         """
         return await self.request(
             "PUT",
             f"servers/{server_id}/roles/{role_id}",
-            json={"permissions": {"server": server_permissions, "channel": channel_permissions}},
+            json={"permissions": permissions},
         )
 
-    async def set_default_permissions(self, server_id: str, server_permissions: int, channel_permissions: int):
+    async def set_default_permissions(self, server_id: str, permissions: OverrideFieldPayload):
         """
         Sets the default permissions of a server.
 
@@ -848,15 +846,13 @@ class HTTPHandler:
         ----------
         server_id: :class:`str`
             The id of the server.
-        server_permissions: :class:`int`
-            The server permissions.
-        channel_permissions: :class:`int`
-            The channel permissions.
+        server_permissions: :class:`OverrideFieldPayload`
+            The new default permissions of the role.
         """
         return await self.request(
             "PUT",
             f"servers/{server_id}/default_role",
-            json={"permissions": {"server": server_permissions, "channel": channel_permissions}},
+            json={"permissions": permissions},
         )
 
     async def create_role(self, server_id: str, name: str) -> RolePayload:
