@@ -233,5 +233,5 @@ class Permissions:
         self.actual = PermissionsFlag.new_with_flags(data["a"] - data["d"])
 
         for name, val in self.actual.__dict__:
-            if isinstance(val, FlagBase)
+            if isinstance(val, FlagBase):
                 setattr(self, name, val)
