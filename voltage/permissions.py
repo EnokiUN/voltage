@@ -234,3 +234,23 @@ class Permissions:
         for name, val in self.actual.__dict__:
             if isinstance(val, FlagBase):
                 setattr(self, name, val)
+
+    def to_dict(self) -> OverrideFieldPayload:
+        """Turns a permission object to a dictionary for api sending purposes."""
+        return {"a": self.allow.flags, "d": self.deny.flags}
+
+    @classmethod
+    def from_flags(cls, allow: PermissionsFlags, deny: PermissionsFlags) -> Permissions:
+        """
+        Creates a Permissions object from two PermissionsFlags.
+
+        Also note `PermissionsFlags.none()`
+
+        Attributes
+        ----------
+        allow: :class:`PermissionsFlags:
+            The allowed permissions.
+        deny: :class:`PermissionsFlags:
+            The denied permissions.
+        """
+        return cls.__new__({"a": allow.flags, "d": deny.flags})
