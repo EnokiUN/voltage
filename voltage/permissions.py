@@ -1,10 +1,14 @@
 # Thanks Jan <3
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING
 
+
+# Internal Imports
 from .flag import FlagBase, FlagValue
 
+if TYPE_CHECKING:
+    from .types import OverrideFieldPayload
 
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlag(FlagBase):
@@ -222,6 +226,8 @@ class Permissions:
     A class which represents a member's permissions.
     """
 
-    def __init__(self, data: PermissionsOverridePayload):
-        self.allow = PermissionsFlag.new_with_flag(data["a"])
-        self.deny = PermissionsFlag.new_with_flag(data["d"])
+    def __init__(self, data: sOverrideFieldPayload):
+        self.allow = PermissionsFlag.new_with_flags(data["a"])
+        self.deny = PermissionsFlag.new_with_flags(data["d"])
+
+        self.actual = PermissionsFlag.new_with_flags(data["a"] ~ data["d"])
