@@ -24,8 +24,11 @@ if TYPE_CHECKING:
         SavedMessagePayload,
         TextChannelPayload,
         VoiceChannelPayload,
+        OverrideFieldPayload
     )
     from .user import User
+
+NO_PERMS: OverrideFieldPayload = {"a": 0, "b": 0}
 
 
 class Channel:
@@ -208,7 +211,7 @@ class GroupDMChannel(Channel, Messageable):
         else:
             self.icon = None
 
-        self.permissions = Permissions(data.get("permissions", {"a": 0, "b": 0}))
+        self.permissions = Permissions(data.get("permissions", NO_PERMS))
 
     async def set_role_permission(self):
         raise NotImplementedError
@@ -307,7 +310,7 @@ class TextChannel(Channel, Messageable):
         else:
             self.last_message = None
 
-        self.default_permissions = Permissions(data.get("default_permissions", {"a": 0, "b": 0}))
+        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
         self.role_permissions = {
             role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
@@ -357,7 +360,7 @@ class VoiceChannel(Channel):
         self.name = data["name"]
         self.description = data.get("description")
 
-        self.default_permissions = Permissions(data.get("default_permissions", {"a": 0, "b": 0}))
+        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
         self.role_permissions = {
             role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
