@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     )
     from .user import User
 
-NO_PERMS: OverrideFieldPayload = {"a": 0, "b": 0}
+NO_PERMS: OverrideFieldPayload = {"a": 0, "d": 0}
 
 
 class Channel:
