@@ -226,10 +226,10 @@ class Permissions:
     """
 
     def __init__(self, data: OverrideFieldPayload):
-        self.allow = PermissionsFlag.new_with_flags(data["a"])
-        self.deny = PermissionsFlag.new_with_flags(data["d"])
+        self.allow = PermissionsFlags.new_with_flags(data["a"])
+        self.deny = PermissionsFlags.new_with_flags(data["d"])
 
-        self.actual = PermissionsFlag.new_with_flags(data["a"] - data["d"])
+        self.actual = PermissionsFlags.new_with_flags(data["a"] - data["d"])
 
         for name, val in self.actual.__dict__:
             if isinstance(val, FlagBase):
@@ -253,4 +253,5 @@ class Permissions:
         deny: :class:`PermissionsFlags:
             The denied permissions.
         """
-        return cls.__new__({"a": allow.flags, "d": deny.flags})
+        flags: OverrideFieldPayload = {"a": allow.flags, "d": deny.flags}
+        rerun cls(flags)
