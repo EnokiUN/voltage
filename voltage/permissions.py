@@ -230,4 +230,8 @@ class Permissions:
         self.allow = PermissionsFlag.new_with_flags(data["a"])
         self.deny = PermissionsFlag.new_with_flags(data["d"])
 
-        self.actual = PermissionsFlag.new_with_flags(data["a"] ~ data["d"])
+        self.actual = PermissionsFlag.new_with_flags(data["a"] - data["d"])
+
+        for name, val in self.actual.__dict__:
+            if isinstance(val, FlagBase)
+                setattr(self, name, val)
