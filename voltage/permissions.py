@@ -5,12 +5,6 @@ from typing import Optional
 
 from .flag import FlagBase, FlagValue
 
-
-def create_permissions(**kwargs):
-    permissions_int = 0
-    return ChannelPermissions.new_with_flags(permission_int)
-
-
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlag(FlagBase):
     """
