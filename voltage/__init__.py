@@ -95,12 +95,7 @@ from .invites import Invite
 from .member import Member
 from .message import Message, MessageMasquerade, MessageReply
 from .messageable import Messageable
-from .permissions import (
-    ChannelPermissions,
-    ServerPermissions,
-    channel_permissions,
-    server_permissions,
-)
+from .permissions import Permissions, PermissionsFlag
 from .roles import Role
 from .server import Server, ServerBan, SystemMessages
 from .user import User
