@@ -225,7 +225,7 @@ class Permissions:
     A class which represents a member's permissions.
     """
 
-    def __init__(self, data: sOverrideFieldPayload):
+    def __init__(self, data: OverrideFieldPayload):
         self.allow = PermissionsFlag.new_with_flags(data["a"])
         self.deny = PermissionsFlag.new_with_flags(data["d"])
 
