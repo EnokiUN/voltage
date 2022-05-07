@@ -65,7 +65,7 @@ class Role:
         self.color = self.colour
         self.hoist = data.get("hoist", False)
         self.rank = data["rank"]
-        Permissions.(data["permissions"])
+        Permissions(data["permissions"])
         self.server = server
         self.server_id = server.id
         self.http = http
