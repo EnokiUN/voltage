@@ -38,10 +38,8 @@ class Member(User):
         The member's avatar.
     roles: List[:class:`Role`]
         The member's roles.
-    permissions: :class:`ServerPermissions`
+    permissions: :class:`Permissions`
         The member's permissions.
-    channel_permissions: :class:`ChannelPermissions`
-        The member's channel permissions.
     """
 
     __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions")
