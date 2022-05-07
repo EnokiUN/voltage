@@ -65,7 +65,7 @@ class Member(User):
                 perms["d"] |= role.permissions.deny.flags
 
         self.roles: list[Role] = sorted(roles, key=lambda r: r.rank, reverse=True)
-        self.permissions = Permissions(permint)
+        self.permissions = Permissions(perms)
 
         self.server = server
 
