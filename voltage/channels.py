@@ -111,27 +111,27 @@ class Channel:
         """Deletes the channel."""
         return self.cache.http.close_channel(self.id)
 
-    async def set_default_permissions(self, permissions: ChannelPermissions):
+    async def set_default_permissions(self, permissions: Permissions):
         """Sets the default permissions for the channel.
 
         Parameters
         ----------
-        permissions: :class:`ChannelPermissions`
+        permissions: :class:`Permissions`
             The new default permissions for the channel.
         """
-        return self.cache.http.set_default_perms(self.id, permissions.flags)
+        return self.cache.http.set_default_perms(self.id, permissions.to_dict())
 
-    async def set_role_permission(self, role: Role, permissions: ChannelPermissions):
+    async def set_role_permission(self, role: Role, permissions: Permissions):
         """Sets the permissions for a role in the channel.
 
         Parameters
         ----------
         role: :class:`Role`
             The role to set the permissions for.
-        permissions: :class:`ChannelPermissions`
+        permissions: :class:`Permissions`
             The new permissions for the role.
         """
-        return self.cache.http.set_role_perms(self.id, role.id, permissions.flags)
+        return self.cache.http.set_role_perms(self.id, role.id, permissions.to_dict())
 
 
 class SavedMessageChannel(Channel, Messageable):
