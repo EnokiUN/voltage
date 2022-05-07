@@ -211,7 +211,7 @@ class GroupDMChannel(Channel, Messageable):
         else:
             self.icon = None
 
-        self.permissions = Permissions(data.get("permissions", NO_PERMS))
+        self.permissions = Permissions(data.get("permissions", NO_PERMS)) # type: ignore
 
     async def set_role_permission(self):
         raise NotImplementedError
