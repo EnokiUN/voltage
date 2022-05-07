@@ -7,8 +7,8 @@ from typing_extensions import NotRequired, Required
 from voltage.types.channel import CategoryPayload
 
 if TYPE_CHECKING:
-    from .file import FilePayload
     from .channel import OverrideFieldPayload
+    from .file import FilePayload
 
 
 class _MemberBase(TypedDict):
