@@ -6,57 +6,9 @@ from typing import Optional
 from .flag import FlagBase, FlagValue
 
 
-def create_permissions(
-    view: Optional[bool] = False,
-    send_messages: Optional[bool] = False,
-    manage_messages: Optional[bool] = False,
-    manage_channel: Optional[bool] = False,
-    voice_call: Optional[bool] = False,
-    invite_others: Optional[bool] = False,
-    embed_links: Optional[bool] = False,
-    upload_files: Optional[bool] = False,
-):
-    """
-    A function which simplifies the process of creating new permissions objects perhaps for comparison purposes.
-
-    Parameters
-    ----------
-    view: Optional[:class:`bool`]
-        Whether the view permission is granted.
-    send_messages: Optional[:class:`bool`]
-        Whether the send messages permission is granted.
-    manage_messages: Optional[:class:`bool`]
-        Whether the manage messages permission is granted.
-    manage_channel: Optional[:class:`bool`]
-        Whether the manage channels permission is granted.
-    voice_call: Optional[:class:`bool`]
-        Whether the voice call permission is granted.
-    invite_others: Optional[:class:`bool`]
-        Whether the invite others permission is granted.
-    embed_links: Optional[:class:`bool`]
-        Whether the embed links permission is granted.
-    upload_files: Optional[:class:`bool`]
-        Whether the upload files permission is granted.
-    """
-    permission_int = 0
-    if view:
-        permission_int |= 1 << 0
-    if send_messages:
-        permission_int |= 1 << 1
-    if manage_messages:
-        permission_int |= 1 << 2
-    if manage_channel:
-        permission_int |= 1 << 3
-    if voice_call:
-        permission_int |= 1 << 4
-    if invite_others:
-        permission_int |= 1 << 5
-    if embed_links:
-        permission_int |= 1 << 6
-    if upload_files:
-        permission_int |= 1 << 7
+def create_permissions(**kwargs):
+    permissions_int = 0
     return ChannelPermissions.new_with_flags(permission_int)
-
 
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlag(FlagBase):
@@ -77,7 +29,7 @@ class PermissionsFlag(FlagBase):
 
     @classmethod
     def all(cls) -> ChannelPermissions:
-        return cls.new_with_flags(0xFFFFFFFFFF)
+        return cls.new_with_flags(0xffffffffff)
 
     @FlagValue
     def manage_channels(self):
@@ -267,3 +219,4 @@ class PermissionsFlag(FlagBase):
         Whether the move members permission is granted.
         """
         return 1 << 34
+ 
