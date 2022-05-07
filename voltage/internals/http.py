@@ -817,9 +817,7 @@ class HTTPHandler:
         """
         return await self.request("GET", f"servers/{server_id}/bans")
 
-    async def set_role_permission(
-        self, server_id: str, role_id: str, permissions: OverrideFieldPayload
-    ):
+    async def set_role_permission(self, server_id: str, role_id: str, permissions: OverrideFieldPayload):
         """
         Sets the permissions of a role.
 
