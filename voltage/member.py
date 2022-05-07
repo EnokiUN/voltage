@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .internals import CacheHandler
     from .roles import Role
     from .server import Server
-    from .types import MemberPayload, OnServerMemberUpdatePayload
+    from .types import MemberPayload, OnServerMemberUpdatePayload, OverrideFieldPayload
 
 
 def make_member_dot_zip(
@@ -56,7 +56,7 @@ class Member(User):
             self.server_avatar = None
 
         roles = []
-        perms = {"a": 0, "d": 0}
+        perms: OverrideFieldPayload = {"a": 0, "d": 0}
         for i in data.get("roles", []):
             role = server.get_role(i)
             if role:
