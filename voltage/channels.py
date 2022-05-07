@@ -309,8 +309,7 @@ class TextChannel(Channel, Messageable):
 
         self.default_permissions = Permissions(data.get("default_permissions", {"a": 0, "b": 0}))
         self.role_permissions = {
-            role: Permissions(permissions)
-            for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]
@@ -360,8 +359,7 @@ class VoiceChannel(Channel):
 
         self.default_permissions = Permissions(data.get("default_permissions", {"a": 0, "b": 0}))
         self.role_permissions = {
-            role: Permissions(permissions)
-            for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]
