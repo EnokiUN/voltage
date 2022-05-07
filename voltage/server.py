@@ -363,7 +363,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         permissions: :class:`Permissions`
              The role's new permissions.
         """
-        await self.cache.http.set_default_permissions(self.id, role_permissions.to_dict())
+        await self.cache.http.set_default_permissions(self.id, permissions.to_dict())
 
     async def create_channel(
         self, name: str, description: Optional[str] = None, nsfw: bool = False, type: Literal["Text", "Voice"] = "Text"
