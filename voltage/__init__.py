@@ -95,7 +95,7 @@ from .invites import Invite
 from .member import Member
 from .message import Message, MessageMasquerade, MessageReply
 from .messageable import Messageable
-from .permissions import Permissions, PermissionsFlag
+from .permissions import Permissions, PermissionsFlags
 from .roles import Role
 from .server import Server, ServerBan, SystemMessages
 from .user import User
