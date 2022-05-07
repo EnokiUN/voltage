@@ -8,7 +8,7 @@ from voltage.types.channel import CategoryPayload
 
 if TYPE_CHECKING:
     from .file import FilePayload
-    from .channel OverrideFieldPayload
+    from .channel import OverrideFieldPayload
 
 
 class _MemberBase(TypedDict):
