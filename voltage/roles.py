@@ -76,10 +76,7 @@ class Role:
     def __repr__(self):
         return f"<Role {self.name}>"
 
-    async def set_permissions(
-        self,
-        permissions: Permissions
-    ):
+    async def set_permissions(self, permissions: Permissions):
         """
         Sets the role's permissions.
 
@@ -88,9 +85,7 @@ class Role:
         permissions: Optional[:class:`Permissions`]
             The new server permissions.
         """
-        await self.http.set_role_permission(
-            self.server_id, self.id, permissions.to_dict()
-        )
+        await self.http.set_role_permission(self.server_id, self.id, permissions.to_dict())
 
     async def delete(self):
         """
