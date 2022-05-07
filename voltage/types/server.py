@@ -33,7 +33,7 @@ class PartialRolePayload(TypedDict):
 
 class RolePayload(TypedDict):
     name: str
-    permissions: OverridePayload
+    permissions: OverrideFieldPayload
     colour: NotRequired[str]
     hoist: NotRequired[bool]
     rank: int
@@ -72,7 +72,7 @@ class ServerPayload(TypedDict):
     name: str
     owner: str
     channels: List[str]
-    default_permissions: PermissionPayload
+    default_permissions: OverrideFieldPayload
     nonce: NotRequired[str]
     description: NotRequired[str]
     categories: NotRequired[List[CategoryPayload]]
