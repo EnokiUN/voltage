@@ -8,6 +8,10 @@ if TYPE_CHECKING:
     from .file import FilePayload
     from .message import MessagePayload
 
+class OverrideFieldPayload(TypedDict):
+    a: int
+    d: int
+
 
 class BaseChannelPayload(TypedDict):
     _id: str
@@ -32,7 +36,7 @@ class GroupDMChannelPayload(BaseChannelPayload):
     owner: str
     channel_type: Literal["Group"]
     icon: NotRequired[FilePayload]
-    permission: NotRequired[int]
+    permission: NotRequired[OverrideFieldPayload]
     description: NotRequired[str]
 
 
@@ -41,8 +45,8 @@ class TextChannelPayload(BaseChannelPayload):
     name: str
     description: NotRequired[str]
     icon: NotRequired[FilePayload]
-    default_permissions: NotRequired[int]
-    role_permissions: NotRequired[Dict[str, int]]
+    default_permissions: NotRequired[OverrideFieldPayload]
+    role_permissions: NotRequired[Dict[str, OverrideFieldPayload]]
     last_message: NotRequired[str]
     channel_type: Literal["TextChannel"]
 
@@ -52,8 +56,8 @@ class VoiceChannelPayload(BaseChannelPayload):
     name: str
     description: NotRequired[str]
     icon: NotRequired[FilePayload]
-    default_permissions: NotRequired[int]
-    role_permissions: NotRequired[Dict[str, int]]
+    default_permissions: NotRequired[OverrideFieldPayload]
+    role_permissions: NotRequired[Dict[str, OverrideFieldPayload]]
     channel_type: Literal["VoiceChannel"]
 
 
