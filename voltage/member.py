@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .asset import Asset
-from .permissions import ChannelPermissions, ServerPermissions
+from .permissions import Permissions
 
 # Internal imports
 from .user import User
@@ -44,7 +44,7 @@ class Member(User):
         The member's channel permissions.
     """
 
-    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions", "channel_permissions")
+    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
         user = cache.get_user(data["_id"]["user"])
@@ -58,18 +58,16 @@ class Member(User):
             self.server_avatar = None
 
         roles = []
-        permint = 0
-        chpermint = 0
+        perms = {"a": 0, "d": 0}
         for i in data.get("roles", []):
             role = server.get_role(i)
             if role:
                 roles.append(role)
-                permint |= role.permissions.flags
-                chpermint |= role.channel_permissions.flags
+                perms["a"] |= role.permissions.allow.flags
+                perms["d"] |= role.permissions.deny.flags
 
         self.roles: list[Role] = sorted(roles, key=lambda r: r.rank, reverse=True)
-        self.permissions = ServerPermissions.new_with_flags(permint)
-        self.channel_permissions = ChannelPermissions.new_with_flags(chpermint)
+        self.permissions = Permissions(permint)
 
         self.server = server
 
