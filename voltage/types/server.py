@@ -26,9 +26,6 @@ class MemberPayload(_MemberBase):
     _id: MemberIDPayload
 
 
-PermissionPayload = Tuple[int, int]
-
-
 class PartialRolePayload(TypedDict):
     name: str
     permissions: OverrideFieldPayload

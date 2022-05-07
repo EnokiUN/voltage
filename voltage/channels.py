@@ -8,7 +8,7 @@ from .asset import Asset
 from .enums import ChannelType
 from .messageable import Messageable
 from .notsupplied import NotSupplied
-from .permissions import ChannelPermissions
+from .permissions import Permissions
 
 if TYPE_CHECKING:
     from .file import File
@@ -21,11 +21,14 @@ if TYPE_CHECKING:
         DMChannelPayload,
         GroupDMChannelPayload,
         OnChannelUpdatePayload,
+        OverrideFieldPayload,
         SavedMessagePayload,
         TextChannelPayload,
         VoiceChannelPayload,
     )
     from .user import User
+
+NO_PERMS: OverrideFieldPayload = {"a": 0, "d": 0}
 
 
 class Channel:
@@ -111,27 +114,27 @@ class Channel:
         """Deletes the channel."""
         return self.cache.http.close_channel(self.id)
 
-    async def set_default_permissions(self, permissions: ChannelPermissions):
+    async def set_default_permissions(self, permissions: Permissions):
         """Sets the default permissions for the channel.
 
         Parameters
         ----------
-        permissions: :class:`ChannelPermissions`
+        permissions: :class:`Permissions`
             The new default permissions for the channel.
         """
-        return self.cache.http.set_default_perms(self.id, permissions.flags)
+        return self.cache.http.set_default_perms(self.id, permissions.to_dict())
 
-    async def set_role_permission(self, role: Role, permissions: ChannelPermissions):
+    async def set_role_permission(self, role: Role, permissions: Permissions):
         """Sets the permissions for a role in the channel.
 
         Parameters
         ----------
         role: :class:`Role`
             The role to set the permissions for.
-        permissions: :class:`ChannelPermissions`
+        permissions: :class:`Permissions`
             The new permissions for the role.
         """
-        return self.cache.http.set_role_perms(self.id, role.id, permissions.flags)
+        return self.cache.http.set_role_perms(self.id, role.id, permissions.to_dict())
 
 
 class SavedMessageChannel(Channel, Messageable):
@@ -188,7 +191,7 @@ class GroupDMChannel(Channel, Messageable):
         The recipients of the group direct messages channel.
     icon: Optional[:class:`Asset`]
         The icon of the group direct messages channel.
-    permissions: :class:`ChannelPermissions`
+    permissions: :class:`Permissions`
         The permissions of the group direct messages channel.
     """
 
@@ -208,7 +211,7 @@ class GroupDMChannel(Channel, Messageable):
         else:
             self.icon = None
 
-        self.permissions = ChannelPermissions.new_with_flags(data.get("permissions", 0))
+        self.permissions = Permissions(data.get("permissions", NO_PERMS))  # type: ignore
 
     async def set_role_permission(self):
         raise NotImplementedError
@@ -285,9 +288,9 @@ class TextChannel(Channel, Messageable):
         The last message sent in the text channel.
     nsfw: :class:`bool`
         Whether the text channel is NSFW or not.
-    default_permissions: :class:`ChannelPermissions`
+    default_permissions: :class:`Permissions`
         The default permissions for the text channel.
-    role_permissions: Dict[:class:`ChannelPermissions`]
+    role_permissions: Dict[:class:`str`, :class:`Permissions`]
         A role-id permission pair dict representing the role-specific permissions for the text channel.
     icon: Optional[:class:`Asset`]
         The icon of the text channel.
@@ -307,10 +310,9 @@ class TextChannel(Channel, Messageable):
         else:
             self.last_message = None
 
-        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
+        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
         self.role_permissions = {
-            role: ChannelPermissions.new_with_flags(permissions)
-            for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]
@@ -343,9 +345,9 @@ class VoiceChannel(Channel):
         The name of the voice channel.
     description: Optional[:class:`str`]
         The description of the voice channel.
-    default_permissions: :class:`ChannelPermissions`
+    default_permissions: :class:`Permissions`
         The default permissions for the voice channel.
-    role_permissions: Dict[str, :class:`ChannelPermissions`]
+    role_permissions: Dict[:class:`str`, :class:`Permissions`]
         A role-id permission pair dict representing the role-specific permissions for the voice channel.
     icon: Optional[:class:`Asset`]
         The icon of the voice channel.
@@ -358,10 +360,9 @@ class VoiceChannel(Channel):
         self.name = data["name"]
         self.description = data.get("description")
 
-        self.default_permissions = ChannelPermissions.new_with_flags(data.get("default_permissions", 0))
+        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
         self.role_permissions = {
-            role: ChannelPermissions.new_with_flags(permissions)
-            for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]

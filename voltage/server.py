@@ -9,7 +9,7 @@ from .categories import Category
 from .invites import Invite
 
 # Internal imports
-from .permissions import ChannelPermissions, ServerPermissions
+from .permissions import Permissions
 from .roles import Role
 
 if TYPE_CHECKING:
@@ -164,8 +164,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         "banner",
         "channel_ids",
         "member_ids",
-        "default_channel_permissions",
-        "default_role_permissions",
+        "default_permissions",
         "category_ids",
         "role_ids",
     )
@@ -186,8 +185,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         else:
             self.system_messages = None
 
-        self.default_channel_permissions = ChannelPermissions.new_with_flags(data["default_permissions"][0])
-        self.default_role_permissions = ServerPermissions.new_with_flags(data["default_permissions"][1])
+        self.default_permissions = Permissions(data["default_permissions"])
         self.category_ids = {i["id"]: Category(i, cache) for i in data.get("categories", [])}
 
         self.icon: Optional[Asset]
@@ -239,8 +237,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
             if system_messages := new.get("system_messages"):
                 self.system_messages = SystemMessages(system_messages, self.cache)
             if default_permissions := new.get("default_permissions"):
-                self.default_channel_permissions = ChannelPermissions.new_with_flags(default_permissions[0])
-                self.default_role_permissions = ServerPermissions.new_with_flags(default_permissions[1])
+                self.default_permissions = Permissions(default_permissions)
             if categories := new.get("categories"):
                 self.category_ids = {i["id"]: Category(i, self.cache) for i in categories}
 
@@ -357,20 +354,16 @@ class Server:  # As of writing this this is the final major thing I have to impl
         """
         return self.category_ids.get(category_id)
 
-    async def set_default_permissions(
-        self, channel_permissions: ChannelPermissions, role_permissions: ServerPermissions
-    ):
+    async def set_default_permissions(self, permissions: Permissions):
         """
         Sets the default permissions for the server.
 
         Parameters
         ----------
-        channel_permissions: :class:`ChannelPermissions`
-            The channel permissions to set.
-        role_permissions: :class:`ServerPermissions`
-            The role permissions to set.
+        permissions: :class:`Permissions`
+             The role's new permissions.
         """
-        await self.cache.http.set_default_permissions(self.id, channel_permissions.flags, role_permissions.flags)
+        await self.cache.http.set_default_permissions(self.id, permissions.to_dict())
 
     async def create_channel(
         self, name: str, description: Optional[str] = None, nsfw: bool = False, type: Literal["Text", "Voice"] = "Text"
