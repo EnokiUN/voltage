@@ -21,10 +21,10 @@ if TYPE_CHECKING:
         DMChannelPayload,
         GroupDMChannelPayload,
         OnChannelUpdatePayload,
+        OverrideFieldPayload,
         SavedMessagePayload,
         TextChannelPayload,
         VoiceChannelPayload,
-        OverrideFieldPayload
     )
     from .user import User
 
