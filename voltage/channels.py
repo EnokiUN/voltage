@@ -188,7 +188,7 @@ class GroupDMChannel(Channel, Messageable):
         The recipients of the group direct messages channel.
     icon: Optional[:class:`Asset`]
         The icon of the group direct messages channel.
-    permissions: :class:`ChannelPermissions`
+    permissions: :class:`Permissions`
         The permissions of the group direct messages channel.
     """
 
@@ -285,9 +285,9 @@ class TextChannel(Channel, Messageable):
         The last message sent in the text channel.
     nsfw: :class:`bool`
         Whether the text channel is NSFW or not.
-    default_permissions: :class:`ChannelPermissions`
+    default_permissions: :class:`Permissions`
         The default permissions for the text channel.
-    role_permissions: Dict[:class:`ChannelPermissions`]
+    role_permissions: Dict[:class:`str`, :class:`Permissions`]
         A role-id permission pair dict representing the role-specific permissions for the text channel.
     icon: Optional[:class:`Asset`]
         The icon of the text channel.
@@ -342,9 +342,9 @@ class VoiceChannel(Channel):
         The name of the voice channel.
     description: Optional[:class:`str`]
         The description of the voice channel.
-    default_permissions: :class:`ChannelPermissions`
+    default_permissions: :class:`Permissions`
         The default permissions for the voice channel.
-    role_permissions: Dict[str, :class:`ChannelPermissions`]
+    role_permissions: Dict[:class:`str`, :class:`Permissions`]
         A role-id permission pair dict representing the role-specific permissions for the voice channel.
     icon: Optional[:class:`Asset`]
         The icon of the voice channel.
