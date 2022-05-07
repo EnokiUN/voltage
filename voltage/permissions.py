@@ -254,4 +254,4 @@ class Permissions:
             The denied permissions.
         """
         flags: OverrideFieldPayload = {"a": allow.flags, "d": deny.flags}
-        rerun cls(flags)
+        retun cls(flags)
