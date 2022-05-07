@@ -354,20 +354,16 @@ class Server:  # As of writing this this is the final major thing I have to impl
         """
         return self.category_ids.get(category_id)
 
-    async def set_default_permissions(
-        self, channel_permissions: ChannelPermissions, role_permissions: ServerPermissions
-    ):
+    async def set_default_permissions(self, permissions: Permissions):
         """
         Sets the default permissions for the server.
 
         Parameters
         ----------
-        channel_permissions: :class:`ChannelPermissions`
-            The channel permissions to set.
-        role_permissions: :class:`ServerPermissions`
-            The role permissions to set.
+        permissions: :class:`Permissions`
+             The role's new permissions.
         """
-        await self.cache.http.set_default_permissions(self.id, channel_permissions.flags, role_permissions.flags)
+        await self.cache.http.set_default_permissions(self.id, role_permissions.to_dict())
 
     async def create_channel(
         self, name: str, description: Optional[str] = None, nsfw: bool = False, type: Literal["Text", "Voice"] = "Text"
