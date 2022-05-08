@@ -226,8 +226,7 @@ class Permissions:
     """
 
     def __init__(self, data: Union[OverrideFieldPayload, int]):
-        if isinstance(data, int):
-            data: OverrideFieldPayload = {"a": data, "d": 0}
+        data: OverrideFieldPayload = {"a": data, "d": 0} if isinstance(data, int) else data
 
         self.allow = PermissionsFlags.new_with_flags(data["a"])
         self.deny = PermissionsFlags.new_with_flags(data["d"])
