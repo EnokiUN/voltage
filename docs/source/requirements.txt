@@ -1,4 +1,4 @@
-sphinx==4.5
+git+https://github.com/sphinx-doc/sphinx
 docutils==0.18
 furo
 sphinx-copybutton
