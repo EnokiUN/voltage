@@ -1,5 +1,4 @@
-git+https://github.com/sphinx-doc/sphinx
-docutils==0.18
+sphinx
 furo
 sphinx-copybutton
 aiohttp
