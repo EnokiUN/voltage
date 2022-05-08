@@ -3,4 +3,4 @@ furo
 sphinx-copybutton
 aiohttp
 typing-extensions
-ulid
+py-ulid
