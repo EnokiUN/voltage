@@ -38,6 +38,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "sphinxext.opengraph",
+    "sphinxcontrib_trio",
     "attributetable",
 ]
 
