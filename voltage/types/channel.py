@@ -37,7 +37,7 @@ class GroupDMChannelPayload(BaseChannelPayload):
     owner: str
     channel_type: Literal["Group"]
     icon: NotRequired[FilePayload]
-    permission: NotRequired[OverrideFieldPayload]
+    permission: NotRequired[int]
     description: NotRequired[str]
 
 
