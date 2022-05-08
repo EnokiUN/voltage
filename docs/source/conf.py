@@ -50,10 +50,10 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 resource_links = {
-  'server': 'https://rvlt.gg/bwtscg1F',
-  'issues': 'https://github.com/EnokiUN/voltage/issues',
-  'discussions': 'https://github.com/EnokiUN/voltage/discussions',
-  'examples': 'https://github.com/EnokiUN/voltage/tree/main/examples',
+    "server": "https://rvlt.gg/bwtscg1F",
+    "issues": "https://github.com/EnokiUN/voltage/issues",
+    "discussions": "https://github.com/EnokiUN/voltage/discussions",
+    "examples": "https://github.com/EnokiUN/voltage/tree/main/examples",
 }
 
 
