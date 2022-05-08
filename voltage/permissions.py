@@ -225,8 +225,8 @@ class Permissions:
     A class which represents a member's permissions.
     """
 
-    def __init__(self, data: Union[OverrideFieldPayload, int]):
-        data: OverrideFieldPayload = {"a": data, "d": 0} if isinstance(data, int) else data
+    def __init__(self, flags: Union[OverrideFieldPayload, int]):
+        data: OverrideFieldPayload = {"a": flags, "d": 0} if isinstance(flags, int) else flags
 
         self.allow = PermissionsFlags.new_with_flags(data["a"])
         self.deny = PermissionsFlags.new_with_flags(data["d"])
