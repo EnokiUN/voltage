@@ -37,7 +37,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
-    "sphinxext.opengraph", 
+    "sphinxext.opengraph",
     "attributetable",
 ]
 
