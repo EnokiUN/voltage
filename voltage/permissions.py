@@ -1,7 +1,7 @@
 # Thanks Jan <3
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 # Internal Imports
 from .flag import FlagBase, FlagValue
@@ -225,7 +225,10 @@ class Permissions:
     A class which represents a member's permissions.
     """
 
-    def __init__(self, data: OverrideFieldPayload):
+    def __init__(self, data: Union[OverrideFieldPayload, int]):
+        if isinstance(data, int):
+            data: OverrideFieldPayload = {"a": data, "d": 0}
+
         self.allow = PermissionsFlags.new_with_flags(data["a"])
         self.deny = PermissionsFlags.new_with_flags(data["d"])
 
