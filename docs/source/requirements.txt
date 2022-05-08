@@ -1,6 +1,7 @@
 sphinx
 furo
 sphinx-copybutton
+sphinxext-opengraph
 aiohttp
 typing-extensions
 py-ulid
