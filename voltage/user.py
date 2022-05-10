@@ -105,7 +105,7 @@ class User(Messageable):
         "relationships",
         "avatar",
         "_profile",
-        "_profile_fetched", 
+        "_profile_fetched",
         "bot",
         "owner_id",
         "cache",
