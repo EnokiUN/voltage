@@ -183,7 +183,7 @@ class User(Messageable):
     @property
     def profile(self) -> UserProfile:
         if not self._profile_fetched:
-            self.cache.loop.create_task(user.fetch_profile())
+            self.cache.loop.create_task(self.fetch_profile())
             self._profile_fetched = True
         return self._profile
 
