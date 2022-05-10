@@ -356,7 +356,11 @@ class CacheHandler:
         if user := self.users.get(data["_id"]):
             return user
         user = User(data, self)
+        # Hello there future Enoki, I'm here to tell you that 1. yes that worked 2. yes you did that you fucking idiot 3. whatever your fix is it will probably break after a while.
+        # What that line does? figure it out for yourself loser.
+
         # self.loop.create_task(user.fetch_profile())
+        # Sham btw ^^^^^
         self.users[user.id] = user
         return user
 
