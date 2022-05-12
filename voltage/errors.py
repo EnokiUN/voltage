@@ -168,8 +168,27 @@ class NotEnoughPerms(VoltageException):
         The user that tried to envoke the command.
     """
 
-    def __init__(self, user: Union[User, Member]):
+    def __init__(self, user: Union[User, Member], perm: str):
         self.user = user
+        self.perm = perm
 
     def __str__(self):
-        return "You do not have the required permission(s) to use this command."
+        return f"You do not have the {self.perm} permission required to use this command."
+
+class BotNotEnoughPerms(VoltageException):
+    """
+    An exception that is raised when the bot does not have enough permissions.
+
+    Called by the :func:`~voltage.ext.commands.has_perms` check
+
+    Attributes
+    ----------
+    user: Union[:class:`voltage.User`, :class:`voltage.Member`]
+        The user that tried to envoke the command.
+    """
+
+    def __init__(self, perm: str):
+        self.perm = perm
+
+    def __str__(self):
+        return f"I am lacking the {self.perm} permission required to use this command."
