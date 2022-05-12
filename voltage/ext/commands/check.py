@@ -105,7 +105,7 @@ async def bot_has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]
                 if not hasattr(ctx.me.permissions, permission):
                     raise ValueError(f"Permission {permission} does not exist")
                 if not getattr(ctx.me.permissions, permission):
-                    raise BotNotEnoughPerms(ctx.author, permission)
+                    raise BotNotEnoughPerms(permission)
         return True
 
     return check
