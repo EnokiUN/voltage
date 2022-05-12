@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
-from voltage import NotBotOwner, NotEnoughPerms, User
+from voltage import NotBotOwner, NotEnoughPerms, BotNotEnoughPerms, User
 
 if TYPE_CHECKING:
     from .command import Command, CommandContext
@@ -74,7 +74,7 @@ async def is_server_owner() -> Callable[[CommandContext], Awaitable[bool]]:
 @check
 async def has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
     """
-    Checks if the user invoking the command is the bot owner.
+    Checks if the user invoking the command has the required perms.
     """
 
     async def check(ctx: CommandContext) -> bool:
@@ -82,14 +82,30 @@ async def has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
             return True
         for permission, state in kwargs.items():
             if state:
-                if not hasattr(ctx.author.permissions, permission) and not hasattr(
-                    ctx.author.channel_permissions, permission
-                ):
+                if not hasattr(ctx.author.permissions, permission):
                     raise ValueError(f"Permission {permission} does not exist")
                 if not getattr(ctx.author.permissions, permission):
-                    raise NotEnoughPerms(ctx.author)
-                elif not getattr(ctx.author.channel_permissions, permission):
-                    raise NotEnoughPerms(ctx.author)
+                    raise NotEnoughPerms(ctx.author, permission)
         return True
 
     return check
+
+@check
+async def bot_has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
+    """
+    Checks if bot has the required perms in that channel.
+    """
+
+    async def check(ctx: CommandContext) -> bool:
+        if ctx.guild is None:
+            return True
+        for permission, state in kwargs.items():
+            if state:
+                if not hasattr(ctx.me.permissions, permission):
+                    raise ValueError(f"Permission {permission} does not exist")
+                if not getattr(ctx.me.permissions, permission):
+                    raise BotNotEnoughPerms(ctx.author, permission)
+        return True
+
+    return check
+
