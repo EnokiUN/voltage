@@ -7,7 +7,7 @@ from ulid import ULID
 from .notsupplied import NotSupplied
 
 # Internal imports
-from .permissions import ChannelPermissions, ServerPermissions
+from .permissions import Permissions
 
 if TYPE_CHECKING:
     from .internals import HTTPHandler
@@ -35,10 +35,8 @@ class Role:
         Whether the role is hoisted.
     rank: :class:`int`
         The role's position in the role hierarchy.
-    permissions: :class:`ServerPermissions`
-        The role's permissions.
-    channel_permissions: :class:`ChannelPermissions`
-        The role's channel permissions.
+    permissions: :class:`Permissions`
+        The role's permissions..
     server: :class:`Server`
         The server the role belongs to.
     server_id: :class:`str`
@@ -54,7 +52,6 @@ class Role:
         "hoist",
         "rank",
         "permissions",
-        "channel_permissions",
         "server",
         "server_id",
         "http",
@@ -68,8 +65,7 @@ class Role:
         self.color = self.colour
         self.hoist = data.get("hoist", False)
         self.rank = data["rank"]
-        self.permissions = ServerPermissions.new_with_flags(data["permissions"][0])
-        self.channel_permissions = ChannelPermissions.new_with_flags(data["permissions"][1])
+        self.permissions = Permissions(data["permissions"])
         self.server = server
         self.server_id = server.id
         self.http = http
@@ -80,27 +76,16 @@ class Role:
     def __repr__(self):
         return f"<Role {self.name}>"
 
-    async def set_permissions(
-        self,
-        *,
-        server_permissions: Optional[ServerPermissions] = None,
-        channel_permissions: Optional[ChannelPermissions] = None,
-    ):
+    async def set_permissions(self, permissions: Permissions):
         """
         Sets the role's permissions.
 
         Parameters
         ----------
-        server_permissions: Optional[:class:`ServerPermissions`]
+        permissions: Optional[:class:`Permissions`]
             The new server permissions.
-        channel_permissions: Optional[:class:`ChannelPermissions`]
-            The new channel permissions.
         """
-        if server_permissions is None and channel_permissions is None:
-            raise ValueError("You must provide either server_permissions or channel_permissions")
-        await self.http.set_role_permission(
-            self.server_id, self.id, self.permissions.flags, self.channel_permissions.flags
-        )
+        await self.http.set_role_permission(self.server_id, self.id, permissions.to_dict())
 
     async def delete(self):
         """

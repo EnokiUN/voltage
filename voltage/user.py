@@ -104,7 +104,8 @@ class User(Messageable):
         "status",
         "relationships",
         "avatar",
-        "profile",
+        "_profile",
+        "_profile_fetched",
         "bot",
         "owner_id",
         "cache",
@@ -144,7 +145,8 @@ class User(Messageable):
         else:
             self.status = Status(None, PresenceType.invisible)
 
-        self.profile = UserProfile(None, None)
+        self._profile = UserProfile(None, None)
+        self._profile_fetched = False
 
         bot = data.get("bot", {})
         self.bot = True if bot else False
@@ -177,6 +179,13 @@ class User(Messageable):
 
     def __repr__(self):
         return f"<User {self.name}>"
+
+    @property
+    def profile(self) -> UserProfile:
+        if not self._profile_fetched:
+            self.cache.loop.create_task(self.fetch_profile())
+            self._profile_fetched = True
+        return self._profile
 
     @property
     def mention(self):
@@ -217,15 +226,15 @@ class User(Messageable):
         data = await self.cache.http.fetch_user_profile(self.id)
         bg = data.get("background")
         background = Asset(bg, self.cache.http) if bg is not None else None
-        self.profile = UserProfile(data.get("content"), background)
+        self._profile = UserProfile(data.get("content"), background)
         return self.profile
 
     def _update(self, data: OnUserUpdatePayload):
         if clear := data.get("clear"):
             if clear == "ProfileContent":
-                self.profile = UserProfile(None, self.profile.background)
+                self._profile = UserProfile(None, self._profile.background)
             elif clear == "ProfileBackground":
-                self.profile = UserProfile(self.profile.content, None)
+                self._profile = UserProfile(self._profile.content, None)
             elif clear == "StatusText":
                 self.status = Status(None, self.status.presence)
             elif clear == "Avatar":
@@ -236,9 +245,9 @@ class User(Messageable):
                 presence = status.get("presence") or self.status.presence
                 self.status = Status(status.get("text"), PresenceType(presence))
             if bg := new.get("profile.background"):
-                self.profile = UserProfile(self.profile.content, Asset(bg, self.cache.http))
+                self._profile = UserProfile(self._profile.content, Asset(bg, self.cache.http))
             if content := new.get("profile.content"):
-                self.profile = UserProfile(content, self.profile.background)
+                self._profile = UserProfile(content, self._profile.background)
             if avatar := new.get("avatar"):
                 self.avatar = Asset(avatar, self.cache.http)
             if online := new.get("online"):
