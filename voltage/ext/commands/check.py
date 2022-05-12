@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
-from voltage import BotNotEnoughPerms, NotBotOwner, NotEnoughPerms, User
+from voltage import BotNotEnoughPerms, NotBotOwner, NotEnoughPerms, User, Member
 
 if TYPE_CHECKING:
     from .command import Command, CommandContext
@@ -98,7 +98,7 @@ async def bot_has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]
     """
 
     async def check(ctx: CommandContext) -> bool:
-        if ctx.guild is None:
+        if not issubclass(ctx.me, Member):
             return True
         for permission, state in kwargs.items():
             if state:
