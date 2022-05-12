@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
-from voltage import NotBotOwner, NotEnoughPerms, BotNotEnoughPerms, User
+from voltage import BotNotEnoughPerms, NotBotOwner, NotEnoughPerms, User
 
 if TYPE_CHECKING:
     from .command import Command, CommandContext
@@ -90,6 +90,7 @@ async def has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
 
     return check
 
+
 @check
 async def bot_has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]:
     """
@@ -108,4 +109,3 @@ async def bot_has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]
         return True
 
     return check
-
