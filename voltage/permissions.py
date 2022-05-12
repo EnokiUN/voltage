@@ -233,8 +233,8 @@ class Permissions:
 
         self.actual = PermissionsFlags.new_with_flags(data["a"] - data["d"])
 
-        for name, val in self.actual.__dict__:
-            if isinstance(val, FlagBase):
+        for name in dir(self.actual):
+            if isinstance((val := getattr(self.actual, name)), bool):
                 setattr(self, name, val)
 
     def to_dict(self) -> OverrideFieldPayload:
