@@ -40,6 +40,7 @@ from .enums import (
     SortType,
 )
 from .errors import (
+    BotNotEnoughPerms,
     ChannelNotFound,
     CommandNotFound,
     HTTPError,
