@@ -98,7 +98,7 @@ async def bot_has_perms(**kwargs) -> Callable[[CommandContext], Awaitable[bool]]
     """
 
     async def check(ctx: CommandContext) -> bool:
-        if not issubclass(ctx.me, Member):
+        if not isinstance(ctx.me, Member):
             return True
         for permission, state in kwargs.items():
             if state:
