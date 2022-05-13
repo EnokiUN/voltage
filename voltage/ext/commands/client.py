@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import sys
-from os import listdir, sep
 from importlib import import_module, reload
+from os import listdir, sep
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
@@ -20,8 +20,9 @@ def get_extensions_from_dir(path: str) -> list[str]:
     """
     Gets all files that end with ``.py`` in a directory and returns a python dotpath.
     """
-    dotdirpath = ".".join(path.split(sep)[1:]) # we ignore the first part because we don't want to add the ``./``.
-    return [file[:-3] for file in listdir(path) if file.endswith(".py")] # Hello olivier.
+    dotdirpath = ".".join(path.split(sep)[1:])  # we ignore the first part because we don't want to add the ``./``.
+    return [file[:-3] for file in listdir(path) if file.endswith(".py")]  # Hello olivier.
+
 
 class CommandsClient(Client):
     """
@@ -162,7 +163,7 @@ class CommandsClient(Client):
         Adds all the extensions in a directory.
 
         .. note:
-            
+
             This attempts to add all files that end with ``.py`` and isn't recursive.
 
         Parameters
