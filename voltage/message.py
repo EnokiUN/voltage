@@ -242,7 +242,7 @@ class Message:
 
     @property
     def mentions(self) -> list[Union[User, Member]]:
-        mentioned = []
+        mentioned: list[Union[User, Member]] = []
         for mention in self.mention_ids:
             if self.server:
                 mentioned.append(self.cache.get_member(self.server.id, mention))
