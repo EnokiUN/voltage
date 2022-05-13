@@ -258,4 +258,3 @@ class Message:
                 self.content = content
             if embeds := new.get("embeds"):
                 self.embeds = [create_embed(e, self.cache.http) for e in embeds]
-
