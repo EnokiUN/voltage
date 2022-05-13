@@ -12,7 +12,8 @@ if TYPE_CHECKING:
         TextChannelPayload,
         VoiceChannelPayload,
     )
-    from .message import EmbedPayload, MessagePayload
+    from .message import MessagePayload
+    from .embed import EmbedPayload
     from .server import MemberIDPayload, MemberPayload, ServerPayload
     from .user import StatusPayload, UserPayload
 
