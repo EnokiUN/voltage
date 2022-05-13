@@ -188,7 +188,8 @@ class Message:
         masquerade: Optional[MessageMasquerade] = None,
         mention: bool = True,
         delete_after: Optional[float] = None,
-    ) -> Message:"""Replies to the message.
+    ) -> Message:
+        """Replies to the message.
 
         Parameters
         ----------
