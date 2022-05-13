@@ -20,8 +20,8 @@ def get_extensions_from_dir(path: str) -> list[str]:
     """
     Gets all files that end with ``.py`` in a directory and returns a python dotpath.
     """
-    dotdirpath = ".".join(path.split(sep)[1:])  # we ignore the first part because we don't want to add the ``./``.
-    return [file[:-3] for file in listdir(path) if file.endswith(".py")]  # Hello olivier.
+    dirdotpath = ".".join(path.split(sep)[1:])  # we ignore the first part because we don't want to add the ``./``.
+    return [f"{dirdotpath}.{file}" for file in listdir(path) if file.endswith(".py")]  # Hello olivier.
 
 
 class CommandsClient(Client):
