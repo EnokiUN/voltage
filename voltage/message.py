@@ -125,7 +125,7 @@ class Message:
 
         self.edited_at: Optional[datetime]
         if edited := data.get("edited"):
-            self.edited_at = datetime.strptime(edited["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
+            self.edited_at = datetime.strptime(edited, "%Y-%m-%dT%H:%M:%S.%fz")
         else:
             self.edited_at = None
 
