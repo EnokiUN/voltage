@@ -95,7 +95,7 @@ class Message:
         "content",
         "author",
         "edited_at",
-        "mentions",
+        "mention_ids",
         "reply_ids",
         "replies",
         "cache",
