@@ -252,7 +252,10 @@ class Message:
 
     def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):
-            if new.get("edited"):
-                self.edited_at = datetime.strptime(new["edited"]["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
-            if new.get("content"):
-                self.content = new["content"]
+            if edited := new.get("edited"):
+                self.edited_at = datetime.strptime(edited, "%Y-%m-%dT%H:%M:%S.%fz")
+            if content := new.get("content"):
+                self.content = content
+            if embeds := new.get("embeds"):
+                self.embeds = [create_embed(e, self.cache.http) for e in embeds]
+
