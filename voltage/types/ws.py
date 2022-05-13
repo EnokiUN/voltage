@@ -12,7 +12,7 @@ if TYPE_CHECKING:
         TextChannelPayload,
         VoiceChannelPayload,
     )
-    from .message import EditedPayload, MessagePayload
+    from .message import MessagePayload, EmbedPayload
     from .server import MemberIDPayload, MemberPayload, ServerPayload
     from .user import StatusPayload, UserPayload
 
@@ -38,7 +38,8 @@ class OnMessagePayload(BasePayload, MessagePayload):
 
 class MessageUpdateDataPayload(BasePayload):
     content: str
-    edited: EditedPayload
+    edited: str
+    embeds: list[EmbedPayload]
 
 
 class OnMessageUpdatePayload(BasePayload):
