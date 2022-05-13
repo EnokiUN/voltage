@@ -12,13 +12,13 @@ from .embed import SendableEmbed, create_embed
 if TYPE_CHECKING:
     from .file import File
     from .internals import CacheHandler
+    from .member import Member
     from .types import (
         MessagePayload,
         MessageReplyPayload,
         OnMessageUpdatePayload,
         SendableEmbedPayload,
     )
-    from .member import Member
     from .user import User
 
 
