@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from os import listdir, sep
 from importlib import import_module, reload
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
@@ -14,6 +15,13 @@ from .help import HelpCommand
 if TYPE_CHECKING:
     from .cog import Cog
 
+
+def get_extensions_from_dir(path: str) -> list[str]:
+    """
+    Gets all files that end with ``.py`` in a directory and returns a python dotpath.
+    """
+    dotdirpath = ".".join(path.split(sep)[1:]) # we ignore the first part because we don't want to add the ``./``.
+    return [file[:-3] for file in listdir(path) if file.endswith(".py")] # Hello olivier.
 
 class CommandsClient(Client):
     """
@@ -148,6 +156,21 @@ class CommandsClient(Client):
             raise AttributeError(f"Extension {path} does not have a setup function.")
         reload(module)
         self.add_cog(cog)
+
+    def add_extensions_from_dir(self, path: str, *args, **kwargs):
+        """
+        Adds all the extensions in a directory.
+
+        .. note:
+            
+            This attempts to add all files that end with ``.py`` and isn't recursive.
+
+        Parameters
+        ----------
+        path: :class:`str`
+            The path to the directory with the extensions as a normal path.
+        """
+        [self.add_extension(extension, *args, **kwargs) for extension in get_extensions_from_dir(path)]
 
     def reload_extension(self, path: str):
         """
