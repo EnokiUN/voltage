@@ -18,11 +18,12 @@ if TYPE_CHECKING:
         OnMessageUpdatePayload,
         SendableEmbedPayload,
     )
+    from .member import Member
+    from .user import User
 
 
 class MessageReply(NamedTuple):
-    """
-    A named tuple that represents a message reply.
+    """A named tuple that represents a message reply.
 
     Attributes
     ----------
@@ -36,15 +37,12 @@ class MessageReply(NamedTuple):
     mention: bool
 
     def to_dict(self) -> MessageReplyPayload:
-        """
-        Returns a dictionary representation of the message reply.
-        """
+        """Returns a dictionary representation of the message reply."""
         return {"id": self.message.id, "mention": self.mention}
 
 
 class MessageMasquerade(NamedTuple):
-    """
-    A named tuple that represents a message's masquerade.
+    """A named tuple that represents a message's masquerade.
 
     Attributes
     ----------
@@ -58,15 +56,12 @@ class MessageMasquerade(NamedTuple):
     avatar: Optional[str] = None
 
     def to_dict(self) -> dict:
-        """
-        Returns a dictionary representation of the message masquerade.
-        """
+        """Returns a dictionary representation of the message masquerade."""
         return {"name": self.name if self.name else None, "avatar": self.avatar if self.avatar else None}
 
 
 class Message:
-    """
-    A class that represents a Voltage message.
+    """A class that represents a Voltage message.
 
     Attributes
     ----------
@@ -86,6 +81,8 @@ class Message:
         The author of the message.
     replies: List[:class:`Message`]
         The replies of the message.
+    mentions: List[Union[:class:`User`, :class:`Member`]]
+        A list of mentioned users/members.
     """
 
     __slots__ = (
@@ -98,6 +95,7 @@ class Message:
         "content",
         "author",
         "edited_at",
+        "mentions",
         "reply_ids",
         "replies",
         "cache",
@@ -139,10 +137,10 @@ class Message:
             except KeyError:
                 pass
 
+        self.mention_ids = data.get("mentions", [])
+
     async def full_replies(self):
-        """
-        Returns the full list of replies of the message.
-        """
+        """Returns the full list of replies of the message."""
         return [await self.cache.fetch_message(self.channel.id, i) for i in self.reply_ids]
 
     async def edit(
@@ -152,8 +150,7 @@ class Message:
         embed: Optional[SendableEmbed] = None,
         embeds: Optional[List[SendableEmbed]] = None,
     ):
-        """
-        Edits the message.
+        """Edits the message.
 
         Parameters
         ----------
@@ -175,9 +172,7 @@ class Message:
         await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)  # type: ignore
 
     async def delete(self, *, delay: Optional[float] = None):
-        """
-        Deletes the message.
-        """
+        """Deletes the message."""
         if delay is not None:
             await sleep(delay)
         await self.cache.http.delete_message(self.channel.id, self.id)
@@ -193,9 +188,7 @@ class Message:
         masquerade: Optional[MessageMasquerade] = None,
         mention: bool = True,
         delete_after: Optional[float] = None,
-    ) -> Message:
-        """
-        Replies to the message.
+    ) -> Message:"""Replies to the message.
 
         Parameters
         ----------
@@ -242,11 +235,19 @@ class Message:
 
     @property
     def jump_url(self) -> str:
-        """
-        Returns a URL that allows the client to jump to the message.
-        """
+        """Returns a URL that allows the client to jump to the message."""
         server_segment = "" if self.server is None else f"/server/{self.server.id}"
         return f"https://app.revolt.chat/{server_segment}channel/{self.channel.id}/{self.id}"
+
+    @property
+    def mentions(self) -> list[Union[User, Member]]:
+        mentioned = []
+        for mention in self.mention_ids:
+            if self.server:
+                mentioned.append(self.cache.get_member(self.server.id, mention))
+                continue
+            mentioned.append(self.cache.get_user(mention))
+        return mentioned
 
     def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):
