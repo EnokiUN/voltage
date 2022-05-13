@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 from importlib import import_module, reload
+from os import listdir, sep
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Type, Union
 
@@ -15,9 +16,14 @@ if TYPE_CHECKING:
     from .cog import Cog
 
 
+def get_extensions_from_dir(path: str) -> list[str]:
+    """Gets all files that end with ``.py`` in a directory and returns a python dotpath."""
+    dirdotpath = ".".join(path.split(sep)[1:])  # we ignore the first part because we don't want to add the ``./``.
+    return [f"{dirdotpath}.{file}" for file in listdir(path) if file.endswith(".py")]  # Hello olivier.
+
+
 class CommandsClient(Client):
-    """
-    A class representing a client that uses commands.
+    """A class representing a client that uses commands.
 
     Attributes
     ----------
@@ -52,9 +58,7 @@ class CommandsClient(Client):
         }
 
     async def help(self, ctx: CommandContext, target: str = None):  # type: ignore
-        """
-        Basic help command.
-        """
+        """Basic help command."""
         if target is None:
             return await self.help_command.send_help(ctx)
         elif command := self.commands.get(target):
@@ -79,8 +83,7 @@ class CommandsClient(Client):
         return str(prefix)
 
     def add_command(self, command: Command):
-        """
-        Adds a command to the client.
+        """Adds a command to the client.
 
         Parameters
         ----------
@@ -93,8 +96,7 @@ class CommandsClient(Client):
             self.commands[alias] = command
 
     def add_cog(self, cog: Cog):
-        """
-        Adds a cog to the client.
+        """Adds a cog to the client.
 
         Parameters
         ----------
@@ -108,8 +110,7 @@ class CommandsClient(Client):
             func()
 
     def remove_cog(self, cog: Cog) -> Cog:
-        """
-        Removes a cog from the client.
+        """Removes a cog from the client.
 
         Parameters
         ----------
@@ -133,8 +134,7 @@ class CommandsClient(Client):
         return cog
 
     def add_extension(self, path: str, *args, **kwargs):
-        """
-        Adds an extension to the client.
+        """Adds an extension to the client.
 
         Parameters
         ----------
@@ -149,9 +149,22 @@ class CommandsClient(Client):
         reload(module)
         self.add_cog(cog)
 
-    def reload_extension(self, path: str):
+    def add_extensions_from_dir(self, path: str, *args, **kwargs):
+        """Adds all the extensions in a directory.
+
+        .. note:
+
+            This attempts to add all files that end with ``.py`` and isn't recursive.
+
+        Parameters
+        ----------
+        path: :class:`str`
+            The path to the directory with the extensions as a normal path.
         """
-        Reloads an extension.
+        [self.add_extension(extension, *args, **kwargs) for extension in get_extensions_from_dir(path)]
+
+    def reload_extension(self, path: str):
+        """Reloads an extension.
 
         Parameters
         ----------
@@ -162,8 +175,7 @@ class CommandsClient(Client):
         self.add_extension(path)
 
     def remove_extension(self, path: str):
-        """
-        removes an extension.
+        """Removes an extension.
 
         Parameters
         ----------
@@ -183,8 +195,7 @@ class CommandsClient(Client):
     def command(
         self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
     ):
-        """
-        A decorator for adding commands to the client.
+        """A decorator for adding commands to the client.
 
         Parameters
         ----------
