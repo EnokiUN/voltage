@@ -217,7 +217,9 @@ class Command:
                                 raise NotEnoughArgs(self, len(params) - 1, len(given))
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
-                        kwargs[name] = await self.convert_arg(data, context.content[len(prefix+self.name+" ".join(given[:i]))+1:], context)
+                        kwargs[name] = await self.convert_arg(
+                            data, context.content[len(prefix + self.name + " ".join(given[:i])) + 1 :], context
+                        )
                     else:
                         if arg is None:
                             if data.default is _empty:
