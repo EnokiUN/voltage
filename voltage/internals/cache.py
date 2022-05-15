@@ -293,7 +293,7 @@ class CacheHandler:
         try:
             return self.add_channel(await self.http.fetch_channel(channel_id))
         except HTTPError as e:
-            if e.request.status != 404:
+            if e.response.status != 404:
                 raise
 
     def add_member(self, server_id: str, data: MemberPayload) -> Member:
