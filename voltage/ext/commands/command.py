@@ -3,7 +3,7 @@ from __future__ import annotations
 from asyncio import gather
 from inspect import Parameter, _empty, isclass, ismethod, signature
 from itertools import zip_longest
-from shlex import split
+from re import findall
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
 # internal imports
@@ -192,7 +192,7 @@ class Command:
         start_index = 2 if self.subclassed else 1
 
         if len((params := self.signature.parameters)) > start_index:
-            given = split(context.content[len(prefix + self.name) :])
+            given = re.findall(r'(?:[^\s,"]|"(?:\\.|[^"])*")+', context.content[len(prefix + self.name) :]) # https://stackoverflow.com/a/16710842
             args: list[str] = []
             kwargs = {}
 
