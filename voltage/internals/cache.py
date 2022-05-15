@@ -5,7 +5,7 @@ from time import time
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from ..channels import Channel, DMChannel, create_channel
-from ..errors import HTTPErorr
+from ..errors import HTTPError
 from ..member import Member
 from ..message import Message
 from ..server import Server
