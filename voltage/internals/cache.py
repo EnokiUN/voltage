@@ -274,7 +274,7 @@ class CacheHandler:
         self.channels[channel.id] = channel
         return channel
 
-    async def add_channel_by_id(self, channel_id: str) -> Channel:
+    async def add_channel_by_id(self, channel_id: str) -> Optional[Channel]:
         """
         Fetches a channel object by it's id then caches it if it doesn't exist already.
 
@@ -295,6 +295,7 @@ class CacheHandler:
         except HTTPError as e:
             if e.response.status != 404:
                 raise
+            return
 
     def add_member(self, server_id: str, data: MemberPayload) -> Member:
         """
