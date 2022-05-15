@@ -295,7 +295,7 @@ class CacheHandler:
         except HTTPError as e:
             if e.response.status != 404:
                 raise
-            return None # mypy wtf bro
+            return None  # mypy wtf bro
 
     def add_member(self, server_id: str, data: MemberPayload) -> Member:
         """
