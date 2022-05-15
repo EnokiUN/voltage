@@ -9,6 +9,7 @@ from ..member import Member
 from ..message import Message
 from ..server import Server
 from ..user import User
+from ..errors import HTTPErorr
 
 # Internal imports
 from .http import HTTPHandler
@@ -289,7 +290,11 @@ class CacheHandler:
         """
         if channel := self.channels.get(channel_id):
             return channel
-        return self.add_channel(await self.http.fetch_channel(channel_id))
+        try:
+            return self.add_channel(await self.http.fetch_channel(channel_id))
+        except HTTPError as e:
+            if e.request.status != 404:
+                raise
 
     def add_member(self, server_id: str, data: MemberPayload) -> Member:
         """
