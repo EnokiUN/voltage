@@ -5,11 +5,11 @@ from time import time
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from ..channels import Channel, DMChannel, create_channel
+from ..errors import HTTPErorr
 from ..member import Member
 from ..message import Message
 from ..server import Server
 from ..user import User
-from ..errors import HTTPErorr
 
 # Internal imports
 from .http import HTTPHandler
