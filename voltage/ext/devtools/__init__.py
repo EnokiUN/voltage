@@ -2,3 +2,4 @@
 
 Jishaku: https://github.com/Gorialis/jishaku/
 """
+from run import *
