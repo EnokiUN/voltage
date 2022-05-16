@@ -11,6 +11,8 @@ async def async_eval(ctx: commands.CommandContext, code: str):
     globs = globals().copy()
     env = {
         "_ctx": ctx,
+        "_message": ctx.message,
+        "_msg": ctx.message,
         "_author": ctx.author,
         "_client": ctx.client,
         "_channel": ctx.channel,
