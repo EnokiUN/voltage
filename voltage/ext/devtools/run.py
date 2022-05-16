@@ -1,4 +1,4 @@
-from ast import increment_lineno, parse, AsyncFunctionDef
+from ast import AsyncFunctionDef, increment_lineno, parse
 from time import time
 
 from voltage import File, SendableEmbed
