@@ -39,11 +39,11 @@ async def async_eval(ctx: commands.CommandContext, code: str):
     else:
         raise RuntimeError("Error contucting code for evaluation")
 
-    exec(compile(parsedfn, "<ast>", "exec"), globs) # nosec
-    return await eval("__voltage__eval()", globs) # nosec
+    exec(compile(parsedfn, "<ast>", "exec"), globs)  # nosec
+    return await eval("__voltage__eval()", globs)  # nosec
 
 
-@commands.is_owner() # I'll leave validation up to the user. # sike.
+@commands.is_owner()  # I'll leave validation up to the user. # sike.
 @commands.command(name="py", aliases=["eval"])
 async def py_cmd(ctx, *, code: str):
     """Asynchronously executes python code.
