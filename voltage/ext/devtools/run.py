@@ -1,20 +1,22 @@
-from ast import parse, increment_lineno
+from ast import increment_lineno, parse
 from time import time
 
-from voltage import SendableEmbed, File
+from voltage import File, SendableEmbed
+
 from ..ext import commands
+
 
 async def async_eval(code: str):
     # https://stackoverflow.com/a/60934327
     globs = globals().copy()
     env = {
-            "_ctx": ctx,
-            "_author": ctx.author,
-            "_client": ctx.client,
-            "_channel": ctx.channel,
-            "_server": ctx.server,
-            "_me": ctx.me
-        }
+        "_ctx": ctx,
+        "_author": ctx.author,
+        "_client": ctx.client,
+        "_channel": ctx.channel,
+        "_server": ctx.server,
+        "_me": ctx.me,
+    }
 
     for k, v in env.items():
         globs[k] = v
@@ -22,7 +24,7 @@ async def async_eval(code: str):
     lines = code.splitlines()
 
     if lines[-1].lstrip() == lines[-1]:
-        lines[-1] = "return " + lines[-1]
+        lines[-1] = f"return {lines[-1]}"
 
     code = "\n".join(lines)
 
@@ -63,7 +65,7 @@ async def py_cmd(ctx, *, code: str):
         else:
             res = str(res).replace(ctx.client.http.token, "[TOKEN REDACTED]")
             if len(res) > 2000:
-                res = res[1997:] + "..."
+                res = f"{res[1997:]}..."
             sendcoro = ctx.reply(res)
 
         await sendcoro
