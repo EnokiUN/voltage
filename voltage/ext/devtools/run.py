@@ -1,4 +1,4 @@
-from ast import increment_lineno, parse
+from ast import increment_lineno, parse, AsyncFunctionDef
 from time import time
 
 from voltage import File, SendableEmbed
@@ -6,7 +6,7 @@ from voltage import File, SendableEmbed
 from ..ext import commands
 
 
-async def async_eval(code: str):
+async def async_eval(ctx: CommandContext, code: str):
     # https://stackoverflow.com/a/60934327
     globs = globals().copy()
     env = {
@@ -34,7 +34,7 @@ async def async_eval(code: str):
     for line in parsed.body:
         increment_lineno(line)
 
-    if isinstance(parsedfn.body[0], ast.AsyncFunctionDef):
+    if isinstance(parsedfn.body[0], AsyncFunctionDef):
         parsedfn.body[0].body = parsed.body  # Set the function's body to the supplied code.
     else:
         raise RuntimeError("Error contucting code for evaluation")
@@ -51,7 +51,7 @@ async def py_cmd(ctx, *, code: str):
     """
     start = time()
     try:
-        res = await async_eval(code)
+        res = await async_eval(ctx, code)
     except Exception as e:
         return await ctx.reply(f"Oh no, an error occured while evaluating:\n{e}")
     else:
