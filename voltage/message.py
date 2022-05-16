@@ -141,7 +141,10 @@ class Message:
 
     async def full_replies(self):
         """Returns the full list of replies of the message."""
-        return [await self.cache.fetch_message(self.channel.id, i) for i in self.reply_ids]
+        replies = []
+        for i in self.reply_ids:
+            replies.append(await self.cache.fetch_message(self.channel.id, i))
+        return replies
 
     async def edit(
         self,
