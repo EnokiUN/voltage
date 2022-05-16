@@ -6,7 +6,7 @@ from voltage import File, SendableEmbed
 from ..ext import commands
 
 
-async def async_eval(ctx: CommandContext, code: str):
+async def async_eval(ctx: commands.CommandContext, code: str):
     # https://stackoverflow.com/a/60934327
     globs = globals().copy()
     env = {
@@ -39,11 +39,11 @@ async def async_eval(ctx: CommandContext, code: str):
     else:
         raise RuntimeError("Error contucting code for evaluation")
 
-    exec(compile(parsedfn, "<ast>", "exec"), globs)
-    return await eval("__voltage__eval()", globs)
+    exec(compile(parsedfn, "<ast>", "exec"), globs) # nosec
+    return await eval("__voltage__eval()", globs) # nosec
 
 
-# @commands.is_owner() # I'll leave validation up to the user.
+@commands.is_owner() # I'll leave validation up to the user. # sike.
 @commands.command(name="py", aliases=["eval"])
 async def py_cmd(ctx, *, code: str):
     """Asynchronously executes python code.
