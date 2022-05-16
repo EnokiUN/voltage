@@ -166,14 +166,14 @@ class CacheHandler:
         """
         return self.dm_channels.get(dm_channel_id)
 
-    async def fetch_message(self, server_id: str, message_id: str) -> Message:
+    async def fetch_message(self, channel_id: str, message_id: str) -> Message:
         """
         Fetches a message from the api if it doesn't exist in the cache.
 
         Parameters
         ----------
-        server_id: :class:`str`
-            The id of the server the message is in.
+        channel_id: :class:`str`
+            The id of the channel the message is in.
         message_id: :class:`str`
             The id of the message to fetch.
 
@@ -184,7 +184,7 @@ class CacheHandler:
         """
         if message := self.messages.get(message_id):
             return message
-        return self.add_message(await self.http.fetch_message(server_id, message_id))
+        return self.add_message(await self.http.fetch_message(channel_id, message_id))
 
     async def fetch_member(self, server_id: str, member_id: str) -> Member:
         """
