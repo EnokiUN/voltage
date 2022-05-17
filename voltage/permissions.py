@@ -246,13 +246,13 @@ class Permissions:
         """
         Creates a Permissions object from two PermissionsFlags.
 
-        Also note :meth:`PermissionsFlags.none()`
+        Also note `PermissionsFlags.none()`
 
         Attributes
         ----------
-        allow: :class:`PermissionsFlags`
+        allow: :class:`PermissionsFlags:
             The allowed permissions.
-        deny: :class:`PermissionsFlags`
+        deny: :class:`PermissionsFlags:
             The denied permissions.
         """
         flags: OverrideFieldPayload = {"a": allow.flags, "d": deny.flags}
