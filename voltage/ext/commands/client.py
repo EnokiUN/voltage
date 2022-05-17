@@ -216,13 +216,17 @@ class CommandsClient(Client):
 
     async def cog_dispatch(self, event: str, cog: Cog, *args, **kwargs):
         if func := cog.listeners.get(event):
+            if cog.subclassed:
+                coro = func(cog, *args, **kwargs)
+            else:
+                coro = func(*args, **kwargs)
             if self.error_handlers.get(event):
                 try:
-                    await func(*args, **kwargs)
+                    await coro
                 except Exception as e:
                     await self.error_handlers[event](e, *args, **kwargs)
             else:
-                await func(*args, **kwargs)
+                await coro
 
     async def dispatch(self, event: str, *args, **kwargs):
         event = event.lower()
@@ -246,7 +250,10 @@ class CommandsClient(Client):
 
     async def cog_raw_dispatch(self, event: str, cog: Cog, payload: dict[Any, Any]):
         if func := cog.raw_listeners.get(event):
-            await func(payload)
+            if cog.subclassed:
+                await func(payload)
+            else:
+                await func(cog, payload)
 
     async def raw_dispatch(self, payload: dict[Any, Any]):
         event = payload["type"].lower()
