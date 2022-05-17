@@ -88,7 +88,7 @@ class Member(User):
 
         This is the member's masquerade avatar or their server's avatar if they have one, otherwise their avatar.
         """
-        return self.masquerade_avatar or self.server_avatar or self.avatar
+        return self.masquerade_avatar or self.server_avatar or self.avatar or self.default_avatar
 
     async def kick(self):
         """
