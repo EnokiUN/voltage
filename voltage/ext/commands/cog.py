@@ -24,11 +24,12 @@ class Cog:
     commands: list[Command] = []
     listeners: dict[str, Callable[..., Any]] = {}
     raw_listeners: dict[str, Callable[..., Any]] = {}
-    subclassed = False
+    subclassed: bool = False
 
     def __new__(cls, *args, **kwargs):
         cls.name = cls.__name__
         cls.description = cls.__doc__
+        subclassed = False
         for (name, attr) in cls.__dict__.items():
             if isinstance(attr, Command):
                 attr.subclassed = True
