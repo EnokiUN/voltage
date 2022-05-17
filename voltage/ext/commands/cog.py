@@ -23,7 +23,7 @@ class Cog:
     description: Optional[str]
     commands: list[Command] = []
     listeners: dict[str, Callable[..., Any]] = {}
-    raw_listeners: dict[str, Callable[[dict], Any]] = {}
+    raw_listeners: dict[str, Callable[..., Any]] = {}
     subclassed = False
 
     def __new__(cls, *args, **kwargs):
