@@ -188,7 +188,7 @@ class HTTPHandler:
             data["avatar"] = avatar
         if remove:
             data["remove"] = remove
-        return await self.request("PATCH", "users/me", json=data)
+        return await self.request("PATCH", "users/@me", json=data)
 
     async def fetch_self(self) -> UserPayload:
         """
