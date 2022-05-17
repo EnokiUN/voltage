@@ -24,6 +24,7 @@ class Cog:
     commands: list[Command] = []
     listeners: dict[str, Callable[..., Any]] = {}
     raw_listeners: dict[str, Callable[[dict], Any]] = {}
+    subclassed = False
 
     def __new__(cls, *args, **kwargs):
         cls.name = cls.__name__
@@ -32,11 +33,14 @@ class Cog:
             if isinstance(attr, Command):
                 attr.subclassed = True
                 cls.commands.append(attr)
+                cls.subclassed = True
             elif isinstance(attr, Callable):
                 if name.startswith("on_"):
                     cls.listeners[name[3:].lower()] = attr
+                    cls.subclassed = True
                 elif name.startswith("raw_"):
                     cls.raw_listeners[name[4:].lower()] = attr
+                    cls.subclassed = True
         return super().__new__(cls)
 
     def __init__(self, name: str, description: Optional[str] = None):
