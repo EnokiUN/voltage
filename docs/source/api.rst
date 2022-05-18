@@ -199,3 +199,6 @@ Enums
 
 .. autoclass:: voltage.RelationshipType
 
+Event Listeners
+===============
+.. attributetable:: voltage.Client.listen
