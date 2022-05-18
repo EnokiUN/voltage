@@ -149,6 +149,27 @@ class WebSocketHandler:
     async def handle_message(self, payload: OnMessagePayload):
         """
         Handles the message event.
+        
+        Attributes
+        ----------
+        author: Union[:class:`User`, :class:`Member`]
+            The user who sent a message that triggered the event.
+        mention: :class:`User.mention`
+            Returns the mention of the user that triggered the event.
+        delete: :class:`Message.delete`
+            Deletes the message which triggered the event.
+        jump_url: :class:`Message.jump_url`
+            Returns the url redirecting to the message.
+        content: :class:`str`
+            `:class:str`
+        channel: :class:`Channel`
+            The channel the message was sent in.
+        id: :class:`str`
+            The ID of the message sent.
+        attachments: List[:class:`Asset`]]
+            Attachments inside of the message.
+        embeds: List[:class:`Embed`]
+            List of embeds within the message.
         """
         if payload["author"] == "00000000000000000000000000":  # system message
             return
