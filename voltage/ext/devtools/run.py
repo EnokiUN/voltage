@@ -67,7 +67,7 @@ async def py_cmd(ctx, *, code: str):
         else:
             res = str(res).replace(ctx.client.http.token, "[TOKEN REDACTED]")
             if len(res) > 2000:
-                res = f"{res[1997:]}..."
+                res = f"{res[:1997]}..."
             sendcoro = ctx.reply(res)
 
         await sendcoro
