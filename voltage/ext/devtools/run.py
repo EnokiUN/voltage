@@ -3,7 +3,8 @@ from time import time
 
 from voltage import File, SendableEmbed
 
-from ..commands import command, CommandContext, is_owner
+from ..commands import CommandContext, command, is_owner
+
 
 async def async_eval(ctx: CommandContext, code: str):
     # https://stackoverflow.com/a/60934327
