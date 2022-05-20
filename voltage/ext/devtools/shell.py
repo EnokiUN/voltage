@@ -4,8 +4,9 @@ from subprocess import PIPE, Popen
 from sys import platform
 from typing import Any, Awaitable, Callable
 
-from ..commands import CommandContext, command, is_owner
 from voltage import Message
+
+from ..commands import CommandContext, command, is_owner
 
 
 class Shell:
