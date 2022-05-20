@@ -98,6 +98,7 @@ class User(Messageable):
         "name",
         "avatar",
         "dm_channel",
+        "default_avatar",
         "flags",
         "badges",
         "online",
@@ -126,6 +127,7 @@ class User(Messageable):
 
         avatar = data.get("avatar")
         self.avatar = Asset(avatar, cache.http) if avatar else None
+        self.default_avatar = PartialAsset(f"{cache.http.api_url}/users/{self.id}/default_avatar", cache.http)
 
         relationships = []
         for i in data.get("relations", []):
@@ -197,22 +199,12 @@ class User(Messageable):
 
     @property
     def display_avatar(self):
-        return self.masquerade_avatar or self.avatar
+        print(self.default_avatar)
+        return self.masquerade_avatar or self.avatar or self.default_avatar
 
     @property
     def owner(self):
         return self.cache.get_user(self.owner_id) if self.bot else None
-
-    async def default_avatar(self):
-        """
-        A method which return's a user's default avatar.
-
-        Returns
-        -------
-        :class:`bytes`
-            The default avatar of the user.
-        """
-        return await self.cache.http.get_default_avatar(self.id)
 
     async def fetch_profile(self) -> UserProfile:
         """

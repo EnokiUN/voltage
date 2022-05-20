@@ -23,5 +23,5 @@ If you want to install the development version, run:
 
    This requires `git <https://git-scm.com/>`_ to be installed on your machine.
 
-   A minimum of python 3.8 is required.
+   A minimum of Python 3.8 is required.
 

@@ -188,7 +188,7 @@ class HTTPHandler:
             data["avatar"] = avatar
         if remove:
             data["remove"] = remove
-        return await self.request("PATCH", "users/me", json=data)
+        return await self.request("PATCH", "users/@me", json=data)
 
     async def fetch_self(self) -> UserPayload:
         """
@@ -216,7 +216,7 @@ class HTTPHandler:
         user_id: :class:`str`
             The id of the user.
         """
-        return await self.get_file_binary(f"users/{user_id}/default_avatar")
+        return await self.get_file_binary(f"{self.api_url}/users/{user_id}/default_avatar")
 
     async def fetch_mutuals(self, user_id: str):
         """
