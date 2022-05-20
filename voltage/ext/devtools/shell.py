@@ -4,7 +4,8 @@ from subprocess import PIPE, Popen
 from sys import platform
 from typing import Any, Awaitable, Callable
 
-from ..commands import CommandContext
+from ..commands import CommandContext, command, is_owner
+from voltage import Message
 
 
 class Shell:
@@ -78,8 +79,8 @@ class ShellContext:
             await self.msg.edit(f"```\n{self.out.strip()}\n```")
 
 
-@commands.is_owner()
-@client.command()
+@is_owner()
+@command()
 async def sh(ctx, *, cmd: str):
     shell = Shell(cmd)
     shctx = ShellContext(ctx, shell)
