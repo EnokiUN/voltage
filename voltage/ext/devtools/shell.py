@@ -86,8 +86,8 @@ class ShellContext:
 
 
 @is_owner()
-@command()
-async def sh(ctx, *, cmd: str):
+@command(name="sh", aliases=["shell"])
+async def sh_cmd(ctx, *, cmd: str):
     shell = Shell(cmd)
     shctx = ShellContext(ctx, shell)
     await shctx.start()
