@@ -3,10 +3,9 @@ from time import time
 
 from voltage import File, SendableEmbed
 
-from ..ext import commands
+from ..commands import command, CommandContext, is_owner
 
-
-async def async_eval(ctx: commands.CommandContext, code: str):
+async def async_eval(ctx: CommandContext, code: str):
     # https://stackoverflow.com/a/60934327
     globs = globals().copy()
     env = {
@@ -45,8 +44,8 @@ async def async_eval(ctx: commands.CommandContext, code: str):
     return await eval("__voltage__eval()", globs)  # nosec
 
 
-@commands.is_owner()  # I'll leave validation up to the user. # sike.
-@commands.command(name="py", aliases=["eval"])
+@is_owner()  # I'll leave validation up to the user. # sike.
+@command(name="py", aliases=["eval"])
 async def py_cmd(ctx, *, code: str):
     """Asynchronously executes python code.
     This command is dangerous and should only be used by the owner as it provides no type of sandboxing.

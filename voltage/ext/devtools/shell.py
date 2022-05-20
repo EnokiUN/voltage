@@ -2,7 +2,7 @@ from asyncio import get_running_loop
 from os import getenv
 from subprocess import PIPE, Popen  # nosec
 from sys import platform
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Optional
 
 from voltage import Message
 
@@ -14,10 +14,12 @@ class Shell:
 
     def __init__(self, command: str):
         self.command = command
-        self.process: Popen[bytes]
+        self.process: Optional[Popen[bytes]] = None
         self.loop = get_running_loop()
 
     def handle_stdout(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
+        if self.process is None:
+            raise RuntimeError("Process isn't initialized")
         stdout = self.process.stdout
         if stdout is None:
             raise RuntimeError("Process doesn't have an stdout")
@@ -25,6 +27,8 @@ class Shell:
             self.loop.call_soon_threadsafe(self.loop.create_task, callback(c.decode("UTF-8"), *args, *kwargs))
 
     def handle_stderr(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
+        if self.process is None:
+            raise RuntimeError("Process isn't initialized")
         stderr = self.process.stderr
         if stderr is None:
             raise RuntimeError("Process doesn't have an stderr")
