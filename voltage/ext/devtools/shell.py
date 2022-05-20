@@ -18,20 +18,16 @@ class Shell:
         self.loop = get_running_loop()
 
     def handle_stdout(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
-        if self.process is None:
-            raise RuntimeWarning("Process hasn't been initialized yet.")
         stdout = self.process.stdout
         if stdout is None:
-            raise RuntimeWarning("Process doesn't have an stdout")
+            raise RuntimeError("Process doesn't have an stdout")
         for c in iter(lambda: stdout.readline(), b""):
             self.loop.call_soon_threadsafe(self.loop.create_task, callback(c.decode("UTF-8"), *args, *kwargs))
 
     def handle_stderr(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
-        if self.process is None:
-            raise RuntimeWarning("Process hasn't been initialized yet.")
         stderr = self.process.stderr
         if stderr is None:
-            raise RuntimeWarning("Process doesn't have an stderr")
+            raise RuntimeError("Process doesn't have an stderr")
         for c in iter(lambda: stderr.readline(), b""):
             self.loop.call_soon_threadsafe(self.loop.create_task, callback(c.decode("UTF-8"), *args, *kwargs))
 
