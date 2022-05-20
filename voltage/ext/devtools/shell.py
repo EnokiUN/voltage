@@ -1,6 +1,6 @@
 from asyncio import get_running_loop
 from os import getenv
-from subprocess import PIPE, Popen
+from subprocess import PIPE, Popen # nosec
 from sys import platform
 from typing import Any, Awaitable, Callable
 
@@ -18,6 +18,8 @@ class Shell:
         self.loop = get_running_loop()
 
     def handle_stdout(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
+        if self.process is None:
+            raise RuntimeWarning("Process hasn't been initialized yet.")
         stdout = self.process.stdout
         if stdout is None:
             raise RuntimeWarning("Process doesn't have an stdout")
@@ -25,6 +27,8 @@ class Shell:
             self.loop.call_soon_threadsafe(self.loop.create_task, callback(c.decode("UTF-8"), *args, *kwargs))
 
     def handle_stderr(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
+        if self.process is None:
+            raise RuntimeWarning("Process hasn't been initialized yet.")
         stderr = self.process.stderr
         if stderr is None:
             raise RuntimeWarning("Process doesn't have an stderr")
@@ -34,7 +38,7 @@ class Shell:
     async def run(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
         """The fucntion that actually calls the command."""
         start = [getenv("SHELL") or "/bin/bash", "-c"] if platform != "win32" else ["cmd", "/c"]
-        self.process = Popen([*start, self.command], stdout=PIPE, stderr=PIPE)
+        self.process = Popen([*start, self.command], stdout=PIPE, stderr=PIPE) # nosec
         self.loop.run_in_executor(None, self.handle_stdout, callback, *args, **kwargs)
         f = self.loop.run_in_executor(None, self.handle_stderr, callback, *args, **kwargs)
         await f
