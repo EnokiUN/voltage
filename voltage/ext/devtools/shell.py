@@ -1,13 +1,15 @@
-from subprocess import Popen, PIPE
-from typing import Callable, Awaitable, Any
 from asyncio import get_running_loop
-from sys import platform
 from os import getenv
+from subprocess import PIPE, Popen
+from sys import platform
+from typing import Any, Awaitable, Callable
 
 from ..commands import CommandContext
 
+
 class Shell:
     """A simple class that executes a shell command sending it's output through a function"""
+
     def __init__(self, command: str):
         self.command = command
         self.process: Popen[bytes]
@@ -35,7 +37,8 @@ class Shell:
         f = self.loop.run_in_executor(None, self.handle_stderr, callback, *args, **kwargs)
         await f
 
-class ShellContext():
+
+class ShellContext:
     """A context for the shell command.
 
     Attributes
@@ -47,9 +50,10 @@ class ShellContext():
     update: :cls:`int`
         The number of lines the output message should update after.
     """
+
     __slots__ = ("ctx", "shell", "update", "out", "index", "msg")
 
-    def __init__(self, ctx: CommandContext, shell: Shell, update = 10):
+    def __init__(self, ctx: CommandContext, shell: Shell, update=10):
         self.ctx = ctx
         self.shell = shell
         self.update = update
@@ -60,7 +64,7 @@ class ShellContext():
 
     async def handle_out(self, out):
         self.out += out
-        if len(self.out) > 1994: # triple back tics
+        if len(self.out) > 1994:  # triple back tics
             while len(self.out) > 1994:
                 self.out = "\n".join(self.out.splitlines()[1:])
         self.index += 1
@@ -72,6 +76,7 @@ class ShellContext():
         await self.shell.run(self.handle_out)
         if self.index % self.update != 0:
             await self.msg.edit(f"```\n{self.out.strip()}\n```")
+
 
 @commands.is_owner()
 @client.command()
