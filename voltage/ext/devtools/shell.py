@@ -23,7 +23,8 @@ class Shell:
         stdout = self.process.stdout
         if stdout is None:
             raise RuntimeError("Process doesn't have an stdout")
-        for c in iter(lambda: stdout.readline(), b""):
+        # Note to future self: mypy sucks
+        for c in iter(lambda: stdout.readline(), b""): # type: ignore
             self.loop.call_soon_threadsafe(self.loop.create_task, callback(c.decode("UTF-8"), *args, *kwargs))
 
     def handle_stderr(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
@@ -32,7 +33,7 @@ class Shell:
         stderr = self.process.stderr
         if stderr is None:
             raise RuntimeError("Process doesn't have an stderr")
-        for c in iter(lambda: stderr.readline(), b""):
+        for c in iter(lambda: stderr.readline(), b""): # type: ignore
             self.loop.call_soon_threadsafe(self.loop.create_task, callback(c.decode("UTF-8"), *args, *kwargs))
 
     async def run(self, callback: Callable[[str], Awaitable[Any]], *args, **kwargs):
