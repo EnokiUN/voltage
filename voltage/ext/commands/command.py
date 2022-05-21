@@ -220,7 +220,7 @@ class Command:
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
                         kwargs[name] = await self.convert_arg(
-                            data, context.content[len(prefix + self.name + " ".join(given[:i])) + 1 :], context
+                            data, context.content[param_start + len(" ".join(given[:i])) + 1 :], context
                         )
                     else:
                         if arg is None:
