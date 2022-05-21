@@ -192,7 +192,7 @@ class Command:
         start_index = 2 if self.subclassed else 1
 
         if len((params := self.signature.parameters)) > start_index:
-            param_start = len(prefix) + len(context.content[len(prefix):].split()[0])
+            param_start = len(prefix) + len(context.content[len(prefix) :].split()[0])
             given = findall(
                 r'(?:[^\s,"]|"(?:\\.|[^"])*")+',
                 context.content[param_start:],
