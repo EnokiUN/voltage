@@ -3,6 +3,7 @@ from os import getenv
 from subprocess import PIPE, Popen  # nosec
 from sys import platform
 from typing import Any, Awaitable, Callable, Optional
+from time import time
 
 from voltage import Message
 
@@ -58,14 +59,15 @@ class ShellContext:
         The number of lines the output message should update after.
     """
 
-    __slots__ = ("ctx", "shell", "update", "out", "index", "msg")
+    __slots__ = ("ctx", "shell", "update", "out", "sent", "last", "msg")
 
-    def __init__(self, ctx: CommandContext, shell: Shell, update=10):
+    def __init__(self, ctx: CommandContext, shell: Shell, update=1):
         self.ctx = ctx
         self.shell = shell
         self.update = update
         self.out = ""
-        self.index = 0
+        self.sent = True
+        self.last = 0
 
         self.msg: Message
 
@@ -74,14 +76,17 @@ class ShellContext:
         if len(self.out) > 1994:  # triple back tics
             while len(self.out) > 1994:
                 self.out = "\n".join(self.out.splitlines()[1:])
-        self.index += 1
-        if self.index % self.update == 0:
+        if time() - self.last > self.update:
+            self.sent = True
+            self.last = time()
             await self.msg.edit(f"```\n{self.out.strip()}\n```")
+        else:
+            self.sent = False
 
     async def start(self):
         self.msg = await self.ctx.reply("Waiting for output...")
         await self.shell.run(self.handle_out)
-        if self.index % self.update != 0:
+        if self.sent is False:
             await self.msg.edit(f"```\n{self.out.strip()}\n```")
 
 
