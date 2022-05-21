@@ -124,7 +124,7 @@ class Command:
         self.func = func
         self.name = name or func.__name__
         self.description = description or func.__doc__
-        self.aliases = aliases or [self.name]
+        self.aliases = aliases
         self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
         self.signature = signature(func)
         self.cog = cog
