@@ -80,7 +80,7 @@ class NotEnoughArgs(VoltageException):
         self.actual = actual
 
     def __str__(self):
-        s = "s" if expected > 1 else ""
+        s = "s" if self.expected > 1 else ""
         return f"{self.command.name} expected {self.expected} arg{s}, got {self.actual}"
 
 
