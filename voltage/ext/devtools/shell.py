@@ -2,8 +2,8 @@ from asyncio import get_running_loop
 from os import getenv
 from subprocess import PIPE, Popen  # nosec
 from sys import platform
-from typing import Any, Awaitable, Callable, Optional
 from time import time
+from typing import Any, Awaitable, Callable, Optional
 
 from voltage import Message
 
