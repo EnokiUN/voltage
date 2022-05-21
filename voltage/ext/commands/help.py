@@ -28,7 +28,7 @@ class HelpCommand:
         text = "\n### **No Category**\n"
         covered = []
         for command in self.client.commands.values():
-            if command in covered: # will fix this shittiness after rewrite
+            if command in covered:  # will fix this shittiness after rewrite
                 continue
             if command.cog is None:
                 text += f"> {command.name}\n"
