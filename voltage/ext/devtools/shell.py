@@ -61,7 +61,7 @@ class ShellContext:
 
     __slots__ = ("ctx", "shell", "update", "out", "sent", "last", "msg")
 
-    def __init__(self, ctx: CommandContext, shell: Shell, update=1):
+    def __init__(self, ctx: CommandContext, shell: Shell, update=0.25):
         self.ctx = ctx
         self.shell = shell
         self.update = update
