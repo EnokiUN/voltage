@@ -193,7 +193,7 @@ class Command:
 
         if len((params := self.signature.parameters)) > start_index:
             given = findall(
-                r'(?:[^\s,"]|"(?:\\.|[^"])*")+', context.content[len(prefix + self.name) :]
+                    r'(?:[^\s,"]|"(?:\\.|[^"])*")+', context.content[len(prefix + context.content[len(prefix):].split()[0]):]
             )  # https://stackoverflow.com/a/16710842
             args: list[str] = []
             kwargs = {}
