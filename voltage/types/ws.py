@@ -140,8 +140,7 @@ class OnServerRoleDeletePayload(BasePayload):
 class OnUserUpdatePayload(BasePayload):
     id: str
     data: dict
-    clear: Literal["ProfileContent",
-                   "ProfileBackground", "StatusText", "Avatar"]
+    clear: Literal["ProfileContent", "ProfileBackground", "StatusText", "Avatar"]
 
 
 class OnUserRelationshipPayload(BasePayload):
