@@ -108,14 +108,17 @@ class Message:
         self.id = data["_id"]
         self.created_at = ULID().decode(self.id)
         self.content = data["content"]
-        self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
-        self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
+        self.attachments = [Asset(a, cache.http)
+                            for a in data.get("attachments", [])]
+        self.embeds = [create_embed(e, cache.http)
+                       for e in data.get("embeds", [])]
 
         self.channel = cache.get_channel(data["channel"])
 
         self.server = self.channel.server
         self.author = (
-            cache.get_member(self.server.id, data["author"]) if self.server else cache.get_user(data["author"])
+            cache.get_member(
+                self.server.id, data["author"]) if self.server else cache.get_user(data["author"])
         )
 
         if masquerade := data.get("masquerade"):
@@ -127,7 +130,8 @@ class Message:
 
         self.edited_at: Optional[datetime]
         if edited := data.get("edited"):
-            self.edited_at = datetime.strptime(edited["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
+            self.edited_at = datetime.strptime(
+                edited["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
         else:
             self.edited_at = None
 
@@ -165,14 +169,16 @@ class Message:
             The new embeds of the message.
         """
         if content is None and embed is None and embeds is None:
-            raise ValueError("You must provide at least one of the following: content, embed, embeds")
+            raise ValueError(
+                "You must provide at least one of the following: content, embed, embeds")
 
         if embed:
             embeds = [embed]
 
         content = str(content) if content else None
 
-        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)  # type: ignore
+        # type: ignore
+        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)
 
     async def delete(self, *, delay: Optional[float] = None):
         """
@@ -187,7 +193,8 @@ class Message:
         content: Optional[str] = None,
         *,
         embed: Optional[Union[SendableEmbed, SendableEmbedPayload]] = None,
-        embeds: Optional[List[Union[SendableEmbed, SendableEmbedPayload]]] = None,
+        embeds: Optional[List[Union[SendableEmbed,
+                                    SendableEmbedPayload]]] = None,
         attachment: Optional[Union[File, str]] = None,
         attachments: Optional[List[Union[File, str]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
@@ -251,6 +258,7 @@ class Message:
     def _update(self, data: OnMessageUpdatePayload):
         if new := data.get("data"):
             if new.get("edited"):
-                self.edited_at = datetime.strptime(new["data"]["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
+                self.edited_at = datetime.strptime(
+                    new["edited"]["$date"], "%Y-%m-%dT%H:%M:%S.%fz")
             if new.get("content"):
                 self.content = new["content"]

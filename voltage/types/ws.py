@@ -38,7 +38,7 @@ class OnMessagePayload(BasePayload, MessagePayload):
 
 class MessageUpdateDataPayload(BasePayload):
     content: str
-    data: EditedPayload
+    edited: EditedPayload
 
 
 class OnMessageUpdatePayload(BasePayload):
@@ -138,7 +138,8 @@ class OnServerRoleDeletePayload(BasePayload):
 class OnUserUpdatePayload(BasePayload):
     id: str
     data: dict
-    clear: Literal["ProfileContent", "ProfileBackground", "StatusText", "Avatar"]
+    clear: Literal["ProfileContent",
+                   "ProfileBackground", "StatusText", "Avatar"]
 
 
 class OnUserRelationshipPayload(BasePayload):
