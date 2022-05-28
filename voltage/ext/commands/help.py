@@ -26,13 +26,20 @@ class HelpCommand:
             icon_url=getattr(self.client.user.display_avatar, "url"),
         )
         text = "\n### **No Category**\n"
+        covered = []
         for command in self.client.commands.values():
+            if command in covered:  # will fix this shittiness after rewrite
+                continue
             if command.cog is None:
                 text += f"> {command.name}\n"
+                covered.append(command)
         for i in self.client.cogs.values():
+            if command in covered:
+                continue
             text += f"\n### **{i.name}**\n{i.description}\n"
             for j in i.commands:
                 text += f"\n> {j.name}"
+                covered.append(command)
         if embed.description:
             embed.description += text
         return await ctx.reply("Here, have a help embed", embed=embed)

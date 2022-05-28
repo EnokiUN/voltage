@@ -37,14 +37,15 @@ class HTTPError(VoltageException):
 
 class PermissionError(VoltageException):
     """
-    An n exception that's riased when the client doesn't have the required permissions to perform an action.
+    An exception that's raised when the client doesn't have the required permissions to perform an action.
     """
+
     pass
 
 
 class CommandNotFound(VoltageException):
     """
-    An exception that is raised when a command is not found.
+    An exception that's raised when a command is not found.
 
     Attributes
     ----------
@@ -79,7 +80,8 @@ class NotEnoughArgs(VoltageException):
         self.actual = actual
 
     def __str__(self):
-        return f"{self.command.name} expected {self.expected} args, got {self.actual}"
+        s = "s" if self.expected > 1 else ""
+        return f"{self.command.name} expected {self.expected} arg{s}, got {self.actual}"
 
 
 class NotFoundException(VoltageException):
@@ -151,7 +153,7 @@ class NotBotOwner(VoltageException):
         self.user = user
 
     def __str__(self):
-        return "You are not the bot owner"
+        return "You are not this bot's owner"
 
 
 class NotEnoughPerms(VoltageException):
@@ -166,8 +168,28 @@ class NotEnoughPerms(VoltageException):
         The user that tried to envoke the command.
     """
 
-    def __init__(self, user: Union[User, Member]):
+    def __init__(self, user: Union[User, Member], perm: str):
         self.user = user
+        self.perm = perm
 
     def __str__(self):
-        return "You do not have enough permissions"
+        return f"You do not have the {self.perm} permission required to use this command."
+
+
+class BotNotEnoughPerms(VoltageException):
+    """
+    An exception that is raised when the bot does not have enough permissions.
+
+    Called by the :func:`~voltage.ext.commands.has_perms` check
+
+    Attributes
+    ----------
+    user: Union[:class:`voltage.User`, :class:`voltage.Member`]
+        The user that tried to envoke the command.
+    """
+
+    def __init__(self, perm: str):
+        self.perm = perm
+
+    def __str__(self):
+        return f"I am lacking the {self.perm} permission required to use this command."

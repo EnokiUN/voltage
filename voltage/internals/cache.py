@@ -5,6 +5,7 @@ from time import time
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from ..channels import Channel, DMChannel, create_channel
+from ..errors import HTTPError
 from ..member import Member
 from ..message import Message
 from ..server import Server
@@ -165,14 +166,14 @@ class CacheHandler:
         """
         return self.dm_channels.get(dm_channel_id)
 
-    async def fetch_message(self, server_id: str, message_id: str) -> Message:
+    async def fetch_message(self, channel_id: str, message_id: str) -> Message:
         """
         Fetches a message from the api if it doesn't exist in the cache.
 
         Parameters
         ----------
-        server_id: :class:`str`
-            The id of the server the message is in.
+        channel_id: :class:`str`
+            The id of the channel the message is in.
         message_id: :class:`str`
             The id of the message to fetch.
 
@@ -183,7 +184,7 @@ class CacheHandler:
         """
         if message := self.messages.get(message_id):
             return message
-        return self.add_message(await self.http.fetch_message(server_id, message_id))
+        return self.add_message(await self.http.fetch_message(channel_id, message_id))
 
     async def fetch_member(self, server_id: str, member_id: str) -> Member:
         """
@@ -273,7 +274,7 @@ class CacheHandler:
         self.channels[channel.id] = channel
         return channel
 
-    async def add_channel_by_id(self, channel_id: str) -> Channel:
+    async def add_channel_by_id(self, channel_id: str) -> Optional[Channel]:
         """
         Fetches a channel object by it's id then caches it if it doesn't exist already.
 
@@ -289,7 +290,12 @@ class CacheHandler:
         """
         if channel := self.channels.get(channel_id):
             return channel
-        return self.add_channel(await self.http.fetch_channel(channel_id))
+        try:
+            return self.add_channel(await self.http.fetch_channel(channel_id))
+        except HTTPError as e:
+            if e.response.status != 404:
+                raise
+            return None  # mypy wtf bro
 
     def add_member(self, server_id: str, data: MemberPayload) -> Member:
         """
@@ -356,7 +362,11 @@ class CacheHandler:
         if user := self.users.get(data["_id"]):
             return user
         user = User(data, self)
-        self.loop.create_task(user.fetch_profile())
+        # Hello there future Enoki, I'm here to tell you that 1. yes that worked 2. yes you did that you fucking idiot 3. whatever your fix is it will probably break after a while.
+        # What that line does? figure it out for yourself loser.
+
+        # self.loop.create_task(user.fetch_profile())
+        # Sham btw ^^^^^
         self.users[user.id] = user
         return user
 

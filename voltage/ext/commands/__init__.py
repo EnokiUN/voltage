@@ -21,7 +21,7 @@ Commands frameworks example:
     client.run("TOKEN") # Again, replace with your bot token.
  
 """
-from .check import Check, check, has_perms, is_owner
+from .check import Check, bot_has_perms, check, has_perms, is_owner, is_server_owner
 from .client import CommandsClient
 from .cog import Cog
 from .command import Command, CommandContext, command

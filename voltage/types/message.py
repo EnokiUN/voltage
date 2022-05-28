@@ -15,9 +15,6 @@ class ContentPayload(TypedDict):
     name: NotRequired[str]
 
 
-EditedPayload = TypedDict("EditedPayload", {"$date": str})
-
-
 class MasqueradePayload(TypedDict):
     name: str
     avatar: str
@@ -29,7 +26,7 @@ class MessagePayload(TypedDict):
     author: str
     content: str
     attachments: NotRequired[List[FilePayload]]
-    edited: NotRequired[EditedPayload]
+    edited: NotRequired[str]
     embeds: NotRequired[List[EmbedPayload]]
     mentions: NotRequired[List[str]]
     replies: NotRequired[List[str]]

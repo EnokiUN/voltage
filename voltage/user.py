@@ -98,13 +98,15 @@ class User(Messageable):
         "name",
         "avatar",
         "dm_channel",
+        "default_avatar",
         "flags",
         "badges",
         "online",
         "status",
         "relationships",
         "avatar",
-        "profile",
+        "_profile",
+        "_profile_fetched",
         "bot",
         "owner_id",
         "cache",
@@ -125,6 +127,7 @@ class User(Messageable):
 
         avatar = data.get("avatar")
         self.avatar = Asset(avatar, cache.http) if avatar else None
+        self.default_avatar = PartialAsset(f"{cache.http.api_url}/users/{self.id}/default_avatar", cache.http)
 
         relationships = []
         for i in data.get("relations", []):
@@ -144,7 +147,8 @@ class User(Messageable):
         else:
             self.status = Status(None, PresenceType.invisible)
 
-        self.profile = UserProfile(None, None)
+        self._profile = UserProfile(None, None)
+        self._profile_fetched = False
 
         bot = data.get("bot", {})
         self.bot = True if bot else False
@@ -179,6 +183,13 @@ class User(Messageable):
         return f"<User {self.name}>"
 
     @property
+    def profile(self) -> UserProfile:
+        if not self._profile_fetched:
+            self.cache.loop.create_task(self.fetch_profile())
+            self._profile_fetched = True
+        return self._profile
+
+    @property
     def mention(self):
         return f"<@{self.id}>"
 
@@ -188,22 +199,12 @@ class User(Messageable):
 
     @property
     def display_avatar(self):
-        return self.masquerade_avatar or self.avatar
+        print(self.default_avatar)
+        return self.masquerade_avatar or self.avatar or self.default_avatar
 
     @property
     def owner(self):
         return self.cache.get_user(self.owner_id) if self.bot else None
-
-    async def default_avatar(self):
-        """
-        A method which return's a user's default avatar.
-
-        Returns
-        -------
-        :class:`bytes`
-            The default avatar of the user.
-        """
-        return await self.cache.http.get_default_avatar(self.id)
 
     async def fetch_profile(self) -> UserProfile:
         """
@@ -217,15 +218,15 @@ class User(Messageable):
         data = await self.cache.http.fetch_user_profile(self.id)
         bg = data.get("background")
         background = Asset(bg, self.cache.http) if bg is not None else None
-        self.profile = UserProfile(data.get("content"), background)
+        self._profile = UserProfile(data.get("content"), background)
         return self.profile
 
     def _update(self, data: OnUserUpdatePayload):
         if clear := data.get("clear"):
             if clear == "ProfileContent":
-                self.profile = UserProfile(None, self.profile.background)
+                self._profile = UserProfile(None, self._profile.background)
             elif clear == "ProfileBackground":
-                self.profile = UserProfile(self.profile.content, None)
+                self._profile = UserProfile(self._profile.content, None)
             elif clear == "StatusText":
                 self.status = Status(None, self.status.presence)
             elif clear == "Avatar":
@@ -236,9 +237,9 @@ class User(Messageable):
                 presence = status.get("presence") or self.status.presence
                 self.status = Status(status.get("text"), PresenceType(presence))
             if bg := new.get("profile.background"):
-                self.profile = UserProfile(self.profile.content, Asset(bg, self.cache.http))
+                self._profile = UserProfile(self._profile.content, Asset(bg, self.cache.http))
             if content := new.get("profile.content"):
-                self.profile = UserProfile(content, self.profile.background)
+                self._profile = UserProfile(content, self._profile.background)
             if avatar := new.get("avatar"):
                 self.avatar = Asset(avatar, self.cache.http)
             if online := new.get("online"):

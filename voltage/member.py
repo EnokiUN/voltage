@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .asset import Asset
-from .permissions import ChannelPermissions, ServerPermissions
+from .permissions import Permissions
 
 # Internal imports
 from .user import User
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .internals import CacheHandler
     from .roles import Role
     from .server import Server
-    from .types import MemberPayload, OnServerMemberUpdatePayload
+    from .types import MemberPayload, OnServerMemberUpdatePayload, OverrideFieldPayload
 
 
 def make_member_dot_zip(
@@ -38,13 +38,11 @@ class Member(User):
         The member's avatar.
     roles: List[:class:`Role`]
         The member's roles.
-    permissions: :class:`ServerPermissions`
+    permissions: :class:`Permissions`
         The member's permissions.
-    channel_permissions: :class:`ChannelPermissions`
-        The member's channel permissions.
     """
 
-    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions", "channel_permissions")
+    __slots__ = ("nickname", "server_avatar", "roles", "server", "permissions")
 
     def __init__(self, data: MemberPayload, server: Server, cache: CacheHandler):
         user = cache.get_user(data["_id"]["user"])
@@ -58,18 +56,16 @@ class Member(User):
             self.server_avatar = None
 
         roles = []
-        permint = 0
-        chpermint = 0
+        perms: OverrideFieldPayload = {"a": 0, "d": 0}
         for i in data.get("roles", []):
             role = server.get_role(i)
             if role:
                 roles.append(role)
-                permint |= role.permissions.flags
-                chpermint |= role.channel_permissions.flags
+                perms["a"] |= role.permissions.allow.flags
+                perms["d"] |= role.permissions.deny.flags
 
         self.roles: list[Role] = sorted(roles, key=lambda r: r.rank, reverse=True)
-        self.permissions = ServerPermissions.new_with_flags(permint)
-        self.channel_permissions = ChannelPermissions.new_with_flags(chpermint)
+        self.permissions = Permissions(perms)
 
         self.server = server
 
@@ -92,7 +88,7 @@ class Member(User):
 
         This is the member's masquerade avatar or their server's avatar if they have one, otherwise their avatar.
         """
-        return self.masquerade_avatar or self.server_avatar or self.avatar
+        return self.masquerade_avatar or self.server_avatar or self.avatar or self.default_avatar
 
     async def kick(self):
         """

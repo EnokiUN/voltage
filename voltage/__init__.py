@@ -5,44 +5,7 @@ Voltage
 
 A Simple Pythonic Asynchronous API wrapper for Revolt.
 
-=====
-Usage
-=====
-
-.. code-block:: python3
-
-    import voltage
-
-    client = voltage.Client()
-
-    @client.listen('ready')
-    async def on_ready(payload):
-        print(f"Logged in as {client.user}")
-
-    @client.listen('message')
-    async def on_message(message): # doesn't matter what you call the function.
-        if message.content == '-ping':
-            await message.channel.send('pong!')
-        if message.content == '-embed':
-            embed = voltage.SendableEmbed(title="Hello World", description="This is an embed")
-            await message.reply(content="embed", embed=embed) # Obligatory message content.
-
-    client.run("TOKEN")
-
-=======
-Credits
-=======
-
-    - **Contributers**, thank you :)
-
-    - `Revolt.py <https://github.com/revoltchat/revolt.py>`_, When shit broke, that's where I went.
-
-    - `Revolt.js <https://github.com/revoltchat/revolt.js>`_, When the docs fail you.
-
-    - `Discord.py <https://github.com/Rapptz/discord.py>`_, Also a really great help while making this.
-
-    - **Revolt development team**, Absolute chads.
-
+To whoever sees this: The impostor is sus.
 """
 
 # 2 = 1 # How's this haru?
@@ -53,7 +16,7 @@ __title__ = "Voltage"
 __author__ = "EnokiUN"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2021-present EnokiUN"
-__version__ = "0.1.5a4"
+__version__ = "0.1.5a7"  # Updating this is such a pain.
 
 from .asset import Asset, PartialAsset
 from .categories import Category
@@ -77,15 +40,16 @@ from .enums import (
     SortType,
 )
 from .errors import (
+    BotNotEnoughPerms,
     ChannelNotFound,
     CommandNotFound,
     HTTPError,
-    PermissionError,
     MemberNotFound,
     NotBotOwner,
     NotEnoughArgs,
     NotEnoughPerms,
     NotFoundException,
+    PermissionError,
     RoleNotFound,
     UserNotFound,
     VoltageException,
@@ -95,12 +59,7 @@ from .invites import Invite
 from .member import Member
 from .message import Message, MessageMasquerade, MessageReply
 from .messageable import Messageable
-from .permissions import (
-    ChannelPermissions,
-    ServerPermissions,
-    channel_permissions,
-    server_permissions,
-)
+from .permissions import Permissions, PermissionsFlags
 from .roles import Role
 from .server import Server, ServerBan, SystemMessages
 from .user import User

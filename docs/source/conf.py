@@ -37,6 +37,8 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
+    "sphinxext.opengraph",
+    "sphinxcontrib_trio",
     "attributetable",
 ]
 
@@ -47,6 +49,13 @@ templates_path = ["_templates"]
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
+
+resource_links = {
+    "server": "https://rvlt.gg/bwtscg1F",
+    "issues": "https://github.com/EnokiUN/voltage/issues",
+    "discussions": "https://github.com/EnokiUN/voltage/discussions",
+    "examples": "https://github.com/EnokiUN/voltage/tree/main/examples",
+}
 
 
 # -- Options for HTML output -------------------------------------------------

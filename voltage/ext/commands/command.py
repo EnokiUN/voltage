@@ -3,7 +3,7 @@ from __future__ import annotations
 from asyncio import gather
 from inspect import Parameter, _empty, isclass, ismethod, signature
 from itertools import zip_longest
-from shlex import split
+from re import findall
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
 
 # internal imports
@@ -124,7 +124,7 @@ class Command:
         self.func = func
         self.name = name or func.__name__
         self.description = description or func.__doc__
-        self.aliases = aliases or [self.name]
+        self.aliases = aliases
         self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
         self.signature = signature(func)
         self.cog = cog
@@ -192,7 +192,11 @@ class Command:
         start_index = 2 if self.subclassed else 1
 
         if len((params := self.signature.parameters)) > start_index:
-            given = split(context.content[len(prefix + self.name) :])
+            param_start = len(prefix) + len(context.content[len(prefix) :].split()[0])
+            given = findall(
+                r'(?:[^\s,"]|"(?:\\.|[^"])*")+',
+                context.content[param_start:],
+            )  # https://stackoverflow.com/a/16710842
             args: list[str] = []
             kwargs = {}
 
@@ -215,7 +219,9 @@ class Command:
                                 raise NotEnoughArgs(self, len(params) - 1, len(given))
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
-                        kwargs[name] = await self.convert_arg(data, " ".join(given[i:]), context)
+                        kwargs[name] = await self.convert_arg(
+                            data, context.content[param_start + len(" ".join(given[:i])) + 1 :], context
+                        )
                     else:
                         if arg is None:
                             if data.default is _empty:

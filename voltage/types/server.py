@@ -7,6 +7,7 @@ from typing_extensions import NotRequired, Required
 from voltage.types.channel import CategoryPayload
 
 if TYPE_CHECKING:
+    from .channel import OverrideFieldPayload
     from .file import FilePayload
 
 
@@ -25,17 +26,14 @@ class MemberPayload(_MemberBase):
     _id: MemberIDPayload
 
 
-PermissionPayload = Tuple[int, int]
-
-
 class PartialRolePayload(TypedDict):
     name: str
-    permissions: PermissionPayload
+    permissions: OverrideFieldPayload
 
 
 class RolePayload(TypedDict):
     name: str
-    permissions: PermissionPayload
+    permissions: OverrideFieldPayload
     colour: NotRequired[str]
     hoist: NotRequired[bool]
     rank: int
@@ -74,7 +72,7 @@ class ServerPayload(TypedDict):
     name: str
     owner: str
     channels: List[str]
-    default_permissions: PermissionPayload
+    default_permissions: OverrideFieldPayload
     nonce: NotRequired[str]
     description: NotRequired[str]
     categories: NotRequired[List[CategoryPayload]]

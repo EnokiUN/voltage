@@ -135,15 +135,9 @@ Roles
 Permissions
 ~~~~~~~~~~~
 
-.. attributetable:: voltage.ChannelPermissions
+.. attributetable:: voltage.Permissions
 
-.. autoclass:: voltage.ChannelPermissions
-    :members:
-    :inherited-members:
-
-.. attributetable:: voltage.ServerPermissions
-
-.. autoclass:: voltage.ServerPermissions
+.. autoclass:: voltage.Permissions
     :members:
     :inherited-members:
 
