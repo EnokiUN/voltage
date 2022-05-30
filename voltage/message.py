@@ -150,8 +150,8 @@ class Message:
         self,
         content: Optional[str] = None,
         *,
-        embed: Optional[SendableEmbed] = None,
-        embeds: Optional[List[SendableEmbed]] = None,
+        embed: Optional[Union[SendableEmbedPayload, SendableEmbed]] = None,
+        embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
     ):
         """Edits the message.
 
