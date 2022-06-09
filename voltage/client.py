@@ -143,7 +143,7 @@ class Client:
 
         return inner
 
-    def run(self, token: str, *, bot: bool = True):
+    def run(self, token: str, *, bot: bool = True, banner: bool = True):
         """
         Run the client.
 
@@ -153,8 +153,10 @@ class Client:
             The bot token.
         bot: :class:`bool`
             Whether or not the client is a bot.
+        banner: :class:`bool`
+            Whether or not to print startup banner.
         """
-        self.loop.run_until_complete(self.start(token, bot=bot))
+        self.loop.run_until_complete(self.start(token, bot=bot, banner=banner))
 
     async def wait_for(
         self, event: str, *, timeout: Optional[float] = None, check: Optional[Callable[..., bool]] = None
@@ -230,7 +232,7 @@ class Client:
             members += list(servermembers.values())
         return members
 
-    async def start(self, token: str, *, bot: bool = True):
+    async def start(self, token: str, *, bot: bool = True, banner: bool = True):
         """
         Start the client.
 
@@ -240,13 +242,15 @@ class Client:
             The bot token.
         bot: :class:`bool`
             Whether or not the client is a bot.
+        banner: :class:`bool`
+            Whether or not to print startup banner.
         """
         self.http = HTTPHandler(self.client, token, bot=bot)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
         self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
         await self.http.get_api_info()
         self.user = self.cache.add_user(await self.http.fetch_self())
-        await self.ws.connect()
+        await self.ws.connect(banner)
 
     async def dispatch(self, event: str, *args, **kwargs):
         event = event.lower()
