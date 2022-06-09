@@ -85,7 +85,7 @@ If you want to install the main branch which may have more features but will be 
 Credits
 =======
 
-    - **Contributors**, thank you :)
+    - **Contributors**, `thank you :) <https://github.com/EnokiUN/voltage/graphs/contributors>`_
 
     - `Revolt.py <https://github.com/revoltchat/revolt.py>`_, when shit broke, that's where I went.
 
