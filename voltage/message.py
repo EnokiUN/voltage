@@ -150,8 +150,8 @@ class Message:
         self,
         content: Optional[str] = None,
         *,
-        embed: Optional[SendableEmbed] = None,
-        embeds: Optional[List[SendableEmbed]] = None,
+        embed: Optional[Union[SendableEmbedPayload, SendableEmbed]] = None,
+        embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
     ):
         """Edits the message.
 
@@ -172,7 +172,8 @@ class Message:
 
         content = str(content) if content else None
 
-        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)  # type: ignore
+        # type: ignore
+        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)
 
     async def delete(self, *, delay: Optional[float] = None):
         """Deletes the message."""

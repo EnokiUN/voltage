@@ -90,6 +90,11 @@ class CommandsClient(Client):
         command: :class:`Command`
             The command to add.
         """
+        if command.name in self.commands:
+            raise ValueError(f"Command {command.name} already exists.")
+        self.commands[command.name] = command
+        if command.aliases is None:
+            return
         for alias in command.aliases:
             if alias in self.commands:
                 raise ValueError(f"Command {alias} already exists.")

@@ -124,7 +124,7 @@ class Command:
         self.func = func
         self.name = name or func.__name__
         self.description = description or func.__doc__
-        self.aliases = aliases or [self.name]
+        self.aliases = aliases
         self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
         self.signature = signature(func)
         self.cog = cog
@@ -192,8 +192,10 @@ class Command:
         start_index = 2 if self.subclassed else 1
 
         if len((params := self.signature.parameters)) > start_index:
+            param_start = len(prefix) + len(context.content[len(prefix) :].split()[0])
             given = findall(
-                r'(?:[^\s,"]|"(?:\\.|[^"])*")+', context.content[len(prefix + self.name) :]
+                r'(?:[^\s,"]|"(?:\\.|[^"])*")+',
+                context.content[param_start:],
             )  # https://stackoverflow.com/a/16710842
             args: list[str] = []
             kwargs = {}
@@ -218,7 +220,7 @@ class Command:
                             kwargs[name] = await self.convert_arg(data, data.default, context)
                             break
                         kwargs[name] = await self.convert_arg(
-                            data, context.content[len(prefix + self.name + " ".join(given[:i])) + 1 :], context
+                            data, context.content[param_start + len(" ".join(given[:i])) + 1 :], context
                         )
                     else:
                         if arg is None:
