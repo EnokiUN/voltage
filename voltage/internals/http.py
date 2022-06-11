@@ -72,7 +72,7 @@ class HTTPHandler:
         -------
         The response of the request.
         """
-        header = {"User-Agent": "Voltage (beta)", "Content-Type": "application/json"}
+        header = {"User-Agent": "Voltage", "Content-Type": "application/json"}
         token_header = "x-bot-token" if self.bot else "x-session-token"
         if auth:
             header[token_header] = self.token
