@@ -91,7 +91,7 @@ class WebSocketHandler:
             print(
                 f"""\033[1;31m                                                  
     \033[1;31m                  **************                  \033[1;34mLibrary: Voltage
-    \033[1;31m               ***  ***************               \033[1;35mVersion: 0.1.5a7
+    \033[1;31m               ***  ***************               \033[1;35mVersion: 0.1.5a8
     \033[1;31m               ***   **************               \033[1;36mBot: {self.user}
     \033[1;31m               ********************               \033[1;37mBot ID: {self.user.id}
     \033[1;31m                         **********               \033[1;30mAPI endpoint: {self.http.api_url}
