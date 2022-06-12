@@ -22,10 +22,10 @@ class Cog:
     def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
-        commands: list[Command] = []
-        listeners: dict[str, Callable[..., Any]] = {}
-        raw_listeners: dict[str, Callable[..., Any]] = {}
-        subclassed: bool = False
+        self.commands: list[Command] = []
+        self.listeners: dict[str, Callable[..., Any]] = {}
+        self.raw_listeners: dict[str, Callable[..., Any]] = {}
+        self.subclassed: bool = False
 
     def listen(self, event: str, *, raw: bool = False):
         """
