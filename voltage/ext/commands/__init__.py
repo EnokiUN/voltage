@@ -23,7 +23,7 @@ Commands frameworks example:
 """
 from .check import Check, bot_has_perms, check, has_perms, is_owner, is_server_owner
 from .client import CommandsClient
-from .cog import Cog
+from .cog import Cog, SubclassedCog
 from .command import Command, CommandContext, command
 from .converters import Converter, converter
 from .help import HelpCommand
