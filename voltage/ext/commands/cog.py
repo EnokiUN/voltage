@@ -24,7 +24,6 @@ class Cog:
         self.description = description
         subclassed: bool = False
 
-
     def listen(self, event: str, *, raw: bool = False):
         """
         Registers a function to listen for an event.
@@ -108,6 +107,7 @@ class Cog:
 
         return decorator
 
+
 class SubclassedCog(Cog):
     """
     A class representing a cog.
@@ -148,5 +148,4 @@ class SubclassedCog(Cog):
                 elif name.startswith("raw_"):
                     cls.raw_listeners[name[4:].lower()] = attr
                     cls.subclassed = True
-        return super().__new__(cls) 
-    
+        return super().__new__(cls)
