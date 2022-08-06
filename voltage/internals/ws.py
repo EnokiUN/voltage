@@ -271,7 +271,7 @@ class WebSocketHandler:
         """
         Handles the server create event.
         """
-        server = payload['server']
+        server = payload["server"]
         await self.dispatch("server_create", self.cache.add_server(server))
 
     async def handle_serverupdate(self, payload: OnServerUpdatePayload):
