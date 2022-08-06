@@ -187,6 +187,24 @@ class WebSocketHandler:
         except KeyError:
             return
 
+    async def handle_messagereact(self, payload: OnMessageReactPayload):
+        """
+        Handles the message react event.
+        """
+        message = await self.cache.fetch_message(payload["channel_id"], payload["id"])
+        user_id = payload["user_id"]
+        emoji_id = payload["emoji_id"]
+        await self.dispatch("message_react", message, user_id, emoji_id)
+
+    async def handle_messageunreact(self, payload: OnMessageReactPayload):
+        """
+        Handles the message unreact event.
+        """
+        message = await self.cache.fetch_message(payload["channel_id"], payload["id"])
+        user_id = payload["user_id"]
+        emoji_id = payload["emoji_id"]
+        await self.dispatch("message_unreact", message, user_id, emoji_id)
+
     async def handle_channelcreate(self, payload: OnChannelCreatePayload):
         """
         Handles the channel create event.

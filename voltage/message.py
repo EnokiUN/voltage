@@ -60,6 +60,25 @@ class MessageMasquerade(NamedTuple):
         return {"name": self.name if self.name else None, "avatar": self.avatar if self.avatar else None}
 
 
+class MessageInteractions(NamedTuple):
+    """A named tuple that represents a message's interactions.
+
+    Attributes
+    ----------
+    reactions: Optional[:class:`list[:class:`str`]`]
+        The reactions always below this messsage.
+    restrict_reactions: Optional[:class:`bool`]
+        Only allow reactions specified.
+    """
+
+    reactions: Optional[list[str]] = None
+    restrict_reactions: Optional[bool] = None
+
+    def to_dict(self) -> dict:
+        """Returns a dictionary representation of the message interactions."""
+        return {"reactions": self.reactions if self.reactions else None, "restrict_reactions": self.restrict_reactions if self.restrict_reactions is not None else None}
+
+
 class Message:
     """A class that represents a Voltage message.
 
@@ -190,6 +209,7 @@ class Message:
         attachment: Optional[Union[File, str]] = None,
         attachments: Optional[List[Union[File, str]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
+        interactions: Optional[MessageInteractions] = None,
         mention: bool = True,
         delete_after: Optional[float] = None,
     ) -> Message:
@@ -209,6 +229,8 @@ class Message:
             The attachments of the message.
         masquerade: Optional[:class:`MessageMasquerade`]
             The masquerade of the message.
+        interactions: Optional[:class:`MessageInteractions`]
+            The interactions of the message.
         mention: Optional[:class:`bool`]
             Wether or not the reply mentions the author of the message.
         delete_after: Optional[:class:`float`]
@@ -232,11 +254,21 @@ class Message:
             attachments=attachments,
             replies=[replies],
             masquerade=masquerade,
+            interactions=interactions
         )
         msg = self.cache.add_message(message)
         if delete_after is not None:
             self.cache.loop.create_task(msg.delete(delay=delete_after))
         return msg
+
+    async def react(self, emoji: str):
+        await self.cache.http.add_reaction(self.channel.id, self.id, emoji)
+
+    async def unreact(self, emoji: str):
+        await self.cache.http.delete_reaction(self.channel.id, self.id, emoji)
+
+    async def remove_reactions(self):
+        await self.cache.http.delete_all_reaction(self.channel.id, self.id)
 
     @property
     def jump_url(self) -> str:
