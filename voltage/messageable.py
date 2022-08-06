@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING, List, Optional, Union
 # Internal imports
 from .enums import SortType
 from .errors import HTTPError
-from .message import Message
+from .message import Message, MessageInteractions
 
 if TYPE_CHECKING:
     from .embed import SendableEmbed
     from .file import File
     from .internals import CacheHandler
-    from .message import Message, MessageMasquerade, MessageReply
+    from .message import MessageMasquerade, MessageReply
     from .types import MessagePayload, MessageReplyPayload, SendableEmbedPayload
 
 
@@ -124,6 +124,7 @@ class Messageable:  # Really missing rust traits rn :(
         reply: Optional[MessageReply] = None,
         replies: Optional[List[Union[MessageReply, MessageReplyPayload]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
+        interactions: Optional[MessageInteractions] = None,
         delete_after: Optional[float] = None,
     ) -> Message:  # YEAH BABY, THAT'S WHAT WE'VE BEEN WAITING FOR, THAT'S WHAT IT'S ALL ABOUT, WOOOOOOOOOOOOOOOO
         """
@@ -147,6 +148,8 @@ class Messageable:  # Really missing rust traits rn :(
             The replies of the message.
         masquerade: Optional[:class:`MessageMasquerade`]
             The masquerade of the message.
+        interactions: Optional[:class:`MessageInteractions`]
+            The interactions of the message.
 
         Returns
         -------
@@ -166,6 +169,7 @@ class Messageable:  # Really missing rust traits rn :(
             attachments=attachments,
             replies=replies,
             masquerade=masquerade,
+            interactions=interactions,
         )
         msg = self.cache.add_message(message)
         if delete_after is not None:

@@ -60,6 +60,25 @@ class MessageMasquerade(NamedTuple):
         return {"name": self.name if self.name else None, "avatar": self.avatar if self.avatar else None}
 
 
+class MessageInteractions(NamedTuple):
+    """A named tuple that represents a message's masquerade.
+
+    Attributes
+    ----------
+    reactions: Optional[:class:`list[:class:`str`]`]
+        The reactions always below this messsage.
+    restrict_reactions: Optional[:class:`bool`]
+        Only allow reactions specified.
+    """
+
+    reactions: Optional[list[str]] = None
+    restrict_reactions: Optional[bool] = None
+
+    def to_dict(self) -> dict:
+        """Returns a dictionary representation of the message interactions."""
+        return {"reactions": self.reactions if self.reactions else None, "restrict_reactions": self.restrict_reactions if self.restrict_reactions is not None else None}
+
+
 class Message:
     """A class that represents a Voltage message.
 
@@ -237,6 +256,15 @@ class Message:
         if delete_after is not None:
             self.cache.loop.create_task(msg.delete(delay=delete_after))
         return msg
+
+    async def react(self, emoji: str):
+        await self.cache.http.add_reaction(self.channel.id, self.id, emoji)
+
+    async def unreact(self, emoji: str):
+        await self.cache.http.delete_reaction(self.channel.id, self.id, emoji)
+
+    async def remove_reactions(self):
+        await self.cache.http.delete_all_reaction(self.channel.id, self.id)
 
     @property
     def jump_url(self) -> str:

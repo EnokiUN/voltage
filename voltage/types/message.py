@@ -20,6 +20,11 @@ class MasqueradePayload(TypedDict):
     avatar: str
 
 
+class MessageInteractionsPayload(TypedDict):
+    reactions: NotRequired[list[str]]
+    restrict_reactions: NotRequired[bool]
+
+
 class MessagePayload(TypedDict):
     _id: str
     channel: str
