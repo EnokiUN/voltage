@@ -209,6 +209,7 @@ class Message:
         attachment: Optional[Union[File, str]] = None,
         attachments: Optional[List[Union[File, str]]] = None,
         masquerade: Optional[MessageMasquerade] = None,
+        interactions: Optional[MessageInteractions] = None,
         mention: bool = True,
         delete_after: Optional[float] = None,
     ) -> Message:
@@ -228,6 +229,8 @@ class Message:
             The attachments of the message.
         masquerade: Optional[:class:`MessageMasquerade`]
             The masquerade of the message.
+        interactions: Optional[:class:`MessageInteractions`]
+            The interactions of the message.
         mention: Optional[:class:`bool`]
             Wether or not the reply mentions the author of the message.
         delete_after: Optional[:class:`float`]
@@ -251,6 +254,7 @@ class Message:
             attachments=attachments,
             replies=[replies],
             masquerade=masquerade,
+            interactions=interactions
         )
         msg = self.cache.add_message(message)
         if delete_after is not None:
