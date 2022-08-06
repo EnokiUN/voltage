@@ -77,7 +77,7 @@ class Channel:
         server_segment = "" if self.server is None else f"/server/{self.server.id}"
         return f"https://app.revolt.chat{server_segment}/channel/{self.id}"
 
-    def _update(self, data: OnChannelUpdatePayload):
+    def _update(self, data: Any):
         if clear := data.get("clear"):
             for field in clear:
                 field = field.lower()
