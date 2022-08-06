@@ -218,9 +218,6 @@ class WebSocketHandler:
             user = self.cache.get_user(payload["user"])
         except KeyError:
             user = self.cache.add_user(await self.http.fetch_user(payload["user"]))
-        if user.id == self.user.id:
-            channel = self.cache.add_channel(await self.http.fetch_channel(payload["id"]))
-            return await self.dispatch("group_channel_added", channel, user)
         channel = self.cache.get_channel(payload["id"])
         if isinstance(channel, GroupDMChannel):
             channel.add_recepient(user)
@@ -295,11 +292,6 @@ class WebSocketHandler:
             self.cache.get_user(payload["user"])
         except KeyError:
             self.cache.add_user(await self.http.fetch_user(payload["user"]))
-        if payload["user"] == self.user.id:
-            i = self.cache.add_server(await self.http.fetch_server(payload["id"]))
-            member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
-            await self.cache.populate_server(payload["id"])
-            return await self.dispatch("server_added", member)
         member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
         await self.dispatch("member_join", member)
 
