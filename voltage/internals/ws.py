@@ -252,6 +252,13 @@ class WebSocketHandler:
         user = self.cache.get_user(payload["user"])
         await self.dispatch("channel_stop_typing", channel, user)
 
+    async def handle_servercreate(self, payload: OnServerCreatePayload):
+        """
+        Handles the server create event.
+        """
+        server = payload['server']
+        await self.dispatch("server_create", self.cache.add_server(server))
+
     async def handle_serverupdate(self, payload: OnServerUpdatePayload):
         """
         Handles the server update event.
