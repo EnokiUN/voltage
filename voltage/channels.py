@@ -91,6 +91,12 @@ class Channel:
                         v = Permissions(v)
                     if k == "icon":
                         v = Asset(v, self.cache.http)
+                    if k == "role_permissions":
+                        role_permissions = getattr(self, "role_permissions")
+                        for k_, v_ in v.items():
+                            role_permissions[k_] = Permissions(v_)
+                        continue
+
                     setattr(self, k, v)
 
     async def edit(
