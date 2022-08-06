@@ -12,7 +12,7 @@ from ..embed import SendableEmbed
 # Internal imports
 from ..errors import HTTPError, PermissionError
 from ..file import File
-from ..message import MessageMasquerade, MessageReply, MessageInteractions
+from ..message import MessageInteractions, MessageMasquerade, MessageReply
 
 if TYPE_CHECKING:
     from ..enums import *
@@ -400,29 +400,21 @@ class HTTPHandler:
         if masquerade:
             data["masquerade"] = masquerade.to_dict() if isinstance(masquerade, MessageMasquerade) else masquerade
         if interactions:
-            data["interactions"] = interactions.to_dict() if isinstance(interactions, MessageInteractions) else interactions
+            data["interactions"] = (
+                interactions.to_dict() if isinstance(interactions, MessageInteractions) else interactions
+            )
         return await self.request("POST", f"channels/{channel_id}/messages", json=data)
 
-    async def add_reaction(
-            self,
-            channel_id: str,
-            message_id: str,
-            emoji_id: str
-    ):
+    async def add_reaction(self, channel_id: str, message_id: str, emoji_id: str):
         return await self.request("PUT", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}")
 
-    async def delete_reaction(
-            self,
-            channel_id: str,
-            message_id: str,
-            emoji_id: str
-    ):
+    async def delete_reaction(self, channel_id: str, message_id: str, emoji_id: str):
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}")
 
     async def delete_all_reaction(
-            self,
-            channel_id: str,
-            message_id: str,
+        self,
+        channel_id: str,
+        message_id: str,
     ):
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}/reactions")
 

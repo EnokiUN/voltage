@@ -76,7 +76,10 @@ class MessageInteractions(NamedTuple):
 
     def to_dict(self) -> dict:
         """Returns a dictionary representation of the message interactions."""
-        return {"reactions": self.reactions if self.reactions else None, "restrict_reactions": self.restrict_reactions if self.restrict_reactions is not None else None}
+        return {
+            "reactions": self.reactions if self.reactions else None,
+            "restrict_reactions": self.restrict_reactions if self.restrict_reactions is not None else None,
+        }
 
 
 class Message:
@@ -254,7 +257,7 @@ class Message:
             attachments=attachments,
             replies=[replies],
             masquerade=masquerade,
-            interactions=interactions
+            interactions=interactions,
         )
         msg = self.cache.add_message(message)
         if delete_after is not None:
