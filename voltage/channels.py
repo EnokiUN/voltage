@@ -78,7 +78,20 @@ class Channel:
         return f"https://app.revolt.chat{server_segment}/channel/{self.id}"
 
     def _update(self, data: OnChannelUpdatePayload):
-        raise NotImplementedError
+        if clear := data.get("clear"):
+            for field in clear:
+                field = field.lower()
+                if hasattr(self, field):
+                    setattr(self, field, None)
+
+        if new := data.get("data"):
+            for k, v in new.items():
+                if hasattr(self, k):
+                    if k == "default_permissions":
+                        v = Permissions(v)
+                    if k == "icon":
+                        v = Asset(v, self.cache.http)
+                    setattr(self, k, v)
 
     async def edit(
         self,
@@ -236,43 +249,6 @@ class GroupDMChannel(Channel, Messageable):
         """
         self.recipients.remove(user)
 
-    def _update(self, data: Any):  # Finally, inner peace.
-        if clear := data.get("clear"):
-            if clear == "Icon":
-                self.icon = None
-            elif clear == "Description":
-                self.description = None
-
-        # mypy is complainint about this, but it's not my fault.
-        # please stfu I've been tryna stop this for half an hour.
-        # PLEASE, FOR THE LOVE OF GOD, STOP.
-        # even github copilot is angry now :(
-        # IT HAS BEEN AN HOUR, DON'T FORCE ME TO DO THIS.
-        # GODDAMIT type: ignore IT IS
-        # no im sorry pls forgive me we can find a solution to this together, right?
-        # hahahahahahahhaahhahahahaahhahahahahahhaahhahahh fml mypy is shit
-        # okay im done imma yeet mypy and get pyright
-        # PYRIGHT WHY DID YOU BETRAY MEEEEEEEEEEEEEEE
-        # ight fuck pyright back to mypy my beloved
-        # mypy is a fucking piece of shit
-        # aaaaaaaaaaa
-        # I started this at 22:17 and it's 23:44 now
-        # I'm not even going to bother to type this
-        # AWSERDG<F18>HIJOKPL<>:SDRFGYHJMK
-        # ight fuck it that does it for me
-        # Okay, Okay, I just gotta be smart about it
-        # no fuck you mypy
-        # Seriously considering removing typing from the lib
-        # after 38479823748923 iterations i give up
-        # wait, I have an idea
-        if new := data.get("data"):
-            if name := new.get("name"):
-                self.name = name
-            if description := new.get("description"):
-                self.description = description
-            if recipients := new.get("recipients", []):
-                self.recipients = [self.cache.get_user(recipient) for recipient in recipients]
-
 
 class TextChannel(Channel, Messageable):
     """
@@ -321,19 +297,6 @@ class TextChannel(Channel, Messageable):
         else:
             self.icon = None
 
-    def _update(self, data: Any):
-        if clear := data.get("clear"):
-            if clear == "Icon":
-                self.icon = None
-            elif clear == "Description":
-                self.description = None
-
-        if new := data.get("data"):
-            if name := new.get("name"):
-                self.name = name
-            if description := new.get("description"):
-                self.description = description
-
 
 class VoiceChannel(Channel):
     """
@@ -370,19 +333,6 @@ class VoiceChannel(Channel):
             self.icon = Asset(icon, self.cache.http)
         else:
             self.icon = None
-
-    def _update(self, data: Any):
-        if clear := data.get("clear"):
-            if clear == "Icon":
-                self.icon = None
-            elif clear == "Description":
-                self.description = None
-
-        if new := data.get("data"):
-            if name := new.get("name"):
-                self.name = name
-            if description := new.get("description"):
-                self.description = description
 
 
 # no fuck you not again

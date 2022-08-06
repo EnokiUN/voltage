@@ -5,12 +5,12 @@ from copy import copy
 from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict
 
+from ..channels import GroupDMChannel
 from ..enums import RelationshipType
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession, ClientWebSocketResponse
 
-    from ..channels import GroupDMChannel
     from ..types.ws import *
     from ..user import User
     from .cache import CacheHandler
