@@ -108,6 +108,11 @@ class OnChannelStartTypingPayload(BasePayload):
 OnChannelDeleteTypingPayload = OnChannelStartTypingPayload
 
 
+class OnServerCreatePayload(BasePayload):
+    id: str
+    server: ServerPayload
+
+
 class OnServerUpdatePayload(BasePayload):
     id: str
     data: dict
