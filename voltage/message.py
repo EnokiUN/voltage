@@ -61,7 +61,7 @@ class MessageMasquerade(NamedTuple):
 
 
 class MessageInteractions(NamedTuple):
-    """A named tuple that represents a message's masquerade.
+    """A named tuple that represents a message's interactions.
 
     Attributes
     ----------
