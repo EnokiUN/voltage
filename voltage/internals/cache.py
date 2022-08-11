@@ -343,6 +343,7 @@ class CacheHandler:
         self.servers[server.id] = server
         for channel in server.channel_ids:
             self.loop.create_task(self.add_channel_by_id(channel))
+        self.loop.create_task(self.populate_server(server.id))
         return server
 
     def add_user(self, data: UserPayload) -> User:
@@ -451,7 +452,12 @@ class CacheHandler:
         data: :class:`ServerPayload`
             The data of the servers to add.
         """
-        self.add_server(data)
+        # Ah yes, caching all the channels from the rest api lol.
+        if server := self.servers.get(data["_id"]):
+            return server
+        server = Server(data, self)
+        self.servers[server.id] = server
+        return server
 
     async def handle_ready_member(self, data: MemberPayload):
         """

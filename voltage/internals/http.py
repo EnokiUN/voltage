@@ -12,11 +12,10 @@ from ..embed import SendableEmbed
 # Internal imports
 from ..errors import HTTPError, PermissionError
 from ..file import File
-from ..message import MessageMasquerade, MessageReply
+from ..message import MessageInteractions, MessageMasquerade, MessageReply
 
 if TYPE_CHECKING:
     from ..enums import *
-    from ..message import MessageMasquerade, MessageReply
     from ..types import *
 
 
@@ -72,7 +71,7 @@ class HTTPHandler:
         -------
         The response of the request.
         """
-        header = {"User-Agent": "Voltage (beta)", "Content-Type": "application/json"}
+        header = {"User-Agent": "Voltage", "Content-Type": "application/json"}
         token_header = "x-bot-token" if self.bot else "x-session-token"
         if auth:
             header[token_header] = self.token
@@ -361,6 +360,7 @@ class HTTPHandler:
         embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
         replies: Optional[List[Union[MessageReplyPayload, MessageReply]]] = None,
         masquerade: Optional[Union[MasqueradePayload, MessageMasquerade]] = None,
+        interactions: Optional[Union[MessageInteractionsPayload, MessageInteractions]] = None,
     ) -> MessagePayload:
         """
         Sends a message to a channel.
@@ -379,6 +379,8 @@ class HTTPHandler:
             The replies of the message.
         masquerade: Optional[Union[:class:`MasqueradePayload`, :class:`MessageMasquerade`]]
             The masquerade of the message.
+        interactions: Optional[Union[:class:`MessageInteractionsPayload`, :class:`MessageInteractions`]]
+            The interactions of the message.
         """
         data: Dict[str, Any] = {}
         if content:
@@ -397,7 +399,24 @@ class HTTPHandler:
             data["replies"] = new_replies
         if masquerade:
             data["masquerade"] = masquerade.to_dict() if isinstance(masquerade, MessageMasquerade) else masquerade
+        if interactions:
+            data["interactions"] = (
+                interactions.to_dict() if isinstance(interactions, MessageInteractions) else interactions
+            )
         return await self.request("POST", f"channels/{channel_id}/messages", json=data)
+
+    async def add_reaction(self, channel_id: str, message_id: str, emoji_id: str):
+        return await self.request("PUT", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}")
+
+    async def delete_reaction(self, channel_id: str, message_id: str, emoji_id: str):
+        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}")
+
+    async def delete_all_reaction(
+        self,
+        channel_id: str,
+        message_id: str,
+    ):
+        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}/reactions")
 
     async def fetch_messages(
         self,

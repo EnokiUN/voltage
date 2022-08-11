@@ -19,34 +19,13 @@ class Cog:
         The commands in the cog.
     """
 
-    name: str
-    description: Optional[str]
-    commands: list[Command] = []
-    listeners: dict[str, Callable[..., Any]] = {}
-    raw_listeners: dict[str, Callable[..., Any]] = {}
-    subclassed: bool = False
-
-    def __new__(cls, *args, **kwargs):
-        cls.name = cls.__name__
-        cls.description = cls.__doc__
-        cls.subclassed = False
-        for (name, attr) in cls.__dict__.items():
-            if isinstance(attr, Command):
-                attr.subclassed = True
-                cls.commands.append(attr)
-                cls.subclassed = True
-            elif isinstance(attr, Callable):
-                if name.startswith("on_"):
-                    cls.listeners[name[3:].lower()] = attr
-                    cls.subclassed = True
-                elif name.startswith("raw_"):
-                    cls.raw_listeners[name[4:].lower()] = attr
-                    cls.subclassed = True
-        return super().__new__(cls)
-
     def __init__(self, name: str, description: Optional[str] = None):
         self.name = name
         self.description = description
+        self.commands: list[Command] = []
+        self.listeners: dict[str, Callable[..., Any]] = {}
+        self.raw_listeners: dict[str, Callable[..., Any]] = {}
+        self.subclassed: bool = False
 
     def listen(self, event: str, *, raw: bool = False):
         """
@@ -130,3 +109,46 @@ class Cog:
             return command
 
         return decorator
+
+
+class SubclassedCog(Cog):
+    """
+    A class representing a cog.
+
+    Attributes
+    ----------
+    name: :class:`str`
+        The name of the cog.
+    description: Optional[:class:`str`]
+        The description of the cog.
+    commands: List[:class:`Command`]
+        The commands in the cog.
+    """
+
+    name: str
+    description: Optional[str]
+    commands: list[Command] = []
+    listeners: dict[str, Callable[..., Any]] = {}
+    raw_listeners: dict[str, Callable[..., Any]] = {}
+    subclassed: bool = False
+
+    def __new__(cls, *args, **kwargs):
+        cls.name = cls.__name__
+        cls.description = cls.__doc__
+        cls.subclassed = False
+        cls.commands = []
+        cls.listeners = {}
+        cls.raw_listeners = {}
+        for (name, attr) in cls.__dict__.items():
+            if isinstance(attr, Command):
+                attr.subclassed = True
+                cls.commands.append(attr)
+                cls.subclassed = True
+            elif isinstance(attr, Callable):
+                if name.startswith("on_"):
+                    cls.listeners[name[3:].lower()] = attr
+                    cls.subclassed = True
+                elif name.startswith("raw_"):
+                    cls.raw_listeners[name[4:].lower()] = attr
+                    cls.subclassed = True
+        return super().__new__(cls)

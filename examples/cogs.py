@@ -32,7 +32,7 @@ def setup(client) -> commands.Cog:
 # Feel free to create an issue if they dont work, but for now you can use this format to keep yourself in the habit.
 
 
-class MyCog(commands.Cog):
+class MyCog(commands.SubclassedCog):
     """My beautiful Cog!."""  # Name and description are taken automatically from the class declaration, otherwise you could set them manually.
 
     def __init__(self, client):
@@ -50,5 +50,5 @@ class MyCog(commands.Cog):
 # The setup function will still return with the cog object.
 
 
-def setup(client) -> commands.Cog:
+def setup(client) -> commands.SubclassedCog:
     return MyCog(client)

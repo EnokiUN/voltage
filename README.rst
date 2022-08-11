@@ -68,13 +68,13 @@ To install voltage just run:
 
 .. code-block:: sh
 
-    $ pip install voltage
+    pip install voltage
 
 If you want to install the main branch which may have more features but will be more unstable you run:
 
 .. code-block:: sh
 
-    $ pip install git+https://github.com/EnokiUN/voltage
+    pip install git+https://github.com/EnokiUN/voltage
 
 .. note::
     Python 3.8 or higher is required to install voltage.

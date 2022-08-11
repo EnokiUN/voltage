@@ -54,6 +54,13 @@ class OnMessageDeletePayload(BasePayload):
     channel: str
 
 
+class OnMessageReactPayload(BasePayload):
+    id: str
+    channel_id: str
+    user_id: str
+    emoji_id: str
+
+
 class OnChannelCreatePayload_SavedMessage(BasePayload, SavedMessagePayload):
     pass
 
@@ -99,6 +106,11 @@ class OnChannelStartTypingPayload(BasePayload):
 
 
 OnChannelDeleteTypingPayload = OnChannelStartTypingPayload
+
+
+class OnServerCreatePayload(BasePayload):
+    id: str
+    server: ServerPayload
 
 
 class OnServerUpdatePayload(BasePayload):
