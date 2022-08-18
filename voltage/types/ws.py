@@ -111,6 +111,7 @@ OnChannelDeleteTypingPayload = OnChannelStartTypingPayload
 class OnServerCreatePayload(BasePayload):
     id: str
     server: ServerPayload
+    channels: list[ChannelPayload]
 
 
 class OnServerUpdatePayload(BasePayload):

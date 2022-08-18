@@ -341,8 +341,6 @@ class CacheHandler:
             return server
         server = Server(data, self)
         self.servers[server.id] = server
-        for channel in server.channel_ids:
-            self.loop.create_task(self.add_channel_by_id(channel))
         self.loop.create_task(self.populate_server(server.id))
         return server
 
