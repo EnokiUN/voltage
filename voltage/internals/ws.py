@@ -271,8 +271,10 @@ class WebSocketHandler:
         """
         Handles the server create event.
         """
-        server = payload["server"]
-        await self.dispatch("server_create", self.cache.add_server(server))
+        server = self.cache.add_server(payload["server"])
+        for channel in payload["channels"]:
+            self.cache.add_channel(channel)
+        await self.dispatch("server_create", server)
 
     async def handle_serverupdate(self, payload: OnServerUpdatePayload):
         """
