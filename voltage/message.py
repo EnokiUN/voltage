@@ -127,7 +127,7 @@ class Message:
         self.cache = cache
         self.id = data["_id"]
         self.created_at = ULID().decode(self.id)
-        self.content = data["content"]
+        self.content = data.get("content", "")
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
 
