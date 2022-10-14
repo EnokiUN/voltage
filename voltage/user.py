@@ -199,7 +199,6 @@ class User(Messageable):
 
     @property
     def display_avatar(self):
-        print(self.default_avatar)
         return self.masquerade_avatar or self.avatar or self.default_avatar
 
     @property

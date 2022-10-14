@@ -207,7 +207,11 @@ class Client:
         future = self.loop.create_future()
         self.waits[event] = self.waits.get(event, []) + [(check, future)]
 
-        return await wait_for(future, timeout)
+        try:
+            return await wait_for(future, timeout)
+        except TimeoutError:
+            self.waits[event].remove((check, future))
+            raise
 
     @property
     def servers(self) -> list[Server]:

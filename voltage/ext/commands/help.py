@@ -34,12 +34,10 @@ class HelpCommand:
                 text += f"> {command.name}\n"
                 covered.append(command)
         for i in self.client.cogs.values():
-            if command in covered:
-                continue
             text += f"\n### **{i.name}**\n{i.description}\n"
             for j in i.commands:
                 text += f"\n> {j.name}"
-                covered.append(command)
+                covered.append(i)
         if embed.description:
             embed.description += text
         return await ctx.reply("Here, have a help embed", embed=embed)
