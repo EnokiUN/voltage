@@ -113,5 +113,5 @@ Credits
 .. |Logo| image:: https://github.com/EnokiUN/voltage/blob/main/assets/voltage.png
     :alt: Voltage Logo
     :width: 80
-.. |Screenshot| image:: https://github.com/EnokiUN/voltage/blob/main/assets/ss.jpg
+.. |Screenshot| image:: https://github.com/EnokiUN/voltage/blob/main/assets/ss.png
     :alt: Screenshot Of Starting A Bot.
