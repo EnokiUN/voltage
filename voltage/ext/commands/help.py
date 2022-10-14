@@ -37,7 +37,7 @@ class HelpCommand:
             text += f"\n### **{i.name}**\n{i.description}\n"
             for j in i.commands:
                 text += f"\n> {j.name}"
-                covered.append(i)
+                covered.append(j)
         if embed.description:
             embed.description += text
         return await ctx.reply("Here, have a help embed", embed=embed)
