@@ -29,7 +29,7 @@ class MessagePayload(TypedDict):
     _id: str
     channel: str
     author: str
-    content: str
+    content: NotRequired[str]
     attachments: NotRequired[List[FilePayload]]
     edited: NotRequired[str]
     embeds: NotRequired[List[EmbedPayload]]

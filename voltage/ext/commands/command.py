@@ -29,7 +29,7 @@ class CommandContext:
     ----------
     message: :class:`voltage.Message`
         The message that invoked the command.
-    content: :class:`str`
+    content: Optional[:class:`str`]
         The content of the message that invoked the command.
     author: Union[:class:`voltage.User`, :class:`voltage.Member`]
         The author of the message that invoked the command.

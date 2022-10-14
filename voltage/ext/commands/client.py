@@ -71,7 +71,7 @@ class CommandsClient(Client):
         self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
     ) -> str:
         if message.content is None:
-            raise ValueError("Message content is None.")
+            return ""
         if isinstance(prefix, str):
             return prefix
         elif isinstance(prefix, list):
