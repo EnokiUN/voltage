@@ -31,7 +31,7 @@ Usage
         elif message.content == "-embed":
             embed = voltage.SendableEmbed(title="Hello World", description="This is an embed")  # Create an embed.
             # Reply to a message.
-            await message.reply(content="embed", embed=embed)  # Obligatory message content.
+            await message.reply(embed=embed)
 
     # Run the client which is an abstraction of calling the start coroutine.
     client.run("TOKEN")  # Replace with your token.
