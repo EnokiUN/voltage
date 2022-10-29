@@ -51,7 +51,7 @@ class MessageMasquerade(NamedTuple):
     avatar: Optional[:class:`str`]
         The url to the masquerade avatar.
     colour: Optional[:class:`str`]
-        CSS-compatible color of the username
+        CSS-compatible colour of the username
     """
 
     name: Optional[str] = None
