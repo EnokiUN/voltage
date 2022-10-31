@@ -18,6 +18,7 @@ class ContentPayload(TypedDict):
 class MasqueradePayload(TypedDict):
     name: str
     avatar: str
+    colour: str
 
 
 class MessageInteractionsPayload(TypedDict):

@@ -50,14 +50,28 @@ class MessageMasquerade(NamedTuple):
         The name of the masquerade.
     avatar: Optional[:class:`str`]
         The url to the masquerade avatar.
+    colour: Optional[:class:`str`]
+        CSS-compatible colour of the username.
+    color: Optional[:class:`str`]
+        CSS-compatible color of the username.
     """
 
     name: Optional[str] = None
     avatar: Optional[str] = None
+    colour: Optional[str] = None
+    color: Optional[str] = None
 
     def to_dict(self) -> dict:
         """Returns a dictionary representation of the message masquerade."""
-        return {"name": self.name if self.name else None, "avatar": self.avatar if self.avatar else None}
+        data = {}
+        if self.name is not None:
+            data["name"] = self.name
+        if self.avatar is not None:
+            data["avatar"] = self.avatar
+        colour = self.colour or self.color
+        if colour is not None:
+            data["colour"] = colour
+        return data
 
 
 class MessageInteractions(NamedTuple):
