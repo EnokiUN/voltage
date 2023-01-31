@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union, cast
 
 from ulid import ULID
 
@@ -15,12 +15,10 @@ if TYPE_CHECKING:
     from .internals import CacheHandler
     from .message import Message
     from .roles import Role
-    from .server import Server
     from .types import (
         ChannelPayload,
         DMChannelPayload,
         GroupDMChannelPayload,
-        OnChannelUpdatePayload,
         OverrideFieldPayload,
         SavedMessagePayload,
         TextChannelPayload,
@@ -92,6 +90,7 @@ class Channel:
                     if k == "icon":
                         v = Asset(v, self.cache.http)
                     if k == "role_permissions":
+                        v = cast(dict[str, OverrideFieldPayload], v)
                         role_permissions = getattr(self, "role_permissions")
                         for k_, v_ in v.items():
                             role_permissions[k_] = Permissions(v_)
@@ -141,7 +140,7 @@ class Channel:
         permissions: :class:`Permissions`
             The new default permissions for the channel.
         """
-        return self.cache.http.set_default_perms(self.id, permissions.to_dict())
+        return await self.cache.http.set_default_perms(self.id, permissions.to_dict())
 
     async def set_role_permission(self, role: Role, permissions: Permissions):
         """Sets the permissions for a role in the channel.
@@ -153,7 +152,7 @@ class Channel:
         permissions: :class:`Permissions`
             The new permissions for the role.
         """
-        return self.cache.http.set_role_perms(self.id, role.id, permissions.to_dict())
+        return await self.cache.http.set_role_perms(self.id, role.id, permissions.to_dict())
 
 
 class SavedMessageChannel(Channel, Messageable):
