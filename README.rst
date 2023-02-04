@@ -108,7 +108,7 @@ Credits
 .. |Docs| image:: https://img.shields.io/readthedocs/revolt-voltage/latest?labelColor=111823&style=for-the-badge&logo=readthedocs&logoColor=white
     :alt: Docs Status
     :target: https://revolt-voltage.readthedocs.io/
-.. |Checks| image:: https://img.shields.io/github/actions/workflow/status/enokiun/voltage/mypy.yml?label=checks&labelColor=111823&logo=github&style=for-the-badge
+.. |Checks| image:: https://img.shields.io/github/actions/workflow/status/enokiun/voltage/pyright.yml?label=checks&labelColor=111823&logo=github&style=for-the-badge
     :alt: GitHub Workflow Status
 .. |Logo| image:: https://github.com/EnokiUN/voltage/blob/main/assets/voltage.png
     :alt: Voltage Logo
