@@ -18,99 +18,49 @@ __license__ = "MIT"
 __copyright__ = "Copyright (c) 2021-present EnokiUN"
 __version__ = "0.1.5a8"  # Updating this is such a pain.
 
-from .asset import Asset, PartialAsset
-from .categories import Category
+from .asset import Asset as Asset, PartialAsset as PartialAsset
+from .categories import Category as Category
 from .channels import (
-    Channel,
-    DMChannel,
-    GroupDMChannel,
-    SavedMessageChannel,
-    TextChannel,
-    VoiceChannel,
-    create_channel,
+    Channel as Channel,
+    DMChannel as DMChannel,
+    GroupDMChannel as GroupDMChannel,
+    SavedMessageChannel as SavedMessageChannel,
+    TextChannel as TextChannel,
+    VoiceChannel as VoiceChannel,
+    create_channel as create_channel,
 )
-from .client import Client
-from .embed import Embed, SendableEmbed
+from .client import Client as Client
+from .embed import Embed as Embed, SendableEmbed as SendableEmbed
 from .enums import (
-    AssetType,
-    ChannelType,
-    EmbedType,
-    PresenceType,
-    RelationshipType,
-    SortType,
+    AssetType as AssetType,
+    ChannelType as ChannelType,
+    EmbedType as EmbedType,
+    PresenceType as PresenceType,
+    RelationshipType as RelationshipType,
+    SortType as SortType,
 )
 from .errors import (
-    BotNotEnoughPerms,
-    ChannelNotFound,
-    CommandNotFound,
-    HTTPError,
-    MemberNotFound,
-    NotBotOwner,
-    NotEnoughArgs,
-    NotEnoughPerms,
-    NotFoundException,
-    PermissionError,
-    RoleNotFound,
-    UserNotFound,
-    VoltageException,
+    BotNotEnoughPerms as BotNotEnoughPerms,
+    ChannelNotFound as ChannelNotFound,
+    CommandNotFound as CommandNotFound,
+    HTTPError as HTTPError,
+    MemberNotFound as MemberNotFound,
+    NotBotOwner as NotBotOwner,
+    NotEnoughArgs as NotEnoughArgs,
+    NotEnoughPerms as NotEnoughPerms,
+    NotFoundException as NotFoundException,
+    PermissionError as PermissionError,
+    RoleNotFound as RoleNotFound,
+    UserNotFound as UserNotFound,
+    VoltageException as VoltageException,
 )
-from .file import File
-from .invites import Invite
-from .member import Member
-from .message import Message, MessageMasquerade, MessageReply
-from .messageable import Messageable
-from .permissions import Permissions, PermissionsFlags
-from .roles import Role
-from .server import Server, ServerBan, SystemMessages
-from .user import User
-from .utils import get
-
-__all__ = [
-    "Asset",
-    "PartialAsset",
-    "Category",
-    "Channel",
-    "DMChannel",
-    "GroupDMChannel",
-    "SavedMessageChannel",
-    "TextChannel",
-    "VoiceChannel",
-    "create_channel",
-    "Client",
-    "Embed",
-    "SendableEmbed",
-    "AssetType",
-    "ChannelType",
-    "EmbedType",
-    "PresenceType",
-    "RelationshipType",
-    "SortType",
-    "BotNotEnoughPerms",
-    "ChannelNotFound",
-    "CommandNotFound",
-    "HTTPError",
-    "MemberNotFound",
-    "NotBotOwner",
-    "NotEnoughArgs",
-    "NotEnoughPerms",
-    "NotFoundException",
-    "PermissionError",
-    "RoleNotFound",
-    "UserNotFound",
-    "VoltageException",
-    "File",
-    "Invite",
-    "Member",
-    "Message",
-    "MessageMasquerade",
-    "MessageReply",
-    "Messageable",
-    "Permissions",
-    "PermissionsFlags",
-    "Role",
-    "Server",
-    "ServerBan",
-    "SystemMessages",
-    "User",
-    "get",
-]
+from .file import File as File
+from .invites import Invite as Invite
+from .member import Member as Member
+from .message import Message as Message, MessageMasquerade as MessageMasquerade, MessageReply as MessageReply
+from .messageable import Messageable as Messageable
+from .permissions import Permissions as Permissions, PermissionsFlags as PermissionsFlags
+from .roles import Role as Role
+from .server import Server as Server, ServerBan as ServerBan, SystemMessages as SystemMessages
+from .user import User as User
+from .utils import get as get
