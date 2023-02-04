@@ -19,11 +19,41 @@ Commands frameworks example:
         await ctx.reply("Pong") # Reply to the context's message.
 
     client.run("TOKEN") # Again, replace with your bot token.
- 
+
 """
-from .check import Check, bot_has_perms, check, has_perms, is_owner, is_server_owner
-from .client import CommandsClient
-from .cog import Cog, SubclassedCog
-from .command import Command, CommandContext, command
-from .converters import Converter, converter
-from .help import HelpCommand
+
+from .check import (
+    Check as Check,
+    bot_has_perms as bot_has_perms,
+    check as check,
+    has_perms as has_perms,
+    is_owner as is_owner,
+    is_server_owner,
+)
+from .client import CommandsClient as CommandsClient
+from .cog import Cog as Cog, SubclassedCog as SubclassedCog
+from .command import (
+    Command as Command,
+    CommandContext as CommandContext,
+    command as command,
+)
+from .converters import Converter as Converter, converter as converter
+from .help import HelpCommand as HelpCommand
+
+__all__ = [
+    "Check",
+    "bot_has_perms",
+    "check",
+    "has_perms",
+    "is_owner",
+    "is_server_owner",
+    "CommandsClient",
+    "Cog",
+    "SubclassedCog",
+    "Command",
+    "CommandContext",
+    "command",
+    "Converter",
+    "converter",
+    "HelpCommand",
+]
