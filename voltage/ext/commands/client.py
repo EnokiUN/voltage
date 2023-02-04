@@ -18,8 +18,12 @@ if TYPE_CHECKING:
 
 def get_extensions_from_dir(path: str) -> list[str]:
     """Gets all files that end with ``.py`` in a directory and returns a python dotpath."""
-    dirdotpath = ".".join(path.split(sep)[1:])  # we ignore the first part because we don't want to add the ``./``.
-    return [f"{dirdotpath}.{file}" for file in listdir(path) if file.endswith(".py")]  # Hello olivier.
+    dirdotpath = ".".join(
+        path.split(sep)[1:]
+    )  # we ignore the first part because we don't want to add the ``./``.
+    return [
+        f"{dirdotpath}.{file}" for file in listdir(path) if file.endswith(".py")
+    ]  # Hello olivier.
 
 
 class CommandsClient(Client):
@@ -43,7 +47,9 @@ class CommandsClient(Client):
 
     def __init__(
         self,
-        prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]],
+        prefix: Union[
+            str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]
+        ],
         help_command: Type[HelpCommand] = HelpCommand,
         cache_message_limit: int = 5000,
     ):
@@ -54,7 +60,9 @@ class CommandsClient(Client):
         self.extensions: dict[str, tuple[ModuleType, str]] = {}
         self.help_command = help_command(self)
         self.commands: dict[str, Command] = {
-            "help": Command(self.help, "help", "Displays help for a command.", ["h", "help"], None)
+            "help": Command(
+                self.help, "help", "Displays help for a command.", ["h", "help"], None
+            )
         }
 
     async def help(self, ctx: CommandContext, target: str = None):  # type: ignore
@@ -68,7 +76,11 @@ class CommandsClient(Client):
         await self.help_command.send_not_found(ctx, target)
 
     async def get_prefix(
-        self, message: Message, prefix: Union[str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]]
+        self,
+        message: Message,
+        prefix: Union[
+            str, list[str], Callable[[Message, CommandsClient], Awaitable[Any]]
+        ],
     ) -> str:
         if message.content is None:
             return ""
@@ -166,7 +178,10 @@ class CommandsClient(Client):
         path: :class:`str`
             The path to the directory with the extensions as a normal path.
         """
-        [self.add_extension(extension, *args, **kwargs) for extension in get_extensions_from_dir(path)]
+        [
+            self.add_extension(extension, *args, **kwargs)
+            for extension in get_extensions_from_dir(path)
+        ]
 
     def reload_extension(self, path: str):
         """Reloads an extension.
@@ -198,7 +213,10 @@ class CommandsClient(Client):
         del mod
 
     def command(
-        self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        aliases: Optional[list[str]] = None,
     ):
         """A decorator for adding commands to the client.
 
@@ -282,13 +300,20 @@ class CommandsClient(Client):
                 if "command" in self.error_handlers:
                     try:
                         return await self.commands[command].invoke(
-                            CommandContext(message, self.commands[command], self, prefix), prefix
+                            CommandContext(
+                                message, self.commands[command], self, prefix
+                            ),
+                            prefix,
                         )
                     except Exception as e:
                         return await self.error_handlers["command"](
-                            e, CommandContext(message, self.commands[command], self, prefix)
+                            e,
+                            CommandContext(
+                                message, self.commands[command], self, prefix
+                            ),
                         )
                 return await self.commands[command].invoke(
-                    CommandContext(message, self.commands[command], self, prefix), prefix
+                    CommandContext(message, self.commands[command], self, prefix),
+                    prefix,
                 )
             raise CommandNotFound(command)

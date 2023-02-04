@@ -66,7 +66,9 @@ class UserConverter(Converter):
         if match := id_regex.match(arg):
             return ctx.client.cache.get_user(match.group(0))
         arg = arg.replace("@", "").lower()
-        if user := get(ctx.client.cache.users.values(), lambda u: u.name.lower() == arg):
+        if user := get(
+            ctx.client.cache.users.values(), lambda u: u.name.lower() == arg
+        ):
             return user
         raise UserNotFound(arg)
 
@@ -82,7 +84,10 @@ class MemberConverter(Converter):
         if match := id_regex.search(arg):
             return ctx.client.cache.get_member(ctx.server.id, match.group(0))
         arg = arg.replace("@", "").lower()
-        if member := get(ctx.client.cache.members[ctx.server.id].values(), lambda m: m.name.lower() == arg):
+        if member := get(
+            ctx.client.cache.members[ctx.server.id].values(),
+            lambda m: m.name.lower() == arg,
+        ):
             return member
         if member := get(
             ctx.client.cache.members[ctx.server.id].values(),
@@ -101,7 +106,10 @@ class ChannelConverter(Converter):
         if match := id_regex.match(arg):
             return ctx.client.cache.get_channel(match.group(0))
         arg = arg.replace("#", "").lower()
-        if channel := get(ctx.client.cache.channels.values(), lambda c: c.name.lower() == arg if c.name else False):
+        if channel := get(
+            ctx.client.cache.channels.values(),
+            lambda c: c.name.lower() == arg if c.name else False,
+        ):
             return channel
         raise ChannelNotFound(arg)
 
@@ -123,7 +131,9 @@ class RoleConverter(Converter):
         raise RoleNotFound(arg)
 
 
-def converter(converter: Callable[[CommandContext, str], Awaitable[Any]]) -> Type[Converter]:
+def converter(
+    converter: Callable[[CommandContext, str], Awaitable[Any]]
+) -> Type[Converter]:
     """
     A decorator that converts a function into a converter.
     """

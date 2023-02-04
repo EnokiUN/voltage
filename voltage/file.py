@@ -7,7 +7,9 @@ if TYPE_CHECKING:
     from .internals import HTTPHandler
 
 
-async def get_file_from_url(http: HTTPHandler, url: str, filename: str = "Attachment", spoiler: bool = False) -> File:
+async def get_file_from_url(
+    http: HTTPHandler, url: str, filename: str = "Attachment", spoiler: bool = False
+) -> File:
     """
     Returns a file object from the supplied URL.
 
@@ -23,7 +25,11 @@ async def get_file_from_url(http: HTTPHandler, url: str, filename: str = "Attach
     :class:`File`
         The file object.
     """
-    return File(await http.get_file_binary(url.split("?")[0]), filename=filename, spoiler=spoiler)
+    return File(
+        await http.get_file_binary(url.split("?")[0]),
+        filename=filename,
+        spoiler=spoiler,
+    )
 
 
 class File:
@@ -58,7 +64,11 @@ class File:
     __slots__ = ("file", "filename", "spoiler")
 
     def __init__(
-        self, f: Union[str, bytes], *, filename: Optional[str] = None, spoiler: Optional[bool] = False
+        self,
+        f: Union[str, bytes],
+        *,
+        filename: Optional[str] = None,
+        spoiler: Optional[bool] = False,
     ) -> None:
         if isinstance(f, str):
             with open(f, "rb") as file:

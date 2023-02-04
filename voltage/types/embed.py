@@ -40,7 +40,11 @@ class BandcampEmbedPayload(TypedDict):
 
 
 SpecialWebsiteEmbedPayload = Union[
-    YoutubeEmbedPayload, TwitchEmbedPayload, SpotifyEmbedPayload, SoundCloudEmbedPayload, BandcampEmbedPayload
+    YoutubeEmbedPayload,
+    TwitchEmbedPayload,
+    SpotifyEmbedPayload,
+    SoundCloudEmbedPayload,
+    BandcampEmbedPayload,
 ]
 
 
@@ -88,7 +92,9 @@ class NoneEmbed(TypedDict):
     type: Literal["None"]
 
 
-EmbedPayload = Union[WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed]
+EmbedPayload = Union[
+    WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed
+]
 
 
 class SendableEmbedPayload(TypedDict):

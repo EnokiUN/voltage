@@ -88,7 +88,12 @@ class Member(User):
 
         This is the member's masquerade avatar or their server's avatar if they have one, otherwise their avatar.
         """
-        return self.masquerade_avatar or self.server_avatar or self.avatar or self.default_avatar
+        return (
+            self.masquerade_avatar
+            or self.server_avatar
+            or self.avatar
+            or self.default_avatar
+        )
 
     async def kick(self):
         """
@@ -123,7 +128,9 @@ class Member(User):
             The roles to add to the member.
         """
         await self.cache.http.edit_member(
-            self.server.id, self.id, roles=[r.id for r in roles] + [r.id for r in self.roles]
+            self.server.id,
+            self.id,
+            roles=[r.id for r in roles] + [r.id for r in self.roles],
         )
 
     async def set_nickname(self, nickname: Optional[str]):
@@ -136,7 +143,9 @@ class Member(User):
             The nickname to set.
         """
         if nickname:
-            return await self.cache.http.edit_member(self.server.id, self.id, nickname=nickname)
+            return await self.cache.http.edit_member(
+                self.server.id, self.id, nickname=nickname
+            )
         await self.cache.http.edit_member(self.server.id, self.id, remove="Nickname")
 
     async def remove_avatar(self):

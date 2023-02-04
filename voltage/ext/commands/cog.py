@@ -88,7 +88,10 @@ class Cog:
         self.commands.append(command)
 
     def command(
-        self, name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None
+        self,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        aliases: Optional[list[str]] = None,
     ):
         """
         A decorator for adding commands to the cog.

@@ -85,7 +85,9 @@ class Role:
         permissions: Optional[:class:`Permissions`]
             The new server permissions.
         """
-        await self.http.set_role_permission(self.server_id, self.id, permissions.to_dict())
+        await self.http.set_role_permission(
+            self.server_id, self.id, permissions.to_dict()
+        )
 
     async def delete(self):
         """
@@ -119,7 +121,9 @@ class Role:
             The new rank of the role.
         """
         if name is None and colour is NotSupplied and hoist is None and rank is None:
-            raise ValueError("You must provide at least one of the following: name, colour, hoist, rank")
+            raise ValueError(
+                "You must provide at least one of the following: name, colour, hoist, rank"
+            )
 
         if name is None:
             name = self.name
@@ -133,7 +137,15 @@ class Role:
             colour = color
 
         remove: Optional[Literal["Colour"]] = "Colour" if colour is None else None
-        await self.http.edit_role(self.server_id, self.id, name, colour=colour, hoist=hoist, rank=rank, remove=remove)
+        await self.http.edit_role(
+            self.server_id,
+            self.id,
+            name,
+            colour=colour,
+            hoist=hoist,
+            rank=rank,
+            remove=remove,
+        )
 
     def __lt__(self, other: Role):
         return self.rank < other.rank

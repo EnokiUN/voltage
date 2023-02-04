@@ -38,7 +38,12 @@ class HTTPHandler:
     __slots__ = ("client", "token", "api_url", "api_info", "bot")
 
     def __init__(
-        self, client: ClientSession, token: str, *, api_url: str = "https://api.revolt.chat/", bot: bool = True
+        self,
+        client: ClientSession,
+        token: str,
+        *,
+        api_url: str = "https://api.revolt.chat/",
+        bot: bool = True,
     ):
         self.client = client
         self.token = token
@@ -47,7 +52,11 @@ class HTTPHandler:
         self.bot = bot
 
     async def request(
-        self, method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"], url: str, auth: Optional[bool] = True, **kwargs
+        self,
+        method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"],
+        url: str,
+        auth: Optional[bool] = True,
+        **kwargs,
     ) -> Any:
         """
         Makes a request to the API.
@@ -75,7 +84,9 @@ class HTTPHandler:
         token_header = "x-bot-token" if self.bot else "x-session-token"
         if auth:
             header[token_header] = self.token
-        async with self.client.request(method, self.api_url + url, headers=header, **kwargs) as request:
+        async with self.client.request(
+            method, self.api_url + url, headers=header, **kwargs
+        ) as request:
             headers = request.headers
             # print(headers.get("X-Ratelimit-Remaining"))
             if request.status >= 200 and request.status <= 300:
@@ -158,11 +169,16 @@ class HTTPHandler:
         self,
         *,
         status: Optional[
-            Dict[Literal["text", "presence"], Union[str, Literal["Busy", "Idle", "Invisible", "Online"]]]
+            Dict[
+                Literal["text", "presence"],
+                Union[str, Literal["Busy", "Idle", "Invisible", "Online"]],
+            ]
         ] = None,
         profile: Optional[Dict[Literal["content", "background"], str]] = None,
         avatar: Optional[str] = None,
-        remove: Optional[Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]] = None,
+        remove: Optional[
+            Literal["Avatar", "ProfileBackground", "ProfileContent", "StatusText"]
+        ] = None,
     ) -> UserPayload:
         """
         Edits the bot's profile.
@@ -215,7 +231,9 @@ class HTTPHandler:
         user_id: :class:`str`
             The id of the user.
         """
-        return await self.get_file_binary(f"{self.api_url}/users/{user_id}/default_avatar")
+        return await self.get_file_binary(
+            f"{self.api_url}/users/{user_id}/default_avatar"
+        )
 
     async def fetch_mutuals(self, user_id: str):
         """
@@ -319,7 +337,9 @@ class HTTPHandler:
         """
         return await self.request("POST", f"channels/{channel_id}/invites")
 
-    async def set_role_perms(self, channel_id: str, role_id: str, permissions: OverrideFieldPayload):
+    async def set_role_perms(
+        self, channel_id: str, role_id: str, permissions: OverrideFieldPayload
+    ):
         """
         Sets the permissions of a role in a channel.
 
@@ -333,10 +353,14 @@ class HTTPHandler:
             The permissions to set.
         """
         return await self.request(
-            "PUT", f"channels/{channel_id}/permissions/{role_id}", json={"permissions": permissions}
+            "PUT",
+            f"channels/{channel_id}/permissions/{role_id}",
+            json={"permissions": permissions},
         )
 
-    async def set_default_perms(self, channel_id: str, permissions: OverrideFieldPayload):
+    async def set_default_perms(
+        self, channel_id: str, permissions: OverrideFieldPayload
+    ):
         """
         Sets the default permissions of a channel.
 
@@ -348,7 +372,9 @@ class HTTPHandler:
             The permission to set.
         """
         return await self.request(
-            "PUT", f"channels/{channel_id}/permissions/default", json={"permissions": permissions}
+            "PUT",
+            f"channels/{channel_id}/permissions/default",
+            json={"permissions": permissions},
         )
 
     async def send_message(
@@ -360,7 +386,9 @@ class HTTPHandler:
         embeds: Optional[List[Union[SendableEmbedPayload, SendableEmbed]]] = None,
         replies: Optional[List[Union[MessageReplyPayload, MessageReply]]] = None,
         masquerade: Optional[Union[MasqueradePayload, MessageMasquerade]] = None,
-        interactions: Optional[Union[MessageInteractionsPayload, MessageInteractions]] = None,
+        interactions: Optional[
+            Union[MessageInteractionsPayload, MessageInteractions]
+        ] = None,
     ) -> MessagePayload:
         """
         Sends a message to a channel.
@@ -386,9 +414,13 @@ class HTTPHandler:
         if content:
             data["content"] = content
         if attachments:
-            data["attachments"] = await gather(*[self.handle_attachment(attachment) for attachment in attachments])
+            data["attachments"] = await gather(
+                *[self.handle_attachment(attachment) for attachment in attachments]
+            )
         if embeds:
-            data["embeds"] = await gather(*[self.handle_embed(embed) for embed in embeds])
+            data["embeds"] = await gather(
+                *[self.handle_embed(embed) for embed in embeds]
+            )
         if replies:
             new_replies: List[MessageReplyPayload] = []
             for i in replies:
@@ -398,25 +430,38 @@ class HTTPHandler:
                     new_replies.append(i)
             data["replies"] = new_replies
         if masquerade:
-            data["masquerade"] = masquerade.to_dict() if isinstance(masquerade, MessageMasquerade) else masquerade
+            data["masquerade"] = (
+                masquerade.to_dict()
+                if isinstance(masquerade, MessageMasquerade)
+                else masquerade
+            )
         if interactions:
             data["interactions"] = (
-                interactions.to_dict() if isinstance(interactions, MessageInteractions) else interactions
+                interactions.to_dict()
+                if isinstance(interactions, MessageInteractions)
+                else interactions
             )
         return await self.request("POST", f"channels/{channel_id}/messages", json=data)
 
     async def add_reaction(self, channel_id: str, message_id: str, emoji_id: str):
-        return await self.request("PUT", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}")
+        return await self.request(
+            "PUT", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}"
+        )
 
     async def delete_reaction(self, channel_id: str, message_id: str, emoji_id: str):
-        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}")
+        return await self.request(
+            "DELETE",
+            f"channels/{channel_id}/messages/{message_id}/reactions/{emoji_id}",
+        )
 
     async def delete_all_reaction(
         self,
         channel_id: str,
         message_id: str,
     ):
-        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}/reactions")
+        return await self.request(
+            "DELETE", f"channels/{channel_id}/messages/{message_id}/reactions"
+        )
 
     async def fetch_messages(
         self,
@@ -501,8 +546,12 @@ class HTTPHandler:
         if content:
             data["content"] = content
         if embeds:
-            data["embeds"] = await gather(*[self.handle_embed(embed) for embed in embeds])
-        return await self.request("PATCH", f"channels/{channel_id}/messages/{message_id}", json=data)
+            data["embeds"] = await gather(
+                *[self.handle_embed(embed) for embed in embeds]
+            )
+        return await self.request(
+            "PATCH", f"channels/{channel_id}/messages/{message_id}", json=data
+        )
 
     async def delete_message(self, channel_id: str, message_id: str):
         """
@@ -515,7 +564,9 @@ class HTTPHandler:
         message_id: :class:`str`
             The id of the message.
         """
-        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}")
+        return await self.request(
+            "DELETE", f"channels/{channel_id}/messages/{message_id}"
+        )
 
     async def poll_message_changed(
         self, channel_id: str, ids: List[str]
@@ -530,7 +581,11 @@ class HTTPHandler:
         ids: List[:class:`str`]
             The ids of the messages.
         """
-        return await self.request("GET", f"channels/{channel_id}/messages/changed", params={"ids": ",".join(ids)})
+        return await self.request(
+            "GET",
+            f"channels/{channel_id}/messages/changed",
+            params={"ids": ",".join(ids)},
+        )
 
     async def search_for_message(
         self,
@@ -574,7 +629,9 @@ class HTTPHandler:
             data["sort"] = sort
         if include_users:
             data["include_users"] = include_users
-        return await self.request("GET", f"channels/{channel_id}/messages/search", params=data)
+        return await self.request(
+            "GET", f"channels/{channel_id}/messages/search", params=data
+        )
 
     async def fetch_group_members(self, channel_id: str) -> List[UserPayload]:
         """
@@ -616,8 +673,12 @@ class HTTPHandler:
         description: Optional[str] = None,
         icon: Optional[str] = None,
         banner: Optional[str] = None,
-        categories: Optional[List[Dict[Literal["id", "title", "channels"], str]]] = None,
-        system_messages: Optional[Dict[Literal["user_joined", "user_left", "user_kicked", "user_banned"], str]] = None,
+        categories: Optional[
+            List[Dict[Literal["id", "title", "channels"], str]]
+        ] = None,
+        system_messages: Optional[
+            Dict[Literal["user_joined", "user_left", "user_kicked", "user_banned"], str]
+        ] = None,
         nsfw: Optional[bool] = None,
         remove: Optional[Literal["Banner", "Description", "Icon"]] = None,
     ) -> ServerPayload:
@@ -768,7 +829,9 @@ class HTTPHandler:
             data["roles"] = roles
         if remove:
             data["remove"] = remove
-        return await self.request("PATCH", f"servers/{server_id}/members/{member_id}", json=data)
+        return await self.request(
+            "PATCH", f"servers/{server_id}/members/{member_id}", json=data
+        )
 
     async def kick_member(self, server_id: str, member_id: str) -> None:
         """
@@ -794,7 +857,9 @@ class HTTPHandler:
         """
         return await self.request("GET", f"servers/{server_id}/members")
 
-    async def ban_member(self, server_id: str, member_id: str, *, reason: Optional[str] = None):
+    async def ban_member(
+        self, server_id: str, member_id: str, *, reason: Optional[str] = None
+    ):
         """
         Bans a member.
 
@@ -810,7 +875,9 @@ class HTTPHandler:
         data = {}
         if reason:
             data["reason"] = reason
-        return await self.request("PUT", f"servers/{server_id}/bans/{member_id}", json=data)
+        return await self.request(
+            "PUT", f"servers/{server_id}/bans/{member_id}", json=data
+        )
 
     async def unban_member(self, server_id: str, member_id: str):
         """
@@ -836,7 +903,9 @@ class HTTPHandler:
         """
         return await self.request("GET", f"servers/{server_id}/bans")
 
-    async def set_role_permission(self, server_id: str, role_id: str, permissions: OverrideFieldPayload):
+    async def set_role_permission(
+        self, server_id: str, role_id: str, permissions: OverrideFieldPayload
+    ):
         """
         Sets the permissions of a role.
 
@@ -855,7 +924,9 @@ class HTTPHandler:
             json={"permissions": permissions},
         )
 
-    async def set_default_permissions(self, server_id: str, permissions: OverrideFieldPayload):
+    async def set_default_permissions(
+        self, server_id: str, permissions: OverrideFieldPayload
+    ):
         """
         Sets the default permissions of a server.
 
@@ -883,7 +954,9 @@ class HTTPHandler:
         name: :class:`str`
             The name of the role.
         """
-        return await self.request("POST", f"servers/{server_id}/roles", json={"name": name})
+        return await self.request(
+            "POST", f"servers/{server_id}/roles", json={"name": name}
+        )
 
     async def edit_role(
         self,
@@ -930,7 +1003,9 @@ class HTTPHandler:
             if remove == "Color":
                 remove = "Colour"
             data["remove"] = remove
-        return await self.request("PATCH", f"servers/{server_id}/roles/{role_id}", json=data)
+        return await self.request(
+            "PATCH", f"servers/{server_id}/roles/{role_id}", json=data
+        )
 
     async def delete_role(self, server_id: str, role_id: str):
         """
@@ -986,7 +1061,9 @@ class HTTPHandler:
         else:
             return attachment_data
 
-    async def handle_embed(self, embed_data: Union[SendableEmbedPayload, SendableEmbed]) -> SendableEmbedPayload:
+    async def handle_embed(
+        self, embed_data: Union[SendableEmbedPayload, SendableEmbed]
+    ) -> SendableEmbedPayload:
         """
         Handles an embed.
 

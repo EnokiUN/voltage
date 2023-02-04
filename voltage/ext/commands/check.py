@@ -19,7 +19,10 @@ class Check:
     Checks are ran in parallel using ``asyncio.gather``.
     """
 
-    def __init__(self, func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]) -> None:
+    def __init__(
+        self,
+        func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]],
+    ) -> None:
         self.func = func
         self.args: tuple[Any, ...] = ()
         self.kwargs: dict[str, Any] = {}
@@ -38,7 +41,9 @@ class Check:
         return inner
 
 
-def check(func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]) -> Check:
+def check(
+    func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]
+) -> Check:
     """
     A decorator which creates a check from a function.
     """

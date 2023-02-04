@@ -49,7 +49,9 @@ class Channel:
 
     __slots__ = ("id", "created_at", "type", "server", "cache", "name")
 
-    def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
+    def __init__(
+        self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None
+    ):
         self.id = data["_id"]
         self.created_at = ULID().decode(self.id)
         self.type = ChannelType(data["channel_type"])
@@ -125,7 +127,12 @@ class Channel:
         if isinstance(icon, File):
             icon = await icon.get_id(self.cache.http)
         return self.cache.http.edit_channel(
-            self.id, name=name, description=description, icon=icon, nsfw=nsfw, remove=remove
+            self.id,
+            name=name,
+            description=description,
+            icon=icon,
+            nsfw=nsfw,
+            remove=remove,
         )
 
     async def delete(self):
@@ -152,7 +159,9 @@ class Channel:
         permissions: :class:`Permissions`
             The new permissions for the role.
         """
-        return await self.cache.http.set_role_perms(self.id, role.id, permissions.to_dict())
+        return await self.cache.http.set_role_perms(
+            self.id, role.id, permissions.to_dict()
+        )
 
 
 class SavedMessageChannel(Channel, Messageable):
@@ -213,7 +222,15 @@ class GroupDMChannel(Channel, Messageable):
         The permissions of the group direct messages channel.
     """
 
-    __slots__ = ("name", "description", "nsfw", "owner", "recipients", "icon", "permissions")
+    __slots__ = (
+        "name",
+        "description",
+        "nsfw",
+        "owner",
+        "recipients",
+        "icon",
+        "permissions",
+    )
 
     def __init__(self, data: GroupDMChannelPayload, cache: CacheHandler):
         super().__init__(data, cache)
@@ -221,7 +238,9 @@ class GroupDMChannel(Channel, Messageable):
         self.description = data.get("description")
         self.nsfw = data.get("nsfw", False)
         self.owner = cache.get_user(data["owner"])
-        self.recipients = [cache.get_user(recipient) for recipient in data["recipients"]]
+        self.recipients = [
+            cache.get_user(recipient) for recipient in data["recipients"]
+        ]
 
         self.icon: Optional[Asset]
         if icon := data.get("icon"):
@@ -277,9 +296,22 @@ class TextChannel(Channel, Messageable):
         The icon of the text channel.
     """
 
-    __slots__ = ("name", "description", "last_message", "nsfw", "default_permissions", "role_permissions", "icon")
+    __slots__ = (
+        "name",
+        "description",
+        "last_message",
+        "nsfw",
+        "default_permissions",
+        "role_permissions",
+        "icon",
+    )
 
-    def __init__(self, data: TextChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
+    def __init__(
+        self,
+        data: TextChannelPayload,
+        cache: CacheHandler,
+        server_id: Optional[str] = None,
+    ):
         super().__init__(data, cache, server_id)
         self.name = data["name"]
         self.description = data.get("description")
@@ -291,9 +323,12 @@ class TextChannel(Channel, Messageable):
         else:
             self.last_message = None
 
-        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
+        self.default_permissions = Permissions(
+            data.get("default_permissions", NO_PERMS)
+        )
         self.role_permissions = {
-            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions)
+            for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]
@@ -321,16 +356,30 @@ class VoiceChannel(Channel):
         The icon of the voice channel.
     """
 
-    __slots__ = ("name", "description", "default_permissions", "role_permissions", "icon")
+    __slots__ = (
+        "name",
+        "description",
+        "default_permissions",
+        "role_permissions",
+        "icon",
+    )
 
-    def __init__(self, data: VoiceChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
+    def __init__(
+        self,
+        data: VoiceChannelPayload,
+        cache: CacheHandler,
+        server_id: Optional[str] = None,
+    ):
         super().__init__(data, cache, server_id)
         self.name = data["name"]
         self.description = data.get("description")
 
-        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
+        self.default_permissions = Permissions(
+            data.get("default_permissions", NO_PERMS)
+        )
         self.role_permissions = {
-            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions)
+            for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]

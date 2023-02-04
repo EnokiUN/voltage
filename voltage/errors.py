@@ -173,7 +173,9 @@ class NotEnoughPerms(VoltageException):
         self.perm = perm
 
     def __str__(self):
-        return f"You do not have the {self.perm} permission required to use this command."
+        return (
+            f"You do not have the {self.perm} permission required to use this command."
+        )
 
 
 class BotNotEnoughPerms(VoltageException):

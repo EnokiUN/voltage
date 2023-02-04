@@ -12,7 +12,9 @@ async def on_message(
     if message.content.lower() == "-send":
         await message.reply("Send me something nice!")
         msg = await bot.wait_for(
-            "message", check=lambda message: message.author.id != bot.user.id, timeout=30
+            "message",
+            check=lambda message: message.author.id != bot.user.id,
+            timeout=30,
         )  # Assign this to a variable as it returns a Messageable object for later.
         await message.reply(
             f"I appreciate the message, {message.author.name}, ill remember your words.. `{msg.content}`"

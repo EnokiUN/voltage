@@ -59,7 +59,9 @@ class CommandContext:
         "prefix",
     )
 
-    def __init__(self, message: Message, command: Command, client: CommandsClient, prefix: str):
+    def __init__(
+        self, message: Message, command: Command, client: CommandsClient, prefix: str
+    ):
         self.message = message
         self.content = message.content
         self.author = message.author
@@ -73,7 +75,9 @@ class CommandContext:
         self.send = getattr(message.channel, "send", dummy_func)
         self.typing = getattr(message.channel, "typing", dummy_func)
         if message.server:
-            self.me: Optional[Member] = client.cache.get_member(message.server.id, client.user.id)
+            self.me: Optional[Member] = client.cache.get_member(
+                message.server.id, client.user.id
+            )
         else:
             self.me = None
 
@@ -125,7 +129,9 @@ class Command:
         self.name = name or func.__name__
         self.description = description or func.__doc__
         self.aliases = aliases
-        self.error_handler: Optional[Callable[[Exception, CommandContext], Awaitable[Any]]] = None
+        self.error_handler: Optional[
+            Callable[[Exception, CommandContext], Awaitable[Any]]
+        ] = None
         self.signature = signature(func)
         self.cog = cog
         self.checks: list[Check] = []
@@ -166,7 +172,9 @@ class Command:
         self.error_handler = func
         return self
 
-    async def convert_arg(self, arg: Parameter, given: str, context: CommandContext) -> Any:
+    async def convert_arg(
+        self, arg: Parameter, given: str, context: CommandContext
+    ) -> Any:
         annotation = arg.annotation
         if isinstance(annotation, str):
             return given
@@ -177,7 +185,9 @@ class Command:
         if isclass(annotation):
             if issubclass(annotation, converters.Converter):
                 return await annotation().convert(context, given)
-            if func := getattr(converters, f"{annotation.__name__.capitalize()}Converter", None):
+            if func := getattr(
+                converters, f"{annotation.__name__.capitalize()}Converter", None
+            ):
                 return await func().convert(context, given)
         return str(given)
 
@@ -200,12 +210,17 @@ class Command:
             args: list[str] = []
             kwargs = {}
 
-            for i, (param, arg) in enumerate(zip_longest(list(params.items())[start_index:], given)):
+            for i, (param, arg) in enumerate(
+                zip_longest(list(params.items())[start_index:], given)
+            ):
                 if param is None:
                     break
                 name, data = param
 
-                if data.kind == data.VAR_POSITIONAL or data.kind == data.POSITIONAL_OR_KEYWORD:
+                if (
+                    data.kind == data.VAR_POSITIONAL
+                    or data.kind == data.POSITIONAL_OR_KEYWORD
+                ):
                     if arg is None:
                         if data.default is _empty:
                             raise NotEnoughArgs(self, len(params) - 1, len(args))
@@ -217,10 +232,16 @@ class Command:
                         if arg is None:
                             if data.default is _empty:
                                 raise NotEnoughArgs(self, len(params) - 1, len(given))
-                            kwargs[name] = await self.convert_arg(data, data.default, context)
+                            kwargs[name] = await self.convert_arg(
+                                data, data.default, context
+                            )
                             break
                         kwargs[name] = await self.convert_arg(
-                            data, context.content[param_start + len(" ".join(given[:i])) + 1 :], context
+                            data,
+                            context.content[
+                                param_start + len(" ".join(given[:i])) + 1 :
+                            ],
+                            context,
                         )
                     else:
                         if arg is None:
@@ -252,7 +273,11 @@ class Command:
         return await coro
 
 
-def command(name: Optional[str] = None, description: Optional[str] = None, aliases: Optional[list[str]] = None):
+def command(
+    name: Optional[str] = None,
+    description: Optional[str] = None,
+    aliases: Optional[list[str]] = None,
+):
     """
     A decorator that creates a :class:`Command` from an asynchronous function.
 

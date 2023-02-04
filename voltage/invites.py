@@ -69,7 +69,9 @@ class Invite:
         self.cache = cache
 
     @staticmethod
-    def from_partial(code: str, data: PartialInvitePayload, cache: CacheHandler) -> Invite:
+    def from_partial(
+        code: str, data: PartialInvitePayload, cache: CacheHandler
+    ) -> Invite:
         """
         A utility function that creates an Invite object from a partial payload.
 

@@ -7,7 +7,9 @@ from typing_extensions import NotRequired
 if TYPE_CHECKING:
     from .file import FilePayload
 
-RelationPayload = Literal["Block", "BlockedOther", "Friend", "Incoming", "None", "Outgoing", "User"]
+RelationPayload = Literal[
+    "Block", "BlockedOther", "Friend", "Incoming", "None", "Outgoing", "User"
+]
 
 
 class UserBotPayload(TypedDict):

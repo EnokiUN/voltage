@@ -19,7 +19,9 @@ async def ping(ctx):
 
 # When you set a command's name explicitly the function's name is disregarded.
 # Automatic type conversion is a thing I suppose.
-@client.command(name="whois", description="Tells you who a person ***truly*** is", aliases=["wi"])
+@client.command(
+    name="whois", description="Tells you who a person ***truly*** is", aliases=["wi"]
+)
 async def whoiscommand(ctx, person: voltage.Member):
     await ctx.reply("{0} is !!{0}!!".format(person.name))
 

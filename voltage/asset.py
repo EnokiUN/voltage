@@ -36,7 +36,19 @@ class Asset:
         The url of the asset.
     """
 
-    __slots__ = ("id", "tag", "size", "name", "width", "height", "type", "content_type", "url", "http", "data")
+    __slots__ = (
+        "id",
+        "tag",
+        "size",
+        "name",
+        "width",
+        "height",
+        "type",
+        "content_type",
+        "url",
+        "http",
+        "data",
+    )
 
     def __init__(self, data: FilePayload, http: HTTPHandler):
         self.data = data
@@ -99,7 +111,19 @@ class PartialAsset(Asset):
         The type of the asset.
     """
 
-    __slots__ = ("url", "http", "id", "created_at", "tag", "size", "name", "width", "height", "type", "content_type")
+    __slots__ = (
+        "url",
+        "http",
+        "id",
+        "created_at",
+        "tag",
+        "size",
+        "name",
+        "width",
+        "height",
+        "type",
+        "content_type",
+    )
 
     def __init__(self, url: str, http: HTTPHandler):
         self.url = url

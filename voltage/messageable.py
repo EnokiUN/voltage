@@ -260,7 +260,13 @@ class Messageable:  # Really missing rust traits rn :(
             The messages that got found.
         """
         messages = await self.cache.http.search_for_message(
-            await self.get_id(), query, sort=sort.value, limit=limit, before=before, after=after, include_users=False
+            await self.get_id(),
+            query,
+            sort=sort.value,
+            limit=limit,
+            before=before,
+            after=after,
+            include_users=False,
         )
         return MessageIterator(messages, self)
 
@@ -274,7 +280,9 @@ class Messageable:  # Really missing rust traits rn :(
             The amount of messages to purge.
         """
         channel_id = await self.get_id()
-        for i in await self.cache.http.fetch_messages(channel_id, "Latest", limit=amount):
+        for i in await self.cache.http.fetch_messages(
+            channel_id, "Latest", limit=amount
+        ):
             try:
                 await self.cache.http.delete_message(channel_id, i["_id"])
             except HTTPError as e:
