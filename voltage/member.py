@@ -56,16 +56,14 @@ class Member(User):
             self.server_avatar = None
 
         roles = []
-        perms: OverrideFieldPayload = {"a": 0, "d": 0}
         for i in data.get("roles", []):
             role = server.get_role(i)
             if role:
                 roles.append(role)
-                perms["a"] |= role.permissions.allow.flags
-                perms["d"] |= role.permissions.deny.flags
 
         self.roles: list[Role] = sorted(roles, key=lambda r: r.rank, reverse=True)
-        self.permissions = Permissions(perms)
+        self.permissions: Permissions
+        self._caclulate_perms()
 
         self.server = server
 
@@ -154,6 +152,13 @@ class Member(User):
         """
         await self.cache.http.edit_member(self.server.id, self.id, remove="Avatar")
 
+    def _caclulate_perms(self):
+        perms: OverrideFieldPayload = {"a": 0, "d": 0}
+        for role in self.roles:
+            perms["a"] |= role.permissions.allow.flags
+            perms["d"] |= role.permissions.deny.flags
+        self.permissions = Permissions(perms)
+
     def _update(self, data: Union[Any, OnServerMemberUpdatePayload]):  # god bless mypy
         if clear := data.get("clear"):
             if clear == "Nickname":
@@ -174,3 +179,4 @@ class Member(User):
                         roles.append(role)
 
                 self.roles = sorted(roles, key=lambda r: r.rank, reverse=True)
+                self._caclulate_perms()
