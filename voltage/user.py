@@ -207,7 +207,9 @@ class User(Messageable):
 
     @property
     def owner(self):
-        return self.cache.get_user(self.owner_id) if self.bot and self.owner_id else None
+        return (
+            self.cache.get_user(self.owner_id) if self.bot and self.owner_id else None
+        )
 
     async def fetch_profile(self) -> UserProfile:
         """
