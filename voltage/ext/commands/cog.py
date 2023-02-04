@@ -142,7 +142,7 @@ class SubclassedCog(Cog):
         cls.commands = []
         cls.listeners = {}
         cls.raw_listeners = {}
-        for (name, attr) in cls.__dict__.items():
+        for name, attr in cls.__dict__.items():
             if isinstance(attr, Command):
                 attr.subclassed = True
                 cls.commands.append(attr)

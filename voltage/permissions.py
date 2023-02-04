@@ -9,6 +9,7 @@ from .flag import FlagBase, FlagValue
 if TYPE_CHECKING:
     from .types import OverrideFieldPayload
 
+
 # https://github.com/revoltchat/revolt.js/blob/master/src/permissions/definitions.ts
 class PermissionsFlags(FlagBase):
     """A class which represents a channel permissions object.

@@ -238,7 +238,7 @@ class Client:
     def members(self) -> list[Member]:
         """The list of members the client has cached."""
         members: list[Member] = list()
-        for (server, servermembers) in self.cache.members.items():
+        for server, servermembers in self.cache.members.items():
             members += list(servermembers.values())
         return members
 
