@@ -1,4 +1,4 @@
-name: mypy
+name: pyright
 on: [pull_request, push]
 jobs:
   mypy:
@@ -7,7 +7,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-      - run: pip install mypy
+      - run: pip install pyright
       - run: pip install -r requirements.txt
-      - run: mkdir --parents --verbose .mypy_cache
-      - run: mypy --ignore-missing-imports --install-types --non-interactive ./voltage
+      - run: pyright voltage
