@@ -57,10 +57,21 @@ from .errors import (
 from .file import File as File
 from .invites import Invite as Invite
 from .member import Member as Member
-from .message import Message as Message, MessageMasquerade as MessageMasquerade, MessageReply as MessageReply
+from .message import (
+    Message as Message,
+    MessageMasquerade as MessageMasquerade,
+    MessageReply as MessageReply,
+)
 from .messageable import Messageable as Messageable
-from .permissions import Permissions as Permissions, PermissionsFlags as PermissionsFlags
+from .permissions import (
+    Permissions as Permissions,
+    PermissionsFlags as PermissionsFlags,
+)
 from .roles import Role as Role
-from .server import Server as Server, ServerBan as ServerBan, SystemMessages as SystemMessages
+from .server import (
+    Server as Server,
+    ServerBan as ServerBan,
+    SystemMessages as SystemMessages,
+)
 from .user import User as User
 from .utils import get as get
