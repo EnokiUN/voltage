@@ -56,9 +56,7 @@ class CacheHandler:
         "users",
     )
 
-    def __init__(
-        self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000
-    ):
+    def __init__(self, http: HTTPHandler, loop: AbstractEventLoop, message_limit: int = 5000):
         self.http = http
         self.message_limit = message_limit
         self.loop = loop
@@ -206,9 +204,7 @@ class CacheHandler:
         """
         if member := self.members[server_id].get(member_id):
             return member
-        return self.add_member(
-            server_id, await self.http.fetch_member(server_id, member_id)
-        )
+        return self.add_member(server_id, await self.http.fetch_member(server_id, member_id))
 
     async def fetch_dm_channel(self, user_id: str) -> DMChannel:
         """
@@ -483,9 +479,7 @@ class CacheHandler:
         print("\033[1;34m[CACHE]      Started caching servers.\033[0m")
         await gather(*[self.handle_ready_server(server) for server in data["servers"]])
         print("\033[1;34m[CACHE]      Started caching channels.\033[0m")
-        await gather(
-            *[self.handle_ready_channel(channel) for channel in data["channels"]]
-        )
+        await gather(*[self.handle_ready_channel(channel) for channel in data["channels"]])
         print("\033[1;34m[CACHE]      Started caching members.\033[0m")
         await gather(*[self.handle_ready_member(member) for member in data["members"]])
         print("\033[1;34m[CACHE]      Populating servers.\033[0m")

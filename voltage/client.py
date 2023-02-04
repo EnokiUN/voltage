@@ -109,9 +109,7 @@ class Client:
             if raw:
                 self.raw_listeners[event.lower()] = func
             else:
-                self.listeners[
-                    event.lower()
-                ] = func  # Why would we have more than one listener for the same event?
+                self.listeners[event.lower()] = func  # Why would we have more than one listener for the same event?
             return func
 
         return inner  # Returns the function so the user can use it by itself
@@ -257,9 +255,7 @@ class Client:
         """
         self.http = HTTPHandler(self.client, token, bot=bot)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
-        self.ws = WebSocketHandler(
-            self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch
-        )
+        self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
         await self.http.get_api_info()
         self.user = self.cache.add_user(await self.http.fetch_self())
         await self.ws.connect(banner)
@@ -340,9 +336,7 @@ class Client:
         except ValueError:
             return None
 
-    async def set_status(
-        self, text: Optional[str] = None, presence: Optional[PresenceType] = None
-    ):
+    async def set_status(self, text: Optional[str] = None, presence: Optional[PresenceType] = None):
         """
         Sets the client's status.
 

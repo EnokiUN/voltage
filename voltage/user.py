@@ -127,17 +127,13 @@ class User(Messageable):
 
         avatar = data.get("avatar")
         self.avatar = Asset(avatar, cache.http) if avatar else None
-        self.default_avatar = PartialAsset(
-            f"{cache.http.api_url}/users/{self.id}/default_avatar", cache.http
-        )
+        self.default_avatar = PartialAsset(f"{cache.http.api_url}/users/{self.id}/default_avatar", cache.http)
 
         relationships = []
         for i in data.get("relations", []):
             try:
                 if user := cache.get_user(i["_id"]):
-                    relationships.append(
-                        Relationship(RelationshipType(i["status"]), user)
-                    )
+                    relationships.append(Relationship(RelationshipType(i["status"]), user))
             except KeyError:
                 continue
 
@@ -207,9 +203,7 @@ class User(Messageable):
 
     @property
     def owner(self):
-        return (
-            self.cache.get_user(self.owner_id) if self.bot and self.owner_id else None
-        )
+        return self.cache.get_user(self.owner_id) if self.bot and self.owner_id else None
 
     async def fetch_profile(self) -> UserProfile:
         """
@@ -242,9 +236,7 @@ class User(Messageable):
                 presence = status.get("presence") or self.status.presence
                 self.status = Status(status.get("text"), PresenceType(presence))
             if bg := new.get("profile.background"):
-                self._profile = UserProfile(
-                    self._profile.content, Asset(bg, self.cache.http)
-                )
+                self._profile = UserProfile(self._profile.content, Asset(bg, self.cache.http))
             if content := new.get("profile.content"):
                 self._profile = UserProfile(content, self._profile.background)
             if avatar := new.get("avatar"):

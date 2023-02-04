@@ -66,9 +66,7 @@ class UserConverter(Converter):
         if match := id_regex.match(arg):
             return ctx.client.cache.get_user(match.group(0))
         arg = arg.replace("@", "").lower()
-        if user := get(
-            ctx.client.cache.users.values(), lambda u: u.name.lower() == arg
-        ):
+        if user := get(ctx.client.cache.users.values(), lambda u: u.name.lower() == arg):
             return user
         raise UserNotFound(arg)
 
@@ -131,9 +129,7 @@ class RoleConverter(Converter):
         raise RoleNotFound(arg)
 
 
-def converter(
-    converter: Callable[[CommandContext, str], Awaitable[Any]]
-) -> Type[Converter]:
+def converter(converter: Callable[[CommandContext, str], Awaitable[Any]]) -> Type[Converter]:
     """
     A decorator that converts a function into a converter.
     """

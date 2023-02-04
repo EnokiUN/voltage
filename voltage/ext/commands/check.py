@@ -41,9 +41,7 @@ class Check:
         return inner
 
 
-def check(
-    func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]
-) -> Check:
+def check(func: Callable[..., Awaitable[Callable[[CommandContext], Awaitable[bool]]]]) -> Check:
     """
     A decorator which creates a check from a function.
     """
