@@ -92,9 +92,7 @@ class NoneEmbed(TypedDict):
     type: Literal["None"]
 
 
-EmbedPayload = Union[
-    WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed
-]
+EmbedPayload = Union[WebsiteEmbedPayload, ImageEmbedPayload, TextEmbedPayload, NoneEmbed]
 
 
 class SendableEmbedPayload(TypedDict):

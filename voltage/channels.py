@@ -49,9 +49,7 @@ class Channel:
 
     __slots__ = ("id", "created_at", "type", "server", "cache", "name")
 
-    def __init__(
-        self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None
-    ):
+    def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         self.id = data["_id"]
         self.created_at = ULID().decode(self.id)
         self.type = ChannelType(data["channel_type"])
@@ -159,9 +157,7 @@ class Channel:
         permissions: :class:`Permissions`
             The new permissions for the role.
         """
-        return await self.cache.http.set_role_perms(
-            self.id, role.id, permissions.to_dict()
-        )
+        return await self.cache.http.set_role_perms(self.id, role.id, permissions.to_dict())
 
 
 class SavedMessageChannel(Channel, Messageable):
@@ -238,9 +234,7 @@ class GroupDMChannel(Channel, Messageable):
         self.description = data.get("description")
         self.nsfw = data.get("nsfw", False)
         self.owner = cache.get_user(data["owner"])
-        self.recipients = [
-            cache.get_user(recipient) for recipient in data["recipients"]
-        ]
+        self.recipients = [cache.get_user(recipient) for recipient in data["recipients"]]
 
         self.icon: Optional[Asset]
         if icon := data.get("icon"):
@@ -323,12 +317,9 @@ class TextChannel(Channel, Messageable):
         else:
             self.last_message = None
 
-        self.default_permissions = Permissions(
-            data.get("default_permissions", NO_PERMS)
-        )
+        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
         self.role_permissions = {
-            role: Permissions(permissions)
-            for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]
@@ -374,12 +365,9 @@ class VoiceChannel(Channel):
         self.name = data["name"]
         self.description = data.get("description")
 
-        self.default_permissions = Permissions(
-            data.get("default_permissions", NO_PERMS)
-        )
+        self.default_permissions = Permissions(data.get("default_permissions", NO_PERMS))
         self.role_permissions = {
-            role: Permissions(permissions)
-            for role, permissions in data.get("role_permissions", {}).items()
+            role: Permissions(permissions) for role, permissions in data.get("role_permissions", {}).items()
         }
 
         self.icon: Optional[Asset]

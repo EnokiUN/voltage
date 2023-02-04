@@ -15,9 +15,7 @@ async def on_ping(message):  # Doesn't matter what you call the function.
             media="https://http.cat/200",  # The media for the embed. Here, we have an image.
         )
         # Reply to a message.
-        await message.reply(
-            content="Cat", embed=embed
-        )  # You can use "#" if you don't want any content.
+        await message.reply(content="Cat", embed=embed)  # You can use "#" if you don't want any content.
 
 
 # Run the client

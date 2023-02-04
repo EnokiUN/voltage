@@ -10,7 +10,6 @@ from voltage.ext import (  # Importing the commands framework so we that we're a
 # Additionally, any args / kwargs you pass to the `client.add_extension` function will be passed to the setup function.
 # The client is passed by default however.
 def setup(client) -> commands.Cog:
-
     test = commands.Cog(  # Create a new Cog object.
         # Give it a name.  # And an optional description.
         "Test",

@@ -92,9 +92,7 @@ class MessageInteractions(NamedTuple):
         """Returns a dictionary representation of the message interactions."""
         return {
             "reactions": self.reactions if self.reactions else None,
-            "restrict_reactions": self.restrict_reactions
-            if self.restrict_reactions is not None
-            else None,
+            "restrict_reactions": self.restrict_reactions if self.restrict_reactions is not None else None,
         }
 
 
@@ -151,9 +149,7 @@ class Message:
 
         self.server = self.channel.server
         self.author = (
-            cache.get_member(self.server.id, data["author"])
-            if self.server
-            else cache.get_user(data["author"])
+            cache.get_member(self.server.id, data["author"]) if self.server else cache.get_user(data["author"])
         )
 
         if masquerade := data.get("masquerade"):
@@ -205,9 +201,7 @@ class Message:
             The new embeds of the message.
         """
         if content is None and embed is None and embeds is None:
-            raise ValueError(
-                "You must provide at least one of the following: content, embed, embeds"
-            )
+            raise ValueError("You must provide at least one of the following: content, embed, embeds")
 
         if embed:
             embeds = [embed]
@@ -215,9 +209,7 @@ class Message:
         content = str(content) if content else None
 
         # type: ignore
-        await self.cache.http.edit_message(
-            self.channel.id, self.id, content=content, embeds=embeds
-        )
+        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)
 
     async def delete(self, *, delay: Optional[float] = None):
         """Deletes the message."""
