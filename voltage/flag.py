@@ -27,7 +27,7 @@ class FlagValue:
             return instance._has_flag(self.value)
         return self
 
-    def __set__(self, instance: FB, value: bool):
+    def __set__(self, instance: FlagBase, value: bool):
         instance._set_flag(self.value, value)
 
     def __repr__(self):
@@ -72,12 +72,12 @@ class FlagBase:
         inst.flags = flags
         return inst
 
-    def __eq__(self: FB, other: object) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
         return self.flags == other.flags
 
-    def __ne__(self: FB, other: object) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     def __hash__(self):
@@ -121,10 +121,10 @@ class FlagBase:
     def __gt__(self: FB, other: FB) -> bool:
         return (self.flags > other.flags) and self.flags != other.flags
 
-    def _has_flag(self: FB, flag: int) -> bool:
+    def _has_flag(self, flag: int) -> bool:
         return (self.flags & flag) == flag
 
-    def _set_flag(self: FB, flag: int, value: bool):
+    def _set_flag(self, flag: int, value: bool):
         if value:
             self.flags |= flag
         else:
