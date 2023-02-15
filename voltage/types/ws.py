@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from tkinter import W
 from typing import TYPE_CHECKING, List, Literal, TypedDict, Union
 
 if TYPE_CHECKING:
