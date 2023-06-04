@@ -326,10 +326,11 @@ class WebSocketHandler:
         member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
         await self.dispatch("member_join", member)
 
-    async def handle_memberleave(self, payload: OnServerMemberLeavePayload):
+    async def handle_servermemberleave(self, payload: OnServerMemberLeavePayload):
         """
         Handles the member leave event.
         """
+        print(payload)
         server = self.cache.get_server(payload["id"])
         member = server.get_member(payload["user"])
         if member:
