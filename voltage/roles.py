@@ -59,7 +59,7 @@ class Role:
 
     def __init__(self, data: RolePayload, id: str, server: Server, http: HTTPHandler):
         self.id = id
-        self.created_at = ULID().decode(id)
+        self.created_at = ULID(buffer=self.id.encode()).timestamp()
         self.name = data["name"]
         self.colour = data.get("colour")
         self.color = self.colour

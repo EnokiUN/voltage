@@ -173,7 +173,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         self.data = data
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID().decode(self.id)
+        self.created_at = ULID(buffer=self.id.encode()).timestamp()
         self.name = data["name"]
         self.description = data.get("description")
         self.owner_id = data["owner"]

@@ -117,7 +117,7 @@ class User(Messageable):
     def __init__(self, data: UserPayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID().decode(self.id)[0]
+        self.created_at = ULID(buffer=self.id.encode()).timestamp()
 
         self.name = data["username"]
         self.dm_channel = cache.get_dm_channel(self.id)

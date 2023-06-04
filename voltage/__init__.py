@@ -16,7 +16,7 @@ __title__ = "Voltage"
 __author__ = "EnokiUN"
 __license__ = "MIT"
 __copyright__ = "Copyright (c) 2021-present EnokiUN"
-__version__ = "0.1.5a8"  # Updating this is such a pain.
+__version__ = "0.1.6a"  # Updating this is such a pain.
 
 from .asset import Asset as Asset
 from .asset import PartialAsset as PartialAsset

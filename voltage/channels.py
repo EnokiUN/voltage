@@ -51,7 +51,7 @@ class Channel:
 
     def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         self.id = data["_id"]
-        self.created_at = ULID().decode(self.id)
+        self.created_at = ULID(buffer=self.id.encode()).timestamp()
         self.type = ChannelType(data["channel_type"])
         self.server = cache.get_server(server_id) if server_id else None
         self.cache = cache
