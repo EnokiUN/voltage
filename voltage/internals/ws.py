@@ -330,7 +330,6 @@ class WebSocketHandler:
         """
         Handles the member leave event.
         """
-        print(payload)
         server = self.cache.get_server(payload["id"])
         member = server.get_member(payload["user"])
         if member:
