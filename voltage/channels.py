@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union, cast
 
-from ulid import ULID
+from ulid import from_str
 
 from .asset import Asset
 from .enums import ChannelType
@@ -51,7 +51,7 @@ class Channel:
 
     def __init__(self, data: ChannelPayload, cache: CacheHandler, server_id: Optional[str] = None):
         self.id = data["_id"]
-        self.created_at = ULID(buffer=self.id.encode()).timestamp()
+        self.created_at = from_str(self.id).timestamp()
         self.type = ChannelType(data["channel_type"])
         self.server = cache.get_server(server_id) if server_id else None
         self.cache = cache

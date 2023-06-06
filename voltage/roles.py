@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, Optional
 
-from ulid import ULID
+from ulid import from_str
 
 from .notsupplied import NotSupplied
 
@@ -59,7 +59,7 @@ class Role:
 
     def __init__(self, data: RolePayload, id: str, server: Server, http: HTTPHandler):
         self.id = id
-        self.created_at = ULID(buffer=self.id.encode()).timestamp()
+        self.created_at = from_str(self.id).timestamp()
         self.name = data["name"]
         self.colour = data.get("colour")
         self.color = self.colour

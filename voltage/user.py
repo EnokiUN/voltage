@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, NamedTuple, Optional
 
-from ulid import ULID
+from ulid import from_str
 
 from .asset import Asset, PartialAsset
 from .enums import PresenceType, RelationshipType
@@ -117,7 +117,7 @@ class User(Messageable):
     def __init__(self, data: UserPayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID(buffer=self.id.encode()).timestamp()
+        self.created_at = from_str(self.id).timestamp()
 
         self.name = data["username"]
         self.dm_channel = cache.get_dm_channel(self.id)

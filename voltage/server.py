@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
 
-from ulid import ULID
+from ulid import from_str, ULID
 
 from .asset import Asset
 from .categories import Category
@@ -173,7 +173,7 @@ class Server:  # As of writing this this is the final major thing I have to impl
         self.data = data
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID(buffer=self.id.encode()).timestamp()
+        self.created_at = from_str(self.id).timestamp()
         self.name = data["name"]
         self.description = data.get("description")
         self.owner_id = data["owner"]

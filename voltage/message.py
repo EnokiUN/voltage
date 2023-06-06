@@ -4,7 +4,7 @@ from asyncio import sleep
 from datetime import datetime
 from typing import TYPE_CHECKING, List, NamedTuple, Optional, Union
 
-from ulid import ULID
+from ulid import from_str
 
 from .asset import Asset, PartialAsset
 from .embed import SendableEmbed, create_embed
@@ -140,7 +140,7 @@ class Message:
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID(buffer=self.id.encode()).timestamp()
+        self.created_at = from_str(self.id).timestamp()
         self.content = data.get("content")
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
