@@ -21,7 +21,7 @@ async def on_message(message):  # The name for this can be anything you want it 
             "*GASP!* You can't say that word!", delete_after=5
         )  # Reply to the message sent and delete OUR message after 5 seconds
         await message.delete()  # Delete the USERS message
-    await bot.handle_commands(message)
+    await client.handle_commands(message)
     # Handle afterwards so other commands will work after the on_message,
 
 
