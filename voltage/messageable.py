@@ -280,15 +280,23 @@ class Messageable:  # Really missing rust traits rn :(
             The amount of messages to purge.
         """
         channel_id = await self.get_id()
-        for i in await self.cache.http.fetch_messages(channel_id, "Latest", limit=amount):
-            try:
-                await self.cache.http.delete_message(channel_id, i["_id"])
-            except HTTPError as e:
-                status = e.response.status
-                if status == 404:
-                    pass
-                else:
-                    raise
+        message_list = []
+        [
+            message_list.append(message["_id"])
+            for message in await self.cache.http.fetch_messages(
+                channel_id, "Latest", limit=amount
+            )
+        ]
+        try:
+            await self.cache.http.bulk_delete_messages(
+                channel_id, message_ids=message_list
+            )
+        except HTTPError as e:
+            status = e.response.status
+            if status == 404:
+                pass
+            else:
+                raise
 
     def typing(self) -> Typing:
         """
