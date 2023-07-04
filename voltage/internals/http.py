@@ -536,6 +536,19 @@ class HTTPHandler:
         """
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}")
 
+    async def bulk_delete_messages(self, channel_id: str, message_ids: List[str]):
+        """
+        Deletes messages in bulk
+
+        Parameters
+        ----------
+        channel_id: :class:`str`
+            The id of the channel.
+        message_ids: :class:`List[str]`
+            The id of the message.
+        """
+        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_ids}")
+
     async def poll_message_changed(
         self, channel_id: str, ids: List[str]
     ) -> Dict[str, Union[str, List[MessagePayload]]]:
