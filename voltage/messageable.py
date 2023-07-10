@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from .enums import SortType
 from .errors import HTTPError
 from .message import Message, MessageInteractions
+from .utils import chunks
 
 if TYPE_CHECKING:
     from .embed import SendableEmbed
@@ -290,7 +291,12 @@ class Messageable:  # Really missing rust traits rn :(
         try:
             await self.cache.http.bulk_delete_messages(
                 channel_id, message_ids=message_list
-            )
+            ) if len(message_list) <= 100 else [
+                await self.cache.http.bulk_delete_messages(
+                    channel_id, message_ids=chunked_message_ids
+                )
+                for chunked_message_ids in chunks(message_list, 100)
+            ]
         except HTTPError as e:
             status = e.response.status
             if status == 404:
