@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from asyncio import gather
 from io import BytesIO
 from json import decoder, dumps
@@ -547,7 +548,7 @@ class HTTPHandler:
         message_ids: :class:`List[str]`
             The id of the message.
         """
-        return await self.request("DELETE", f"channels/{channel_id}/messages/{message_ids}")
+        return await self.request("DELETE", f"channels/{channel_id}/messages/{json.dumps(message_ids)}")
 
     async def poll_message_changed(
         self, channel_id: str, ids: List[str]
