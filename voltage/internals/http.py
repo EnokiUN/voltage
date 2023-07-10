@@ -545,10 +545,14 @@ class HTTPHandler:
         ----------
         channel_id: :class:`str`
             The id of the channel.
-        message_ids: :class:`List[str]`
+        message_ids: List[:class:`str`]
             The id of the message.
         """
-        return await self.request("DELETE", f"channels/{channel_id}/messages/", data={"ids": message_ids})
+        return await self.request(
+            "DELETE",
+            f"channels/{channel_id}/messages/",
+            params={"ids": ",".join(message_ids)},
+        )
 
     async def poll_message_changed(
         self, channel_id: str, ids: List[str]
