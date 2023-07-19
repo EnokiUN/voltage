@@ -27,6 +27,7 @@ class UserRelationPayload(TypedDict):
 class UserPayload(TypedDict):
     _id: str
     username: str
+    discriminator: int
     avatar: NotRequired[FilePayload]
     bot: NotRequired[UserBotPayload]
     relations: NotRequired[List[UserRelationPayload]]

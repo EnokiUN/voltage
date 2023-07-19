@@ -68,7 +68,7 @@ class Member(User):
         self.server = server
 
     def __repr__(self):
-        return f"<Member {self.name}>"
+        return f"<Member {self.name}#{self.discriminator}>"
 
     @property
     def display_name(self):

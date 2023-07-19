@@ -74,6 +74,8 @@ class User(Messageable):
         The epoch time when the user was created.
     name: :class:`str`
         The user's name.
+    discriminator: :class:`int`
+        The user's discriminator.
     avatar: :class:`Asset`
         The user's avatar.
     badges: :class:`UserFlags`
@@ -96,6 +98,7 @@ class User(Messageable):
         "id",
         "created_at",
         "name",
+        "discriminator",
         "avatar",
         "dm_channel",
         "default_avatar",
@@ -120,6 +123,7 @@ class User(Messageable):
         self.created_at = ULID().decode(self.id)[0]
 
         self.name = data["username"]
+        self.discriminator = int(data["discriminator"])
         self.dm_channel = cache.get_dm_channel(self.id)
         self.flags = data.get("flags", 0)
         self.badges = UserFlags.new_with_flags(self.flags)
@@ -177,10 +181,10 @@ class User(Messageable):
         return self.dm_channel.id
 
     def __str__(self):
-        return f"@{self.name}"
+        return f"@{self.name}#{self.discriminator}"
 
     def __repr__(self):
-        return f"<User {self.name}>"
+        return f"<User {self.name}#{self.discriminator}>"
 
     @property
     def profile(self) -> UserProfile:
