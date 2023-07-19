@@ -181,10 +181,10 @@ class User(Messageable):
         return self.dm_channel.id
 
     def __str__(self):
-        return f"@{self.name}"
+        return f"@{self.name}#{self.discriminator}"
 
     def __repr__(self):
-        return f"<User {self.name}>"
+        return f"<User {self.name}#{self.discriminator}>"
 
     @property
     def profile(self) -> UserProfile:
