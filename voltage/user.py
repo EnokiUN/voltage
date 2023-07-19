@@ -74,7 +74,7 @@ class User(Messageable):
         The epoch time when the user was created.
     name: :class:`str`
         The user's name.
-    discriminator: :class:`int`
+    discriminator: :class:`str`
         The user's discriminator.
     avatar: :class:`Asset`
         The user's avatar.
@@ -123,7 +123,7 @@ class User(Messageable):
         self.created_at = ULID().decode(self.id)[0]
 
         self.name = data["username"]
-        self.discriminator = int(data["discriminator"])
+        self.discriminator = data["discriminator"]
         self.dm_channel = cache.get_dm_channel(self.id)
         self.flags = data.get("flags", 0)
         self.badges = UserFlags.new_with_flags(self.flags)
