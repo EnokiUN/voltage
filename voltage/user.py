@@ -126,7 +126,7 @@ class User(Messageable):
         self.discriminator = data["discriminator"]
         self.dm_channel = cache.get_dm_channel(self.id)
         self.flags = data.get("flags", 0)
-        self.badges = UserFlags.new_with_flags(self.flags)
+        self.badges = UserFlags.new_with_flags(data.get("badges", 0))
         self.online = data.get("online", False)
 
         avatar = data.get("avatar")

@@ -205,3 +205,12 @@ class UserFlags(FlagBase):
         Whether the user has the relevant joke 1 (amogus) badge.
         """
         return 1 << 9
+
+    @FlagValue
+    def reserved_relevant_joke_badge_2(self):
+        """
+        Whether the user has the relevant joke 2 (amorbus) badge.
+        """
+
+        return 1 << 10
+
