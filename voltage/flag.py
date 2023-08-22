@@ -213,4 +213,3 @@ class UserFlags(FlagBase):
         """
 
         return 1 << 10
-
