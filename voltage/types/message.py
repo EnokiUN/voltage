@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, TypedDict, Union
+from typing import TYPE_CHECKING, Dict, List, TypedDict, Union
 
 from typing_extensions import NotRequired
 
@@ -37,6 +37,8 @@ class MessagePayload(TypedDict):
     mentions: NotRequired[List[str]]
     replies: NotRequired[List[str]]
     masquerade: NotRequired[MasqueradePayload]
+    reactions: NotRequired[Dict[str, List[str]]]
+    interactions: NotRequired[MessageInteractionsPayload]
 
 
 class MessageReplyPayload(TypedDict):

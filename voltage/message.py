@@ -182,6 +182,21 @@ class Message:
 
         self.mention_ids = data.get("mentions", [])
 
+        if interactions := data.get("interactions"):
+            self.interactions.restrict_reactions = (
+                interactions.get("restrict_reactions") or False
+            )
+
+        if reactions := data.get("reactions"):
+            for emoji_id, users in reactions.items():
+                users = []
+                for user_id in users:
+                    try:
+                        users.append(cache.get_user(user_id))
+                    except KeyError:
+                        pass
+                self.interactions.reactions[emoji_id] = users
+
     async def full_replies(self):
         """Returns the full list of replies of the message."""
         replies = []
@@ -296,6 +311,10 @@ class Message:
 
     async def remove_reactions(self):
         await self.cache.http.delete_all_reaction(self.channel.id, self.id)
+
+    @property
+    def reactions(self) -> Dict[str, List[User]]:
+        return self.interactions.reactions
 
     @property
     def jump_url(self) -> str:
