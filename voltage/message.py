@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from asyncio import sleep
 from datetime import datetime
-from typing import TYPE_CHECKING, List, NamedTuple, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, NamedTuple, Optional, Union
 
 from ulid import ULID
 
@@ -74,25 +74,28 @@ class MessageMasquerade(NamedTuple):
         return data
 
 
-class MessageInteractions(NamedTuple):
+class MessageInteractions:
     """A named tuple that represents a message's interactions.
 
     Attributes
     ----------
-    reactions: Optional[:class:`list[:class:`str`]`]
+    reactions: Dict[:class:`str`, List[:class:`User`]]
         The reactions always below this messsage.
     restrict_reactions: Optional[:class:`bool`]
         Only allow reactions specified.
     """
 
-    reactions: Optional[list[str]] = None
-    restrict_reactions: Optional[bool] = None
+    def __init__(self):
+        self.reactions: Dict[str, List[User]] = {}
+        self.restrict_reactions = False
 
     def to_dict(self) -> dict:
         """Returns a dictionary representation of the message interactions."""
         return {
             "reactions": self.reactions if self.reactions else None,
-            "restrict_reactions": self.restrict_reactions if self.restrict_reactions is not None else None,
+            "restrict_reactions": self.restrict_reactions
+            if self.restrict_reactions is not None
+            else None,
         }
 
 
@@ -135,6 +138,7 @@ class Message:
         "reply_ids",
         "replies",
         "cache",
+        "interactions",
     )
 
     def __init__(self, data: MessagePayload, cache: CacheHandler):
@@ -144,12 +148,15 @@ class Message:
         self.content = data.get("content")
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
+        self.interactions = MessageInteractions()
 
         self.channel = cache.get_channel(data["channel"])
 
         self.server = self.channel.server
         self.author = (
-            cache.get_member(self.server.id, data["author"]) if self.server else cache.get_user(data["author"])
+            cache.get_member(self.server.id, data["author"])
+            if self.server
+            else cache.get_user(data["author"])
         )
 
         if masquerade := data.get("masquerade"):
@@ -166,7 +173,7 @@ class Message:
             self.edited_at = None
 
         self.reply_ids = data.get("replies", [])
-        self.replies = []
+        self.replies: List[Message] = []
         for i in self.reply_ids:
             try:
                 self.replies.append(cache.get_message(i))
@@ -201,14 +208,18 @@ class Message:
             The new embeds of the message.
         """
         if content is None and embed is None and embeds is None:
-            raise ValueError("You must provide at least one of the following: content, embed, embeds")
+            raise ValueError(
+                "You must provide at least one of the following: content, embed, embeds"
+            )
 
         if embed:
             embeds = [embed]
 
         content = str(content) if content else None
 
-        await self.cache.http.edit_message(self.channel.id, self.id, content=content, embeds=embeds)
+        await self.cache.http.edit_message(
+            self.channel.id, self.id, content=content, embeds=embeds
+        )
 
     async def delete(self, *, delay: Optional[float] = None):
         """Deletes the message."""

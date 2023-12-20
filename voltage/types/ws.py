@@ -60,6 +60,12 @@ class OnMessageReactPayload(BasePayload):
     emoji_id: str
 
 
+class OnMessageRemoveReactionPayload(BasePayload):
+    id: str
+    channel_id: str
+    emoji_id: str
+
+
 class OnChannelCreatePayload_SavedMessage(BasePayload, SavedMessagePayload):
     pass
 
