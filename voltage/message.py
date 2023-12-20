@@ -189,13 +189,13 @@ class Message:
 
         if reactions := data.get("reactions"):
             for emoji_id, users in reactions.items():
-                users = []
+                reaction_users = []
                 for user_id in users:
                     try:
-                        users.append(cache.get_user(user_id))
+                        reaction_users.append(cache.get_user(user_id))
                     except KeyError:
                         pass
-                self.interactions.reactions[emoji_id] = users
+                self.interactions.reactions[emoji_id] = reaction_users
 
     async def full_replies(self):
         """Returns the full list of replies of the message."""
