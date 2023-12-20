@@ -179,9 +179,7 @@ class Message:
         self.mention_ids = data.get("mentions", [])
 
         if interactions := data.get("interactions"):
-            self.interactions.restrict_reactions = (
-                interactions.get("restrict_reactions") or False
-            )
+            self.interactions.restrict_reactions = interactions.get("restrict_reactions") or False
 
         if reactions := data.get("reactions"):
             for emoji_id, users in reactions.items():
