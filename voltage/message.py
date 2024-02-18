@@ -310,7 +310,7 @@ class Message:
     def jump_url(self) -> str:
         """Returns a URL that allows the client to jump to the message."""
         server_segment = "" if self.server is None else f"/server/{self.server.id}"
-        return f"https://app.revolt.chat/{server_segment}channel/{self.channel.id}/{self.id}"
+        return f"https://app.revolt.chat/{server_segment}/channel/{self.channel.id}/{self.id}"
 
     @property
     def mentions(self) -> list[Union[User, Member]]:
