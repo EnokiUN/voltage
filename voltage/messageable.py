@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 from .enums import SortType
 from .errors import HTTPError
 from .message import Message, MessageInteractions
+from .utils import chunks
 
 if TYPE_CHECKING:
     from .embed import SendableEmbed
@@ -280,15 +281,28 @@ class Messageable:  # Really missing rust traits rn :(
             The amount of messages to purge.
         """
         channel_id = await self.get_id()
-        for i in await self.cache.http.fetch_messages(channel_id, "Latest", limit=amount):
-            try:
-                await self.cache.http.delete_message(channel_id, i["_id"])
-            except HTTPError as e:
-                status = e.response.status
-                if status == 404:
-                    pass
-                else:
-                    raise
+        message_list = []
+        [
+            message_list.append(message["_id"])
+            for message in await self.cache.http.fetch_messages(
+                channel_id, "Latest", limit=amount
+            )
+        ]
+        try:
+            await self.cache.http.bulk_delete_messages(
+                channel_id, message_ids=message_list
+            ) if len(message_list) <= 100 else [
+                await self.cache.http.bulk_delete_messages(
+                    channel_id, message_ids=chunked_message_ids
+                )
+                for chunked_message_ids in chunks(message_list, 100)
+            ]
+        except HTTPError as e:
+            status = e.response.status
+            if status == 404:
+                pass
+            else:
+                raise
 
     def typing(self) -> Typing:
         """

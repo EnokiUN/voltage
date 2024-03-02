@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from asyncio import gather
 from io import BytesIO
 from json import decoder, dumps
@@ -535,6 +536,23 @@ class HTTPHandler:
             The id of the message.
         """
         return await self.request("DELETE", f"channels/{channel_id}/messages/{message_id}")
+
+    async def bulk_delete_messages(self, channel_id: str, message_ids: List[str]):
+        """
+        Deletes messages in bulk
+
+        Parameters
+        ----------
+        channel_id: :class:`str`
+            The id of the channel.
+        message_ids: List[:class:`str`]
+            The id of the message.
+        """
+        return await self.request(
+            "DELETE",
+            f"channels/{channel_id}/messages/",
+            params={"ids": ",".join(message_ids)},
+        )
 
     async def poll_message_changed(
         self, channel_id: str, ids: List[str]

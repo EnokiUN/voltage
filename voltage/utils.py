@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, Iterable, Optional, TypeVar
+from typing import TYPE_CHECKING, Callable, Iterable, Optional, TypeVar, List
 
 if TYPE_CHECKING:
     pass
@@ -13,3 +13,8 @@ def get(base: Iterable[T], predicate: Callable[[T], bool]) -> Optional[T]:
         if predicate(item):
             return item
     return None
+
+
+def chunks(lst: List, size: int) -> List[List]:
+    for i in range(0, len(lst), size):
+        yield lst[i:i + size]
