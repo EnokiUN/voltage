@@ -54,7 +54,7 @@ class FloatConverter(Converter):
         return float(arg)
 
 
-id_regex = compile(r"[0-9A-HJ-KM-NP-TV-Z]{26}")
+id_regex = compile(r"<?@?([0-9A-HJ-KM-NP-TV-Z]{26})>?")
 
 
 class UserConverter(Converter):
