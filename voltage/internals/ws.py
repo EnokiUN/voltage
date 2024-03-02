@@ -210,7 +210,9 @@ class WebSocketHandler:
         )
         await self.dispatch("message_react", message, user_id, emoji_id)
 
-    async def handle_messageremovereaction(self, payload: OnMessageRemoveReactionPayload):
+    async def handle_messageremovereaction(
+        self, payload: OnMessageRemoveReactionPayload
+    ):
         """
         Handles the message remove reaction event.
         """
@@ -226,9 +228,10 @@ class WebSocketHandler:
         message = await self.cache.fetch_message(payload["channel_id"], payload["id"])
         user_id = payload["user_id"]
         emoji_id = payload["emoji_id"]
-        message.interactions.reactions.setdefault(payload["emoji_id"], []).remove(
-            self.cache.get_user(payload["user_id"])
-        )
+        reactions = message.interactions.reactions.setdefault(payload["emoji_id"], [])
+        user = self.cache.get_user(payload["user_id"])
+        if user in reactions:
+            reactions.remove(user)
         await self.dispatch("message_unreact", message, user_id, emoji_id)
 
     async def handle_channelcreate(self, payload: OnChannelCreatePayload):
@@ -338,7 +341,9 @@ class WebSocketHandler:
             self.cache.get_user(payload["user"])
         except KeyError:
             self.cache.add_user(await self.http.fetch_user(payload["user"]))
-        member = self.cache.add_member(payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}})
+        member = self.cache.add_member(
+            payload["id"], {"_id": {"server": payload["id"], "user": payload["user"]}}
+        )
         await self.dispatch("member_join", member)
 
     async def handle_memberleave(self, payload: OnServerMemberLeavePayload):
