@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from asyncio import AbstractEventLoop, gather
 from time import time
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from ..channels import Channel, DMChannel, create_channel
 from ..errors import HTTPError

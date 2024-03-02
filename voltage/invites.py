@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Union
 
 # internal imports
-from .asset import Asset
 from .utils import get
 
 if TYPE_CHECKING:

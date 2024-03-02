@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from asyncio import Future, get_event_loop, wait_for
-from re import search
 from typing import TYPE_CHECKING, Any, Callable, Dict, Literal, Optional, Union
 
 import aiohttp
