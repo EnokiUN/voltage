@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, List, Literal, Tuple, TypedDict
+from typing import TYPE_CHECKING, Dict, List, Literal, TypedDict
 
-from typing_extensions import NotRequired, Required
+from typing_extensions import NotRequired
 
 from voltage.types.channel import CategoryPayload
 

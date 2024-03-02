@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable
 
-from voltage import BotNotEnoughPerms, Member, NotBotOwner, NotEnoughPerms, User
+from voltage import BotNotEnoughPerms, Member, NotEnoughPerms, User
 
 if TYPE_CHECKING:
     from .command import Command, CommandContext

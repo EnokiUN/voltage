@@ -6,7 +6,6 @@ from json import loads
 from typing import TYPE_CHECKING, Any, Callable, Dict
 
 from ..channels import GroupDMChannel
-from ..enums import RelationshipType
 
 if TYPE_CHECKING:
     from aiohttp import ClientSession, ClientWebSocketResponse

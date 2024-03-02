@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from asyncio import gather
-from inspect import Parameter, _empty, isclass, ismethod, signature
+from inspect import Parameter, _empty, isclass, signature
 from itertools import zip_longest
 from re import findall
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Union
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional
 
 # internal imports
-from voltage import Member, MemberNotFound, Message, NotEnoughArgs, User, UserNotFound
+from voltage import Member, Message, NotEnoughArgs
 
 from . import converters
 
