@@ -179,9 +179,7 @@ class Message:
         self.mention_ids = data.get("mentions", [])
 
         if interactions := data.get("interactions"):
-            self.interactions.restrict_reactions = (
-                interactions.get("restrict_reactions") or False
-            )
+            self.interactions.restrict_reactions = interactions.get("restrict_reactions") or False
 
         if reactions := data.get("reactions"):
             for emoji_id, users in reactions.items():
@@ -312,7 +310,7 @@ class Message:
     def jump_url(self) -> str:
         """Returns a URL that allows the client to jump to the message."""
         server_segment = "" if self.server is None else f"/server/{self.server.id}"
-        return f"https://app.revolt.chat/{server_segment}channel/{self.channel.id}/{self.id}"
+        return f"https://app.revolt.chat{server_segment}/channel/{self.channel.id}/{self.id}"
 
     @property
     def mentions(self) -> list[Union[User, Member]]:
