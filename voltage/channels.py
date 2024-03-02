@@ -9,6 +9,7 @@ from .enums import ChannelType
 from .messageable import Messageable
 from .notsupplied import NotSupplied
 from .permissions import Permissions
+from .types import OverrideFieldPayload
 
 if TYPE_CHECKING:
     from .file import File
@@ -19,7 +20,6 @@ if TYPE_CHECKING:
         ChannelPayload,
         DMChannelPayload,
         GroupDMChannelPayload,
-        OverrideFieldPayload,
         SavedMessagePayload,
         TextChannelPayload,
         VoiceChannelPayload,

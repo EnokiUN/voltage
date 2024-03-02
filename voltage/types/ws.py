@@ -2,17 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Literal, TypedDict, Union
 
+from .channel import (
+    DMChannelPayload,
+    GroupDMChannelPayload,
+    SavedMessagePayload,
+    TextChannelPayload,
+    VoiceChannelPayload,
+)
+from .message import MessagePayload
+
 if TYPE_CHECKING:
-    from .channel import (
-        ChannelPayload,
-        DMChannelPayload,
-        GroupDMChannelPayload,
-        SavedMessagePayload,
-        TextChannelPayload,
-        VoiceChannelPayload,
-    )
+    from .channel import ChannelPayload
     from .embed import EmbedPayload
-    from .message import MessagePayload
     from .server import MemberIDPayload, MemberPayload, ServerPayload
     from .user import StatusPayload, UserPayload
 
