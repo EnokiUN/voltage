@@ -63,10 +63,12 @@ class UserConverter(Converter):
     """
 
     async def convert(self, ctx: CommandContext, arg: str) -> User:
-        if match := id_regex.match(arg):
+        if match := id_regex.search(arg):
             return ctx.client.cache.get_user(match.group(0))
         arg = arg.replace("@", "").lower()
-        if user := get(ctx.client.cache.users.values(), lambda u: u.name.lower() == arg):
+        if user := get(
+            ctx.client.cache.users.values(), lambda u: u.name.lower() == arg
+        ):
             return user
         raise UserNotFound(arg)
 
@@ -101,7 +103,7 @@ class ChannelConverter(Converter):
     """
 
     async def convert(self, ctx: CommandContext, arg: str) -> Channel:
-        if match := id_regex.match(arg):
+        if match := id_regex.search(arg):
             return ctx.client.cache.get_channel(match.group(0))
         arg = arg.replace("#", "").lower()
         if channel := get(
@@ -120,7 +122,7 @@ class RoleConverter(Converter):
     async def convert(self, ctx: CommandContext, arg: str) -> Role:
         if ctx.server is None:
             raise ValueError("Cannot convert a role to a role without a server")
-        if match := id_regex.match(arg):
+        if match := id_regex.search(arg):
             if role := ctx.server.get_role(match.group(0)):
                 return role
         arg = arg.replace("@", "").lower()
@@ -129,7 +131,9 @@ class RoleConverter(Converter):
         raise RoleNotFound(arg)
 
 
-def converter(converter: Callable[[CommandContext, str], Awaitable[Any]]) -> Type[Converter]:
+def converter(
+    converter: Callable[[CommandContext, str], Awaitable[Any]],
+) -> Type[Converter]:
     """
     A decorator that converts a function into a converter.
     """
