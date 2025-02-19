@@ -60,7 +60,7 @@ class Client:
 
     def __init__(self, *, cache_message_limit: int = 5000):
         self.cache_message_limit = cache_message_limit
-        self.client = aiohttp.ClientSession()
+        self.client = None
         self.http: HTTPHandler
         self.ws: WebSocketHandler
         self.listeners: Dict[str, Callable[..., Any]] = {}
@@ -252,6 +252,7 @@ class Client:
         banner: :class:`bool`
             Whether or not to print startup banner.
         """
+        self.client = aiohttp.ClientSession()
         self.http = HTTPHandler(self.client, token, bot=bot)
         self.cache = CacheHandler(self.http, self.loop, self.cache_message_limit)
         self.ws = WebSocketHandler(self.client, self.http, self.cache, token, self.dispatch, self.raw_dispatch)
