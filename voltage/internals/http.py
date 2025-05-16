@@ -110,6 +110,8 @@ class HTTPHandler:
 
         headers = {
             "User-Agent": "Voltage (beta)",
+            "X-Bot-Token": self.token,
+            "X-Session-Token": str(self.token),
         }
 
         autumn = f'{api_info["features"]["autumn"]["url"]}/{tag}'
