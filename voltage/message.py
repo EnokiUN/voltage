@@ -105,7 +105,7 @@ class Message:
     id: Optional[:class:`str`]
         The id of the message.
     created_at: :class:`int`
-        The timestamp of when the message was created.
+        The Unix epoch time in milliseconds of when the message was created.
     channel: :class:`Channel`
         The channel the message was sent in.
     attachments: List[:class:`Asset`]]
@@ -117,9 +117,9 @@ class Message:
     author: Union[:class:`User`, :class:`Member`]
         The author of the message.
     replies: List[:class:`Message`]
-        The replies of the message.
+        The messages this message was replying to.
     mentions: List[Union[:class:`User`, :class:`Member`]]
-        A list of mentioned users/members.
+        The list of mentioned users/members.
     """
 
     __slots__ = (
@@ -142,7 +142,7 @@ class Message:
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID().decode(self.id)
+        self.created_at = ULID().decode(self.id)[0]
         self.content = data.get("content")
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
