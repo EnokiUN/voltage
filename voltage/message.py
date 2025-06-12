@@ -142,7 +142,7 @@ class Message:
     def __init__(self, data: MessagePayload, cache: CacheHandler):
         self.cache = cache
         self.id = data["_id"]
-        self.created_at = ULID().decode(self.id)
+        self.created_at = ULID().decode(self.id)[0]
         self.content = data.get("content")
         self.attachments = [Asset(a, cache.http) for a in data.get("attachments", [])]
         self.embeds = [create_embed(e, cache.http) for e in data.get("embeds", [])]
