@@ -105,7 +105,7 @@ class Message:
     id: Optional[:class:`str`]
         The id of the message.
     created_at: :class:`int`
-        The timestamp of when the message was created.
+        The Unix epoch time in milliseconds of when the message was created.
     channel: :class:`Channel`
         The channel the message was sent in.
     attachments: List[:class:`Asset`]]
@@ -117,9 +117,9 @@ class Message:
     author: Union[:class:`User`, :class:`Member`]
         The author of the message.
     replies: List[:class:`Message`]
-        The replies of the message.
+        The messages this message was replying to.
     mentions: List[Union[:class:`User`, :class:`Member`]]
-        A list of mentioned users/members.
+        The list of mentioned users/members.
     """
 
     __slots__ = (
